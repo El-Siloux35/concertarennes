@@ -6,7 +6,7 @@ const Header = () => {
     <header className="flex items-center justify-center gap-3 py-4 px-4">
       <Link
         to="/auth"
-        className="bg-primary text-primary-foreground font-medium text-sm px-4 py-1.5 rounded-full hover:opacity-90 transition-opacity"
+        className="bg-primary text-primary-foreground font-medium text-sm px-4 py-1 rounded-full hover:opacity-90 transition-opacity"
       >
         [connexion]
       </Link>
