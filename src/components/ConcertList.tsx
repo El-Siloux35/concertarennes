@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 
@@ -122,10 +123,18 @@ const ConcertList = ({ filter }: ConcertListProps) => {
     return () => observer.disconnect();
   }, [hasMore, loadMore]);
 
+  const navigate = useNavigate();
+
   return (
     <div className="flex flex-col gap-4 px-4 pb-24">
       {displayedConcerts.map((concert) => (
-        <ConcertCard key={concert.id} concert={concert} />
+        <div 
+          key={concert.id} 
+          onClick={() => navigate(`/concert/${concert.id}`)}
+          className="cursor-pointer"
+        >
+          <ConcertCard concert={concert} />
+        </div>
       ))}
 
       {displayedConcerts.length === 0 && <EmptyState />}
