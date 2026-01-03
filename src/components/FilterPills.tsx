@@ -33,7 +33,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
         <button
           key={filter.key}
           onClick={() => handleFilterClick(filter.key)}
-          className={`flex items-center gap-1.5 px-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+          className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
             activeFilter === filter.key
               ? "bg-primary text-primary-foreground"
               : "border-2 border-primary text-primary bg-transparent"
