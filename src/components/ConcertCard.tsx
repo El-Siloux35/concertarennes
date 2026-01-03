@@ -54,7 +54,7 @@ const ConcertCard = ({ concert }: ConcertCardProps) => {
         aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
       >
         <Heart
-          size={20}
+          size={24}
           strokeWidth={2}
           fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"}
         />
