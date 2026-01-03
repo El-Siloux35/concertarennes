@@ -60,8 +60,8 @@ const ConcertCard = ({ concert }: ConcertCardProps) => {
         />
       </button>
 
-      {/* Organizer badge */}
-      <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-md mb-3">
+      {/* Organizer badge - square corners */}
+      <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
         {concert.organizer}
       </div>
 
