@@ -28,7 +28,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
   ];
 
   return (
-    <div className="flex gap-2 px-4 overflow-x-auto scrollbar-hide">
+    <div className="flex gap-2 px-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
       {filters.map((filter) => (
         <button
           key={filter.key}
@@ -36,7 +36,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           className={`flex items-center gap-1.5 px-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
             activeFilter === filter.key
               ? "bg-primary text-primary-foreground"
-              : "border-2 border-primary text-primary bg-transparent hover:bg-secondary"
+              : "border-2 border-primary text-primary bg-transparent"
           }`}
         >
           {filter.label}
