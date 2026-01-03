@@ -1,0 +1,95 @@
+import { MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
+
+export interface Concert {
+  id: string;
+  organizer: string;
+  name: string;
+  venue: string;
+  date: string;
+  price: string;
+}
+
+interface ConcertCardProps {
+  concert: Concert;
+}
+
+const ConcertCard = ({ concert }: ConcertCardProps) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setIsFavorite(favorites.includes(concert.id));
+  }, [concert.id]);
+
+  const toggleFavorite = () => {
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    let newFavorites: string[];
+
+    if (isFavorite) {
+      newFavorites = favorites.filter((id: string) => id !== concert.id);
+    } else {
+      newFavorites = [...favorites, concert.id];
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(newFavorites));
+    setIsFavorite(!isFavorite);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("fr-FR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  return (
+    <article className="bg-card border-2 border-dashed border-primary rounded-2xl p-4 animate-fade-in relative">
+      {/* Favorite button */}
+      <button
+        onClick={toggleFavorite}
+        className="absolute top-4 right-4 text-primary hover:scale-110 transition-transform"
+        aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+      >
+        <Heart
+          size={20}
+          strokeWidth={2}
+          fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"}
+        />
+      </button>
+
+      {/* Organizer badge */}
+      <div className="inline-block bg-primary text-primary-foreground font-mono text-xs font-medium px-3 py-1.5 rounded mb-3">
+        {concert.organizer}
+      </div>
+
+      {/* Concert name */}
+      <h2 className="font-mono font-bold text-lg text-primary leading-tight mb-4 pr-8">
+        {concert.name}
+      </h2>
+
+      {/* Details */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-primary font-mono text-sm">
+          <MapPin size={16} strokeWidth={2} className="flex-shrink-0" />
+          <span>{concert.venue}</span>
+        </div>
+
+        <div className="flex items-center gap-4 text-primary font-mono text-sm">
+          <div className="flex items-center gap-2">
+            <Calendar size={16} strokeWidth={2} className="flex-shrink-0" />
+            <span>{formatDate(concert.date)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CircleDollarSign size={16} strokeWidth={2} className="flex-shrink-0" />
+            <span>{concert.price}</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+};
+
+export default ConcertCard;
