@@ -13,7 +13,7 @@ const mockConcerts = [
 ];
 
 const Index = () => {
-  const [filter, setFilter] = useState<"all" | "today" | "week">("all");
+  const [filter, setFilter] = useState<"all" | "today" | "week" | "weekend">("all");
 
   const counts = useMemo(() => {
     const today = new Date();
@@ -33,14 +33,21 @@ const Index = () => {
       return concertDate >= today && concertDate <= endOfWeek;
     }).length;
 
+    const weekendCount = mockConcerts.filter((concert) => {
+      const concertDate = new Date(concert.date);
+      const day = concertDate.getDay();
+      return concertDate >= today && (day === 0 || day === 6);
+    }).length;
+
     return {
       all: mockConcerts.length,
       today: todayCount,
       week: weekCount,
+      weekend: weekendCount,
     };
   }, []);
 
-  const handleFilterChange = (newFilter: "all" | "today" | "week") => {
+  const handleFilterChange = (newFilter: "all" | "today" | "week" | "weekend") => {
     setFilter(newFilter);
   };
 

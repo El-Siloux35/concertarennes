@@ -6,7 +6,7 @@ const Header = () => {
     <header className="flex items-center justify-center gap-3 py-4 px-4">
       <Link
         to="/auth"
-        className="bg-primary text-primary-foreground font-medium text-sm px-4 py-1 rounded-full hover:opacity-90 transition-opacity"
+        className="bg-primary text-primary-foreground font-medium text-sm px-4 h-14 flex items-center rounded-full hover:opacity-90 transition-opacity"
       >
         [connexion]
       </Link>
@@ -14,14 +14,14 @@ const Header = () => {
         className="text-primary hover:opacity-70 transition-opacity"
         aria-label="Filtres"
       >
-        <SlidersHorizontal size={22} strokeWidth={1.5} />
+        <SlidersHorizontal size={24} strokeWidth={2} />
       </button>
       <Link
         to="/favoris"
         className="text-primary hover:opacity-70 transition-opacity"
         aria-label="Mes favoris"
       >
-        <Heart size={22} strokeWidth={1.5} />
+        <Heart size={24} strokeWidth={2} />
       </Link>
     </header>
   );

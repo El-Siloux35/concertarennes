@@ -3,7 +3,7 @@ import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 
 interface ConcertListProps {
-  filter: "all" | "today" | "week";
+  filter: "all" | "today" | "week" | "weekend";
 }
 
 // Mock data for demonstration
@@ -70,6 +70,12 @@ const ConcertList = ({ filter }: ConcertListProps) => {
       filtered = mockConcerts.filter((concert) => {
         const concertDate = new Date(concert.date);
         return concertDate >= today && concertDate <= endOfWeek;
+      });
+    } else if (filter === "weekend") {
+      filtered = mockConcerts.filter((concert) => {
+        const concertDate = new Date(concert.date);
+        const day = concertDate.getDay();
+        return concertDate >= today && (day === 0 || day === 6);
       });
     }
 
