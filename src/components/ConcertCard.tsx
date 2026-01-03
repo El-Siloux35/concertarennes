@@ -55,7 +55,7 @@ const ConcertCard = ({ concert }: ConcertCardProps) => {
       >
         <Heart
           size={20}
-          strokeWidth={1.5}
+          strokeWidth={2}
           fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"}
         />
       </button>
@@ -66,7 +66,7 @@ const ConcertCard = ({ concert }: ConcertCardProps) => {
       </div>
 
       {/* Concert name */}
-      <h2 className="font-semibold text-base text-primary leading-tight mb-4 pr-8">
+      <h2 className="font-semibold text-lg text-primary leading-tight mb-4 pr-8">
         {concert.name}
       </h2>
 

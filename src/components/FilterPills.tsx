@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-type FilterType = "all" | "today" | "week";
+type FilterType = "all" | "today" | "week" | "weekend";
 
 interface FilterPillsProps {
   onFilterChange: (filter: FilterType) => void;
@@ -8,6 +8,7 @@ interface FilterPillsProps {
     all: number;
     today: number;
     week: number;
+    weekend: number;
   };
 }
 
@@ -23,6 +24,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
     { key: "all", label: "Tout" },
     { key: "today", label: "Aujourd'hui" },
     { key: "week", label: "Semaine" },
+    { key: "weekend", label: "Week-end" },
   ];
 
   return (
@@ -31,7 +33,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
         <button
           key={filter.key}
           onClick={() => handleFilterClick(filter.key)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all ${
+          className={`flex items-center gap-1.5 px-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
             activeFilter === filter.key
               ? "bg-primary text-primary-foreground"
               : "border-2 border-primary text-primary bg-transparent hover:bg-secondary"
