@@ -31,20 +31,14 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
         <button
           key={filter.key}
           onClick={() => handleFilterClick(filter.key)}
-          className={`flex items-center gap-1 px-3 py-1.5 rounded-full font-mono text-sm whitespace-nowrap transition-all ${
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all ${
             activeFilter === filter.key
               ? "bg-primary text-primary-foreground"
-              : "border-2 border-dashed border-primary text-primary bg-transparent hover:bg-secondary"
+              : "border-2 border-primary text-primary bg-transparent hover:bg-secondary"
           }`}
         >
           {filter.label}
-          <span
-            className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeFilter === filter.key
-                ? "bg-accent text-accent-foreground"
-                : "bg-accent text-accent-foreground"
-            }`}
-          >
+          <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground">
             {counts[filter.key]}
           </span>
         </button>
