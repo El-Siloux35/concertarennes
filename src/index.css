@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -70,20 +70,15 @@
   }
 
   body {
-    @apply bg-background text-foreground font-mono antialiased;
-    font-family: 'JetBrains Mono', monospace;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Kode Mono', monospace;
   }
 }
 
 @layer utilities {
-  /* Dashed border utilities matching Figma */
-  .border-dashed-purple {
-    border: 2px dashed hsl(var(--primary));
-  }
-
-  /* Concert card styling */
+  /* Concert card styling - solid border as per Figma */
   .concert-card {
-    @apply bg-card border-dashed-purple rounded-2xl p-4;
+    @apply bg-card border-2 border-primary rounded-2xl p-4;
   }
 
   /* Filter pill active state */
@@ -91,14 +86,14 @@
     @apply bg-primary text-primary-foreground;
   }
 
-  /* Filter pill inactive state */
+  /* Filter pill inactive state - solid border */
   .filter-pill-inactive {
-    @apply bg-transparent border-dashed-purple text-primary;
+    @apply bg-transparent border-2 border-primary text-primary;
   }
 
   /* Connection button style */
   .btn-connection {
-    @apply bg-primary text-primary-foreground font-mono font-medium px-4 py-2 rounded-full;
+    @apply bg-primary text-primary-foreground font-medium px-4 py-2 rounded-full;
   }
 
   /* FAB button */

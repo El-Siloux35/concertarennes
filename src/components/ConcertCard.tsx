@@ -46,7 +46,7 @@ const ConcertCard = ({ concert }: ConcertCardProps) => {
   };
 
   return (
-    <article className="bg-card border-2 border-dashed border-primary rounded-2xl p-4 animate-fade-in relative">
+    <article className="bg-card border-2 border-primary rounded-2xl p-4 animate-fade-in relative">
       {/* Favorite button */}
       <button
         onClick={toggleFavorite}
@@ -55,35 +55,35 @@ const ConcertCard = ({ concert }: ConcertCardProps) => {
       >
         <Heart
           size={20}
-          strokeWidth={2}
+          strokeWidth={1.5}
           fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"}
         />
       </button>
 
       {/* Organizer badge */}
-      <div className="inline-block bg-primary text-primary-foreground font-mono text-xs font-medium px-3 py-1.5 rounded mb-3">
+      <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-md mb-3">
         {concert.organizer}
       </div>
 
       {/* Concert name */}
-      <h2 className="font-mono font-bold text-lg text-primary leading-tight mb-4 pr-8">
+      <h2 className="font-semibold text-base text-primary leading-tight mb-4 pr-8">
         {concert.name}
       </h2>
 
       {/* Details */}
-      <div className="space-y-2">
-        <div className="flex items-center gap-2 text-primary font-mono text-sm">
-          <MapPin size={16} strokeWidth={2} className="flex-shrink-0" />
+      <div className="space-y-1.5">
+        <div className="flex items-center gap-2 text-primary text-sm">
+          <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
           <span>{concert.venue}</span>
         </div>
 
-        <div className="flex items-center gap-4 text-primary font-mono text-sm">
+        <div className="flex items-center gap-4 text-primary text-sm">
           <div className="flex items-center gap-2">
-            <Calendar size={16} strokeWidth={2} className="flex-shrink-0" />
+            <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
             <span>{formatDate(concert.date)}</span>
           </div>
           <div className="flex items-center gap-2">
-            <CircleDollarSign size={16} strokeWidth={2} className="flex-shrink-0" />
+            <CircleDollarSign size={14} strokeWidth={1.5} className="flex-shrink-0" />
             <span>{concert.price}</span>
           </div>
         </div>
