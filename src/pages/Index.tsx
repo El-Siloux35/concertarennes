@@ -61,10 +61,20 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-[700px] mx-auto">
-        <Header />
+        {/* Fixed header section */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+          <div className="max-w-[700px] mx-auto">
+            <Header />
+            <div className="px-4 pb-4">
+              <FilterPills onFilterChange={handleFilterChange} counts={counts} />
+            </div>
+          </div>
+        </div>
 
-        <main className="flex flex-col gap-4 pt-2">
-          <FilterPills onFilterChange={handleFilterChange} counts={counts} />
+        {/* Spacer for fixed header */}
+        <div className="h-32"></div>
+
+        <main className="flex flex-col gap-4">
           <ConcertList filter={filter} />
         </main>
 
