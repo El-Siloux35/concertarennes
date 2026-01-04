@@ -19,6 +19,7 @@ interface Profile {
 interface Event {
   id: string;
   title: string;
+  date: string;
   created_at: string;
 }
 
@@ -31,6 +32,7 @@ const Compte = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
   
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
@@ -39,6 +41,10 @@ const Compte = () => {
   
   const [isEditingPseudo, setIsEditingPseudo] = useState(false);
   const [newPseudo, setNewPseudo] = useState("");
+
+  const today = new Date().toISOString().split('T')[0];
+  const upcomingEvents = events.filter(e => e.date >= today);
+  const pastEvents = events.filter(e => e.date < today);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -91,9 +97,9 @@ const Compte = () => {
     
     const { data, error } = await supabase
       .from("events")
-      .select("id, title, created_at")
+      .select("id, title, date, created_at")
       .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("date", { ascending: false });
     
     if (error) {
       console.error("Error fetching events:", error);
@@ -352,50 +358,112 @@ const Compte = () => {
 
         {/* Events Section */}
         <div className="mt-8">
-          <h2 className="text-primary font-semibold text-center mb-4">Vos évènements crées</h2>
+          {/* Tabs */}
+          <div className="flex justify-center gap-2 mb-4">
+            <button
+              onClick={() => setActiveTab("upcoming")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeTab === "upcoming"
+                  ? "bg-primary text-primary-foreground"
+                  : "border-2 border-primary text-primary bg-transparent"
+              }`}
+            >
+              À venir ({upcomingEvents.length})
+            </button>
+            <button
+              onClick={() => setActiveTab("past")}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                activeTab === "past"
+                  ? "bg-primary text-primary-foreground"
+                  : "border-2 border-primary text-primary bg-transparent"
+              }`}
+            >
+              Passés ({pastEvents.length})
+            </button>
+          </div>
           
-          {events.length === 0 ? (
-            <EventEmptyState />
-          ) : (
-            <div className="flex flex-col gap-3">
-              {events.map((event) => (
-                <div
-                  key={event.id}
-                  className="bg-card border-2 border-primary rounded-2xl p-4"
-                >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <h3 className="text-primary font-medium">{event.title}</h3>
-                      <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                        <Calendar size={14} />
-                        <span>Crée le {new Date(event.created_at).toLocaleDateString("fr-FR")}</span>
+          {activeTab === "upcoming" ? (
+            upcomingEvents.length === 0 ? (
+              <EventEmptyState />
+            ) : (
+              <div className="flex flex-col gap-3">
+                {upcomingEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="bg-card border-2 border-primary rounded-2xl p-4"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-primary font-medium">{event.title}</h3>
+                        <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
+                          <Calendar size={14} />
+                          <span>{new Date(event.date).toLocaleDateString("fr-FR")}</span>
+                        </div>
                       </div>
                     </div>
+                    <div className="flex gap-2 mt-3 justify-end">
+                      <Button
+                        onClick={() => navigate(`/modifier-evenement/${event.id}`)}
+                        variant="outline"
+                        className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0"
+                        aria-label="Modifier"
+                      >
+                        <Pencil size={16} />
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setEventToDelete(event.id);
+                          setShowDeleteEventModal(true);
+                        }}
+                        variant="outline"
+                        className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0"
+                        aria-label="Supprimer"
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2 mt-3 justify-end">
-                    <Button
-                      onClick={() => navigate(`/modifier-evenement/${event.id}`)}
-                      variant="outline"
-                      className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0"
-                      aria-label="Modifier"
-                    >
-                      <Pencil size={16} />
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setEventToDelete(event.id);
-                        setShowDeleteEventModal(true);
-                      }}
-                      variant="outline"
-                      className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0"
-                      aria-label="Supprimer"
-                    >
-                      <Trash2 size={16} />
-                    </Button>
+                ))}
+              </div>
+            )
+          ) : (
+            pastEvents.length === 0 ? (
+              <div className="text-center py-8 text-primary/60">
+                Aucun évènement passé
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {pastEvents.map((event) => (
+                  <div
+                    key={event.id}
+                    className="bg-card border-2 border-primary/50 rounded-2xl p-4 opacity-70"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="text-primary font-medium">{event.title}</h3>
+                        <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
+                          <Calendar size={14} />
+                          <span>{new Date(event.date).toLocaleDateString("fr-FR")}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3 justify-end">
+                      <Button
+                        onClick={() => {
+                          setEventToDelete(event.id);
+                          setShowDeleteEventModal(true);
+                        }}
+                        variant="outline"
+                        className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0"
+                        aria-label="Supprimer"
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )
           )}
         </div>
 
