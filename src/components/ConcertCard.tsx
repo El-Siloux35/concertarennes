@@ -1,6 +1,5 @@
 import { MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
-
 export interface Concert {
   id: string;
   organizer: string;
@@ -9,20 +8,19 @@ export interface Concert {
   date: string;
   price: string;
 }
-
 interface ConcertCardProps {
   concert: Concert;
   onNavigate?: () => void;
 }
-
-const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
+const ConcertCard = ({
+  concert,
+  onNavigate
+}: ConcertCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
-
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     setIsFavorite(favorites.includes(concert.id));
   }, [concert.id]);
-
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -35,7 +33,6 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     localStorage.setItem("favorites", JSON.stringify(newFavorites));
     setIsFavorite(!isFavorite);
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR", {
@@ -44,18 +41,9 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
       year: "numeric"
     });
   };
-
-  return (
-    <article 
-      className="bg-card border-2 border-primary rounded-2xl p-4 animate-fade-in relative cursor-pointer"
-      onClick={onNavigate}
-    >
+  return <article onClick={onNavigate} className="bg-card border-2 rounded-2xl p-4 animate-fade-in relative cursor-pointer border-muted">
       {/* Favorite button - 44x44 touch target */}
-      <button 
-        onClick={toggleFavorite} 
-        className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-primary" 
-        aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-      >
+      <button onClick={toggleFavorite} className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-primary" aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}>
         <Heart size={24} strokeWidth={2} fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"} />
       </button>
 
@@ -87,8 +75,6 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
           </div>
         </div>
       </div>
-    </article>
-  );
+    </article>;
 };
-
 export default ConcertCard;

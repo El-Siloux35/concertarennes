@@ -48,11 +48,11 @@ const Index = () => {
   const handleFilterChange = (newFilter: "all" | "today" | "week" | "weekend") => {
     setFilter(newFilter);
   };
-  return <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background border-muted">
       <div className="max-w-[700px] mx-auto">
         {/* Fixed header section */}
         <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
-          <div className="bg-background">
+          <div className="bg-background py-[12px] pb-[8px]">
             <div className="max-w-[700px] mx-auto px-4">
               <Header />
             </div>
