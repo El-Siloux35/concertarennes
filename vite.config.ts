@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
         name: "Concerts à Rennes",
         short_name: "Concerts",
         description: "Découvrez les concerts à Rennes",
-        theme_color: "#4C1CBE",
+        theme_color: "#ffffff",
         background_color: "#ffffff",
         display: "standalone",
         orientation: "portrait",
