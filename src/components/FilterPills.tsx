@@ -23,8 +23,8 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
   const filters: { key: FilterType; label: string }[] = [
     { key: "all", label: "Tout" },
     { key: "today", label: "Aujourd'hui" },
-    { key: "week", label: "Semaine" },
-    { key: "weekend", label: "Week-end" },
+    { key: "week", label: "Cette semaine" },
+    { key: "weekend", label: "Ce week-end" },
   ];
 
   return (
