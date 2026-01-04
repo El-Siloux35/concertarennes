@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Send } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -8,11 +8,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 
-const CreateEvent = () => {
+const EditEvent = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -25,7 +26,43 @@ const CreateEvent = () => {
   const [contact, setContact] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      if (!id) return;
+
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error || !data) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger l'évènement",
+          variant: "destructive",
+        });
+        navigate(-1);
+        return;
+      }
+
+      setOrganizer(data.organizer || "");
+      setName(data.title || "");
+      setDescription(data.description || "");
+      setVenue(data.location || "");
+      setPrice(data.price || "");
+      setDate(data.date ? parseISO(data.date) : undefined);
+      setContact(data.contact || "");
+      setExistingImageUrl(data.image_url);
+      setLoading(false);
+    };
+
+    fetchEvent();
+  }, [id, navigate, toast]);
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -63,7 +100,7 @@ const CreateEvent = () => {
         return;
       }
 
-      let imageUrl = null;
+      let imageUrl = existingImageUrl;
 
       if (imageFile) {
         const fileExt = imageFile.name.split(".").pop();
@@ -83,8 +120,7 @@ const CreateEvent = () => {
 
       const { error } = await supabase
         .from("events")
-        .insert({
-          user_id: user.id,
+        .update({
           title: name.trim(),
           organizer: organizer.trim(),
           description: description.trim() || null,
@@ -93,7 +129,8 @@ const CreateEvent = () => {
           date: format(date, "yyyy-MM-dd"),
           contact: contact.trim() || null,
           image_url: imageUrl,
-        });
+        })
+        .eq("id", id);
 
       if (error) {
         throw error;
@@ -101,15 +138,15 @@ const CreateEvent = () => {
 
       toast({
         title: "Succès",
-        description: "Évènement créé avec succès",
+        description: "Évènement modifié avec succès",
       });
 
       navigate("/compte");
     } catch (error) {
-      console.error("Error creating event:", error);
+      console.error("Error updating event:", error);
       toast({
         title: "Erreur",
-        description: "Impossible de créer l'évènement",
+        description: "Impossible de modifier l'évènement",
         variant: "destructive",
       });
     } finally {
@@ -117,12 +154,22 @@ const CreateEvent = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-primary">Chargement...</div>
+      </div>
+    );
+  }
+
+  const displayImage = imagePreview || existingImageUrl;
+
   return (
     <div className="min-h-screen bg-background pb-32">
       <div className="max-w-[700px] mx-auto px-4">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">
-          <h1 className="text-primary font-semibold text-xl">Ajouter un évènement</h1>
+          <h1 className="text-primary font-semibold text-xl">Modifier l'évènement</h1>
           <button
             onClick={() => navigate(-1)}
             className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
@@ -138,9 +185,9 @@ const CreateEvent = () => {
             onClick={handleImageClick}
             className="w-full h-[300px] border-2 border-dashed border-primary rounded-2xl flex flex-col items-center justify-center gap-3 bg-transparent overflow-hidden"
           >
-            {imagePreview ? (
+            {displayImage ? (
               <img
-                src={imagePreview}
+                src={displayImage}
                 alt="Preview"
                 className="w-full h-full object-cover"
               />
@@ -243,8 +290,8 @@ const CreateEvent = () => {
             disabled={isSubmitting}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
           >
-            <Send size={20} strokeWidth={2} />
-            {isSubmitting ? "Création..." : "Ajouter l'évènement"}
+            <Check size={20} strokeWidth={2} />
+            {isSubmitting ? "Enregistrement..." : "Enregistrer les modifications"}
           </Button>
         </div>
       </div>
@@ -252,4 +299,4 @@ const CreateEvent = () => {
   );
 };
 
-export default CreateEvent;
+export default EditEvent;

@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { SlidersHorizontal, Heart } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,9 +34,7 @@ const Header = () => {
       >
         {user ? `@${displayName}` : "[connexion]"}
       </Link>
-      <button className="text-primary" aria-label="Filtres">
-        <SlidersHorizontal size={24} strokeWidth={2} />
-      </button>
+      <ThemeToggle />
       <Link to="/favoris" className="text-primary" aria-label="Mes favoris">
         <Heart size={24} strokeWidth={2} />
       </Link>
