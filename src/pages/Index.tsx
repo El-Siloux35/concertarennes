@@ -11,21 +11,46 @@ type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
 const Index = () => {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
   const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
+  const [organizerFilters, setOrganizerFilters] = useState<string[]>([]);
   const [events, setEvents] = useState<{
     id: string;
     date: string;
     style: string | null;
+    organizer: string | null;
   }[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       const { data } = await supabase
         .from("events")
-        .select("id, date, style");
+        .select("id, date, style, organizer");
       setEvents(data || []);
     };
     fetchEvents();
   }, []);
+
+  // Extract unique organizers
+  const organizers = useMemo(() => {
+    const uniqueOrganizers = new Set<string>();
+    events.forEach((event) => {
+      if (event.organizer && event.organizer.trim()) {
+        uniqueOrganizers.add(event.organizer.trim());
+      }
+    });
+    return Array.from(uniqueOrganizers).sort((a, b) => a.localeCompare(b, 'fr'));
+  }, [events]);
+
+  // Count events per organizer
+  const organizerCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    events.forEach((event) => {
+      if (event.organizer && event.organizer.trim()) {
+        const org = event.organizer.trim();
+        counts[org] = (counts[org] || 0) + 1;
+      }
+    });
+    return counts;
+  }, [events]);
 
   const counts = useMemo(() => {
     const today = new Date();
@@ -100,10 +125,12 @@ const Index = () => {
 
   const handleFilterChange = (
     newPeriodFilter: PeriodFilter,
-    newStyleFilters: StyleFilter[]
+    newStyleFilters: StyleFilter[],
+    newOrganizerFilters: string[]
   ) => {
     setPeriodFilter(newPeriodFilter);
     setStyleFilters(newStyleFilters);
+    setOrganizerFilters(newOrganizerFilters);
   };
 
   return (
@@ -118,7 +145,12 @@ const Index = () => {
           </div>
           <div className="bg-background pt-3 pb-3">
             <div className="max-w-[700px] mx-auto">
-              <FilterPills onFilterChange={handleFilterChange} counts={counts} />
+              <FilterPills 
+                onFilterChange={handleFilterChange} 
+                counts={counts} 
+                organizers={organizers}
+                organizerCounts={organizerCounts}
+              />
             </div>
           </div>
         </div>
@@ -127,7 +159,11 @@ const Index = () => {
         <div className="h-40"></div>
 
         <main className="flex flex-col gap-4">
-          <ConcertList periodFilter={periodFilter} styleFilters={styleFilters} />
+          <ConcertList 
+            periodFilter={periodFilter} 
+            styleFilters={styleFilters} 
+            organizerFilters={organizerFilters}
+          />
         </main>
 
         <FloatingAddButton />

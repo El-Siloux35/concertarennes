@@ -10,9 +10,10 @@ type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
 interface ConcertListProps {
   periodFilter: PeriodFilter;
   styleFilters: StyleFilter[];
+  organizerFilters: string[];
 }
 
-const ConcertList = ({ periodFilter, styleFilters }: ConcertListProps) => {
+const ConcertList = ({ periodFilter, styleFilters, organizerFilters }: ConcertListProps) => {
   const navigate = useNavigate();
   const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
@@ -101,6 +102,13 @@ const ConcertList = ({ periodFilter, styleFilters }: ConcertListProps) => {
       });
     }
 
+    // Filter by organizers (multi-select)
+    if (organizerFilters.length > 0) {
+      filtered = filtered.filter((concert) => {
+        return organizerFilters.includes(concert.organizer);
+      });
+    }
+
     // Sort by date
     if (periodFilter === "past") {
       // Past events: most recent first
@@ -111,7 +119,7 @@ const ConcertList = ({ periodFilter, styleFilters }: ConcertListProps) => {
     }
 
     setFilteredConcerts(filtered);
-  }, [periodFilter, styleFilters, allConcerts]);
+  }, [periodFilter, styleFilters, organizerFilters, allConcerts]);
 
   if (loading) {
     return (
