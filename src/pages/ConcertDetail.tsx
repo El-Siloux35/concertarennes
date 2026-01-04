@@ -252,7 +252,7 @@ const ConcertDetail = () => {
 
           {/* Description */}
           {event.description && (
-            <p className="text-primary text-sm leading-relaxed mb-6">
+            <p className="text-primary text-sm leading-relaxed mb-6 whitespace-pre-line">
               {event.description}
             </p>
           )}
