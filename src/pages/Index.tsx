@@ -1,49 +1,26 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Header from "../components/Header";
 import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
-
-// Helper pour générer des dates relatives
-const getDateString = (daysFromNow: number) => {
-  const date = new Date();
-  date.setDate(date.getDate() + daysFromNow);
-  return date.toISOString().split('T')[0];
-};
-
-const getNextSaturday = () => {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
-  const date = new Date(today);
-  date.setDate(today.getDate() + daysUntilSaturday);
-  return date.toISOString().split('T')[0];
-};
-
-const getNextSunday = () => {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  const daysUntilSunday = (7 - dayOfWeek) % 7 || 7;
-  const date = new Date(today);
-  date.setDate(today.getDate() + daysUntilSunday);
-  return date.toISOString().split('T')[0];
-};
-
-// Mock counts - synchronized with ConcertList
-const mockConcerts = [
-  { id: "1", date: getDateString(0) },
-  { id: "2", date: getDateString(0) },
-  { id: "3", date: getDateString(2) },
-  { id: "4", date: getDateString(5) },
-  { id: "5", date: getNextSaturday() },
-  { id: "6", date: getNextSunday() },
-  { id: "7", date: getDateString(10) },
-  { id: "8", date: getDateString(3) },
-  { id: "9", date: getNextSaturday() },
-];
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [filter, setFilter] = useState<"all" | "today" | "week" | "weekend">("all");
+  const [events, setEvents] = useState<{ id: string; date: string }[]>([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const { data } = await supabase
+        .from("events")
+        .select("id, date")
+        .gte("date", new Date().toISOString().split('T')[0]);
+      
+      setEvents(data || []);
+    };
+
+    fetchEvents();
+  }, []);
 
   const counts = useMemo(() => {
     const today = new Date();
@@ -52,30 +29,30 @@ const Index = () => {
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
 
-    const todayCount = mockConcerts.filter((concert) => {
-      const concertDate = new Date(concert.date);
-      concertDate.setHours(0, 0, 0, 0);
-      return concertDate.getTime() === today.getTime();
+    const todayCount = events.filter((event) => {
+      const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate.getTime() === today.getTime();
     }).length;
 
-    const weekCount = mockConcerts.filter((concert) => {
-      const concertDate = new Date(concert.date);
-      return concertDate >= today && concertDate <= endOfWeek;
+    const weekCount = events.filter((event) => {
+      const eventDate = new Date(event.date);
+      return eventDate >= today && eventDate <= endOfWeek;
     }).length;
 
-    const weekendCount = mockConcerts.filter((concert) => {
-      const concertDate = new Date(concert.date);
-      const day = concertDate.getDay();
-      return concertDate >= today && (day === 0 || day === 6);
+    const weekendCount = events.filter((event) => {
+      const eventDate = new Date(event.date);
+      const day = eventDate.getDay();
+      return eventDate >= today && (day === 0 || day === 6);
     }).length;
 
     return {
-      all: mockConcerts.length,
+      all: events.length,
       today: todayCount,
       week: weekCount,
       weekend: weekendCount,
     };
-  }, []);
+  }, [events]);
 
   const handleFilterChange = (newFilter: "all" | "today" | "week" | "weekend") => {
     setFilter(newFilter);

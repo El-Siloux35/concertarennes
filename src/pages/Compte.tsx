@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, Calendar, Trash2, Check, X, Send } from "lucide-react";
+import { X, Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ConfirmModal from "@/components/ConfirmModal";
 import EventEmptyState from "@/components/EventEmptyState";
 import { useToast } from "@/hooks/use-toast";
+
 interface Profile {
   id: string;
   pseudo: string | null;
@@ -201,7 +202,6 @@ const Compte = () => {
   const handleDeleteAccount = async () => {
     if (!user) return;
 
-    // Delete profile (cascade will handle related data)
     const { error } = await supabase
       .from("profiles")
       .delete()
@@ -249,6 +249,10 @@ const Compte = () => {
     });
   };
 
+  const handleClose = () => {
+    navigate("/home");
+  };
+
   const displayName = profile?.pseudo || user?.user_metadata?.pseudo || user?.email?.split("@")[0] || "Utilisateur";
 
   if (loading) {
@@ -262,13 +266,14 @@ const Compte = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="max-w-[700px] mx-auto px-4">
-        {/* Header */}
-        <header className="py-4">
+        {/* Header with close button */}
+        <header className="py-4 flex justify-end">
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleClose}
             className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
+            aria-label="Fermer"
           >
-            <ArrowLeft size={24} className="text-primary-foreground" />
+            <X size={24} className="text-primary-foreground" />
           </button>
         </header>
 
@@ -283,9 +288,10 @@ const Compte = () => {
             </Avatar>
             <button
               onClick={handleAvatarClick}
-              className="absolute top-0 right-0 w-8 h-8 rounded-full bg-primary flex items-center justify-center"
+              className="absolute bottom-0 right-0 w-11 h-11 rounded-full bg-primary flex items-center justify-center"
+              aria-label="Changer la photo"
             >
-              <Pencil size={14} className="text-primary-foreground" />
+              <Camera size={20} className="text-primary-foreground" />
             </button>
             <input
               ref={fileInputRef}
@@ -332,14 +338,15 @@ const Compte = () => {
           )}
         </div>
 
-        {/* Logout Button */}
-        <div className="mt-8">
+        {/* Logout Button - smaller with icon */}
+        <div className="mt-8 flex justify-center">
           <Button
             onClick={() => setShowLogoutModal(true)}
             variant="outline"
-            className="w-full rounded-full h-14 border-2 border-primary text-primary bg-transparent font-medium"
+            className="rounded-full h-10 px-6 border-2 border-primary text-primary bg-transparent font-medium flex items-center gap-2"
           >
-            Deconnexion
+            <LogOut size={16} />
+            Déconnexion
           </Button>
         </div>
 
@@ -354,28 +361,53 @@ const Compte = () => {
               {events.map((event) => (
                 <div
                   key={event.id}
-                  className="bg-card border-2 border-primary rounded-2xl p-4 flex justify-between items-start"
+                  className="bg-card border-2 border-primary rounded-2xl p-4"
                 >
-                  <div className="flex-1">
-                    <h3 className="text-primary font-medium">{event.title}</h3>
-                    <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                      <Calendar size={14} />
-                      <span>Crée le {new Date(event.created_at).toLocaleDateString("fr-FR")}</span>
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h3 className="text-primary font-medium">{event.title}</h3>
+                      <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
+                        <Calendar size={14} />
+                        <span>Crée le {new Date(event.created_at).toLocaleDateString("fr-FR")}</span>
+                      </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => {
-                      setEventToDelete(event.id);
-                      setShowDeleteEventModal(true);
-                    }}
-                    className="text-destructive p-2"
-                  >
-                    <Trash2 size={18} />
-                  </button>
+                  <div className="flex gap-2 mt-3">
+                    <Button
+                      onClick={() => navigate(`/modifier-evenement/${event.id}`)}
+                      variant="outline"
+                      className="flex-1 h-10 rounded-full border-2 border-primary text-primary bg-transparent font-medium flex items-center justify-center gap-2"
+                    >
+                      <Pencil size={14} />
+                      Modifier
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setEventToDelete(event.id);
+                        setShowDeleteEventModal(true);
+                      }}
+                      variant="outline"
+                      className="flex-1 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent font-medium flex items-center justify-center gap-2"
+                    >
+                      <Trash2 size={14} />
+                      Supprimer
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
           )}
+        </div>
+
+        {/* Create Event Button - not fixed, after events */}
+        <div className="mt-6">
+          <Button
+            onClick={() => navigate("/creer-evenement")}
+            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
+          >
+            <Plus size={20} strokeWidth={2} />
+            Créer un évènement
+          </Button>
         </div>
 
         {/* Delete Account Link */}
@@ -387,17 +419,6 @@ const Compte = () => {
             Supprimer mon compte
           </button>
         </div>
-      </div>
-
-      {/* Floating Add Button */}
-      <div className="fixed bottom-6 left-4 right-4 max-w-[700px] mx-auto">
-        <Button
-          onClick={() => navigate("/creer-evenement")}
-          className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
-        >
-          <Send size={20} strokeWidth={2} />
-          Créer un évènement
-        </Button>
       </div>
 
       {/* Modals */}

@@ -1,4 +1,4 @@
-import { X, AtSign, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { X, AtSign, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -127,62 +127,54 @@ const Auth = () => {
   if (showForgotPassword) {
     return (
       <div className="min-h-screen bg-background px-4 pt-4">
-        {/* Close button */}
-        <div className="flex justify-end mb-12">
-          <button
-            onClick={() => setShowForgotPassword(false)}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Retour"
-          >
-            <X size={20} strokeWidth={2} />
-          </button>
-        </div>
-
-        {/* Title */}
-        <div className="text-center mb-12">
-          <h1 className="text-2xl font-bold text-primary mb-2">
-            Mot de passe oublié
-          </h1>
-          <p className="text-primary text-sm">
-            Entrez votre email pour recevoir un lien de réinitialisation.
-          </p>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleForgotPassword} className="space-y-4">
-          {/* Email input */}
-          <div className="relative">
-            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
-              <Mail size={20} strokeWidth={1.5} />
-            </div>
-            <Input
-              type="email"
-              placeholder="Mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
-            />
+        <div className="max-w-[700px] mx-auto">
+          {/* Back button with arrow */}
+          <div className="mb-12">
+            <button
+              onClick={() => setShowForgotPassword(false)}
+              className="flex items-center gap-2 text-primary font-medium"
+              aria-label="Retour"
+            >
+              <ArrowLeft size={20} strokeWidth={2} />
+              <span>Retour</span>
+            </button>
           </div>
 
-          {/* Submit button */}
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base mt-8 hover:bg-accent"
-          >
-            {isLoading ? "Envoi..." : "Envoyer le lien"}
-          </Button>
-        </form>
+          {/* Title */}
+          <div className="text-center mb-12">
+            <h1 className="text-2xl font-bold text-primary mb-2">
+              Mot de passe oublié
+            </h1>
+            <p className="text-primary text-sm">
+              Entrez votre email pour recevoir un lien de réinitialisation.
+            </p>
+          </div>
 
-        {/* Back to login link */}
-        <div className="text-center mt-12">
-          <button
-            type="button"
-            onClick={() => setShowForgotPassword(false)}
-            className="text-primary underline text-sm font-medium"
-          >
-            retour à la connexion
-          </button>
+          {/* Form */}
+          <form onSubmit={handleForgotPassword} className="space-y-4">
+            {/* Email input */}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
+                <Mail size={20} strokeWidth={1.5} />
+              </div>
+              <Input
+                type="email"
+                placeholder="Mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+              />
+            </div>
+
+            {/* Submit button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base mt-8"
+            >
+              {isLoading ? "Envoi..." : "Envoyer le lien"}
+            </Button>
+          </form>
         </div>
       </div>
     );

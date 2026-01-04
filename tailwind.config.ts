@@ -61,6 +61,10 @@ export default {
           white: "hsl(var(--concert-white))",
           black: "hsl(var(--concert-black))",
         },
+        toast: {
+          bg: "hsl(var(--toast-bg))",
+          fg: "hsl(var(--toast-fg))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

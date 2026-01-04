@@ -43,24 +43,43 @@
     --concert-orange: 27 100% 50%;
     --concert-white: 0 0% 100%;
     --concert-black: 0 0% 0%;
+
+    /* Toast colors */
+    --toast-bg: 220 50% 20%;
+    --toast-fg: 0 0% 100%;
   }
 
   .dark {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    --card: 259 75% 15%;
-    --card-foreground: 245 100% 97%;
-    --primary: 259 75% 60%;
+    --background: 220 20% 8%;
+    --foreground: 0 0% 95%;
+    --card: 259 40% 18%;
+    --card-foreground: 245 100% 95%;
+    --popover: 220 20% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 259 65% 65%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 259 75% 20%;
-    --secondary-foreground: 245 100% 97%;
-    --muted: 259 75% 20%;
-    --muted-foreground: 245 100% 80%;
+    --secondary: 259 40% 22%;
+    --secondary-foreground: 245 100% 95%;
+    --muted: 259 30% 20%;
+    --muted-foreground: 245 60% 80%;
     --accent: 27 100% 50%;
     --accent-foreground: 0 0% 100%;
-    --border: 259 75% 40%;
-    --input: 259 75% 40%;
-    --ring: 259 75% 60%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 259 50% 40%;
+    --input: 259 50% 40%;
+    --ring: 259 65% 65%;
+
+    /* Custom tokens dark */
+    --concert-purple: 259 65% 65%;
+    --concert-light: 259 40% 18%;
+    --concert-orange: 27 100% 50%;
+    --concert-white: 0 0% 95%;
+    --concert-black: 220 20% 8%;
+
+    /* Toast colors dark */
+    --toast-bg: 220 50% 15%;
+    --toast-fg: 0 0% 100%;
   }
 }
 
