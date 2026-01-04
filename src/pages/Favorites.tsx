@@ -1,51 +1,55 @@
 import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-// Mock concerts data - same as in other components
-const mockConcerts = [
-  {
-    id: "1",
-    organizer: "Capital Taboulé",
-    name: "Culture Emotion - Toujours l'été - Nuage Noir",
-    venue: "Le bois Harel",
-    date: "2025-12-13",
-    price: "Prix Libre"
-  },
-  {
-    id: "2",
-    organizer: "La Sirène",
-    name: "Jazz sous les étoiles",
-    venue: "Parc du Thabor",
-    date: "2025-12-14",
-    price: "15€"
-  },
-  {
-    id: "3",
-    organizer: "Ubu",
-    name: "Electro Night",
-    venue: "L'Ubu",
-    date: "2025-12-15",
-    price: "20€"
-  },
-  {
-    id: "4",
-    organizer: "Le Liberté",
-    name: "Rock Festival",
-    venue: "Le Liberté",
-    date: "2025-12-20",
-    price: "25€"
-  }
-];
+interface Event {
+  id: string;
+  title: string;
+  description: string | null;
+  location: string | null;
+  date: string;
+  price: string | null;
+  organizer: string | null;
+  image_url: string | null;
+}
 
 const Favorites = () => {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState<string[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     setFavorites(storedFavorites);
   }, []);
+
+  useEffect(() => {
+    const fetchFavoriteEvents = async () => {
+      if (favorites.length === 0) {
+        setEvents([]);
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("events")
+        .select("*")
+        .in("id", favorites);
+
+      if (error) {
+        console.error("Error fetching favorite events:", error);
+        setLoading(false);
+        return;
+      }
+
+      setEvents(data || []);
+      setLoading(false);
+    };
+
+    fetchFavoriteEvents();
+  }, [favorites]);
 
   const removeFavorite = (id: string) => {
     const newFavorites = favorites.filter((favId) => favId !== id);
@@ -61,8 +65,6 @@ const Favorites = () => {
       year: "numeric"
     });
   };
-
-  const favoriteConcerts = mockConcerts.filter((concert) => favorites.includes(concert.id));
 
   return (
     <div className="min-h-screen bg-background pb-8">
@@ -80,55 +82,59 @@ const Favorites = () => {
 
       {/* Favorites list */}
       <div className="px-4 space-y-4">
-        {favoriteConcerts.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-primary/60">Chargement...</p>
+          </div>
+        ) : events.length === 0 ? (
           <div className="text-center py-12">
             <Heart size={48} className="mx-auto text-primary/30 mb-4" />
             <p className="text-primary/60">Aucun favori pour le moment</p>
           </div>
         ) : (
-          favoriteConcerts.map((concert) => (
+          events.map((event) => (
             <article
-              key={concert.id}
-              onClick={() => navigate(`/concert/${concert.id}`)}
+              key={event.id}
+              onClick={() => navigate(`/concert/${event.id}`)}
               className="bg-card border-2 border-primary rounded-2xl p-4 cursor-pointer relative"
             >
               {/* Remove favorite button */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  removeFavorite(concert.id);
+                  removeFavorite(event.id);
                 }}
                 className="absolute top-4 right-4 text-primary"
                 aria-label="Retirer des favoris"
               >
-                <Heart size={24} strokeWidth={2} fill="hsl(259, 75%, 42%)" />
+                <Heart size={24} strokeWidth={2} fill="currentColor" />
               </button>
 
               {/* Organizer badge */}
               <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
-                {concert.organizer}
+                {event.organizer || "Organisateur"}
               </div>
 
-              {/* Concert name */}
+              {/* Event name */}
               <h2 className="font-semibold text-lg text-primary leading-tight mb-4 pr-8">
-                {concert.name}
+                {event.title}
               </h2>
 
               {/* Details */}
               <div className="space-y-1.5">
                 <div className="flex items-center text-primary text-sm gap-[4px]">
                   <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
-                  <span>{concert.venue}</span>
+                  <span>{event.location || "Lieu non spécifié"}</span>
                 </div>
 
                 <div className="flex items-center gap-4 text-primary text-sm">
                   <div className="flex items-center gap-[4px]">
                     <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
-                    <span>{formatDate(concert.date)}</span>
+                    <span>{formatDate(event.date)}</span>
                   </div>
                   <div className="flex items-center gap-[4px]">
                     <CircleDollarSign size={14} strokeWidth={1.5} className="flex-shrink-0" />
-                    <span>{concert.price}</span>
+                    <span>{event.price || "Prix non spécifié"}</span>
                   </div>
                 </div>
               </div>
