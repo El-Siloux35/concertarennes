@@ -182,7 +182,7 @@ const ConcertDetail = () => {
             <div className="flex items-center gap-2">
               {canEdit && (
                 <button
-                  onClick={() => navigate(`/modifier-evenement/${id}`)}
+                  onClick={() => navigate(`/modifier-evenement/${id}?from=event`)}
                   className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
                   aria-label="Modifier"
                 >

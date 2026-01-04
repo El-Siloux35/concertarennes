@@ -305,7 +305,7 @@ const Compte = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
-                      <Button onClick={() => navigate(`/modifier-evenement/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
+                      <Button onClick={() => navigate(`/modifier-evenement/${event.id}?from=profile`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
                         <Pencil size={16} />
                       </Button>
                       <Button onClick={() => {
