@@ -40,7 +40,7 @@ const ConcertCard = ({
   };
   return <article className="bg-card border-2 border-primary rounded-2xl p-4 animate-fade-in relative">
       {/* Favorite button */}
-      <button onClick={toggleFavorite} className="absolute top-4 right-4 text-primary hover:scale-110 transition-transform" aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}>
+      <button onClick={toggleFavorite} className="absolute top-4 right-4 text-primary" aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}>
         <Heart size={24} strokeWidth={2} fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"} />
       </button>
 
