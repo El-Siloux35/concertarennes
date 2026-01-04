@@ -9,6 +9,7 @@ import ConcertDetail from "./pages/ConcertDetail";
 import Splash from "./pages/Splash";
 import Auth from "./pages/Auth";
 import Favorites from "./pages/Favorites";
+import Compte from "./pages/Compte";
 
 const queryClient = new QueryClient();
 
