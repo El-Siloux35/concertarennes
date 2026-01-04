@@ -51,11 +51,17 @@ const Index = () => {
   return <div className="min-h-screen bg-background">
       <div className="max-w-[700px] mx-auto">
         {/* Fixed header section */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
-          <div className="px-0">
-            <Header />
+        <div className="fixed top-0 left-0 right-0 z-50 flex flex-col gap-2">
+          <div className="bg-background">
+            <div className="max-w-[700px] mx-auto px-4">
+              <Header />
+            </div>
           </div>
-          <FilterPills onFilterChange={handleFilterChange} counts={counts} />
+          <div className="bg-background pb-2">
+            <div className="max-w-[700px] mx-auto">
+              <FilterPills onFilterChange={handleFilterChange} counts={counts} />
+            </div>
+          </div>
         </div>
 
         {/* Spacer for fixed header */}
