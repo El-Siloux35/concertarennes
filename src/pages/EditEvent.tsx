@@ -11,6 +11,9 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import { resizeImage } from "@/lib/imageUtils";
+import StyleSelector from "@/components/StyleSelector";
+
+type StyleOption = "concert" | "projection" | "exposition" | "autres";
 
 const EditEvent = () => {
   const navigate = useNavigate();
@@ -27,6 +30,7 @@ const EditEvent = () => {
   const [price, setPrice] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [contact, setContact] = useState("");
+  const [style, setStyle] = useState<StyleOption | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
@@ -60,6 +64,7 @@ const EditEvent = () => {
       setPrice(data.price || "");
       setDate(data.date ? parseISO(data.date) : undefined);
       setContact(data.contact || "");
+      setStyle((data.style as StyleOption) || null);
       setExistingImageUrl(data.image_url);
       setLoading(false);
     };
@@ -133,6 +138,7 @@ const EditEvent = () => {
           date: format(date, "yyyy-MM-dd"),
           contact: contact.trim() || null,
           image_url: imageUrl,
+          style: style,
         })
         .eq("id", id);
 
@@ -236,6 +242,9 @@ const EditEvent = () => {
             onChange={(e) => setDescription(e.target.value)}
             className="min-h-[120px] rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4 py-4 resize-none"
           />
+
+          {/* Style selector */}
+          <StyleSelector value={style} onChange={setStyle} />
 
           <div className="relative">
             <MapPin size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
