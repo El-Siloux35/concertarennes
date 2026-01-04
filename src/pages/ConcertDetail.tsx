@@ -18,6 +18,7 @@ interface Event {
   image_url: string | null;
   contact: string | null;
   user_id: string;
+  style: string | null;
 }
 
 const ConcertDetail = () => {
@@ -88,6 +89,16 @@ const ConcertDetail = () => {
     });
   };
 
+  const getStyleLabel = (style: string) => {
+    const styles: Record<string, string> = {
+      concert: "Concert",
+      projection: "Projection",
+      exposition: "Exposition",
+      autres: "Autres",
+    };
+    return styles[style] || style;
+  };
+
   const handleShare = async () => {
     if (!event) return;
     
@@ -150,6 +161,9 @@ const ConcertDetail = () => {
 
   const canEdit = (currentUserId && event?.user_id === currentUserId) || isAdmin;
 
+  // Parse styles (can be comma-separated for multi-tags)
+  const styleArray = event?.style ? event.style.split(",").map(s => s.trim()).filter(Boolean) : [];
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -173,7 +187,7 @@ const ConcertDetail = () => {
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <div className="max-w-[700px] mx-auto p-4 flex justify-between items-center">
             <button
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/home")}
               className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
@@ -261,6 +275,17 @@ const ConcertDetail = () => {
             </div>
           </div>
 
+          {/* Style tags */}
+          {styleArray.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {styleArray.map((s) => (
+                <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
+                  {getStyleLabel(s)}
+                </span>
+              ))}
+            </div>
+          )}
+
           {/* Delete button if owner or admin */}
           {canEdit && (
             <div className="mt-12">
@@ -283,7 +308,7 @@ const ConcertDetail = () => {
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2"
           >
             <Share2 size={20} strokeWidth={2} />
-            Envoyer le lien
+            Partager l'évènement
           </Button>
 
           {event.contact && (

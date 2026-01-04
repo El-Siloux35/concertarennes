@@ -5,23 +5,23 @@ import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
 import { supabase } from "@/integrations/supabase/client";
 
-type PeriodFilter = "all" | "today" | "week" | "weekend";
+type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
 
 const Index = () => {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
-  const [styleFilter, setStyleFilter] = useState<StyleFilter>("all");
+  const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
   const [events, setEvents] = useState<{
     id: string;
     date: string;
+    style: string | null;
   }[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       const { data } = await supabase
         .from("events")
-        .select("id, date")
-        .gte("date", new Date().toISOString().split("T")[0]);
+        .select("id, date, style");
       setEvents(data || []);
     };
     fetchEvents();
@@ -32,35 +32,78 @@ const Index = () => {
     today.setHours(0, 0, 0, 0);
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
-    const todayCount = events.filter((event) => {
+    
+    // Filter only future events for counting periods
+    const futureEvents = events.filter((event) => {
+      const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= today;
+    });
+
+    const pastEvents = events.filter((event) => {
+      const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate < today;
+    });
+
+    const todayCount = futureEvents.filter((event) => {
       const eventDate = new Date(event.date);
       eventDate.setHours(0, 0, 0, 0);
       return eventDate.getTime() === today.getTime();
     }).length;
-    const weekCount = events.filter((event) => {
+
+    const weekCount = futureEvents.filter((event) => {
       const eventDate = new Date(event.date);
       return eventDate >= today && eventDate <= endOfWeek;
     }).length;
-    const weekendCount = events.filter((event) => {
+
+    const weekendCount = futureEvents.filter((event) => {
       const eventDate = new Date(event.date);
       const day = eventDate.getDay();
       // Include Friday (5), Saturday (6), and Sunday (0)
       return eventDate >= today && (day === 0 || day === 5 || day === 6);
     }).length;
+
+    // Count by style
+    const concertCount = events.filter((event) => {
+      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      return styles.includes("concert");
+    }).length;
+
+    const projectionCount = events.filter((event) => {
+      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      return styles.includes("projection");
+    }).length;
+
+    const expositionCount = events.filter((event) => {
+      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      return styles.includes("exposition");
+    }).length;
+
+    const autresCount = events.filter((event) => {
+      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      return styles.includes("autres");
+    }).length;
+
     return {
-      all: events.length,
+      all: futureEvents.length,
       today: todayCount,
       week: weekCount,
       weekend: weekendCount,
+      past: pastEvents.length,
+      concert: concertCount,
+      projection: projectionCount,
+      exposition: expositionCount,
+      autres: autresCount,
     };
   }, [events]);
 
   const handleFilterChange = (
     newPeriodFilter: PeriodFilter,
-    newStyleFilter: StyleFilter
+    newStyleFilters: StyleFilter[]
   ) => {
     setPeriodFilter(newPeriodFilter);
-    setStyleFilter(newStyleFilter);
+    setStyleFilters(newStyleFilters);
   };
 
   return (
@@ -84,7 +127,7 @@ const Index = () => {
         <div className="h-40"></div>
 
         <main className="flex flex-col gap-4">
-          <ConcertList periodFilter={periodFilter} styleFilter={styleFilter} />
+          <ConcertList periodFilter={periodFilter} styleFilters={styleFilters} />
         </main>
 
         <FloatingAddButton />
