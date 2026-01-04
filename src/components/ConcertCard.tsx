@@ -94,9 +94,10 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart
-            size={24}
+            size={20}
             strokeWidth={isFavorite ? 0 : 2}
             fill={isFavorite ? "currentColor" : "none"}
+            stroke={isFavorite ? "none" : "currentColor"}
           />
         </button>
 
