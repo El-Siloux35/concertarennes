@@ -57,7 +57,7 @@ const Index = () => {
               <Header />
             </div>
           </div>
-          <div className="bg-background pt-2 pb-3">
+          <div className="bg-background pt-3 pb-3">
             <div className="max-w-[700px] mx-auto">
               <FilterPills onFilterChange={handleFilterChange} counts={counts} />
             </div>
