@@ -1,5 +1,6 @@
 import { MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface Concert {
   id: string;
@@ -19,6 +20,7 @@ interface ConcertCardProps {
 
 const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -60,14 +62,19 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     return styles[style] || style;
   };
 
+  // Parse styles (can be comma-separated for multi-tags)
+  const styleArray = concert.style ? concert.style.split(",").map(s => s.trim()).filter(Boolean) : [];
+
   return (
     <article
       onClick={onNavigate}
-      className="bg-card border-2 rounded-2xl animate-fade-in relative cursor-pointer border-muted overflow-hidden flex"
+      className={`bg-card border-2 rounded-2xl animate-fade-in relative cursor-pointer border-muted overflow-hidden ${
+        isMobile ? "flex flex-col" : "flex"
+      }`}
     >
       {/* Image thumbnail */}
       {concert.imageUrl && (
-        <div className="w-[120px] flex-shrink-0">
+        <div className={isMobile ? "w-full h-[100px]" : "w-[120px] flex-shrink-0"}>
           <img
             src={concert.imageUrl}
             alt={concert.name}
@@ -125,11 +132,13 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         </div>
 
         {/* Style tags */}
-        {concert.style && (
+        {styleArray.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-2">
-            <span className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
-              {getStyleLabel(concert.style)}
-            </span>
+            {styleArray.map((s) => (
+              <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
+                {getStyleLabel(s)}
+              </span>
+            ))}
           </div>
         )}
       </div>

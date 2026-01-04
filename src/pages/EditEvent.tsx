@@ -30,7 +30,7 @@ const EditEvent = () => {
   const [price, setPrice] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [contact, setContact] = useState("");
-  const [style, setStyle] = useState<StyleOption | null>(null);
+  const [styles, setStyles] = useState<StyleOption[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
@@ -64,7 +64,11 @@ const EditEvent = () => {
       setPrice(data.price || "");
       setDate(data.date ? parseISO(data.date) : undefined);
       setContact(data.contact || "");
-      setStyle((data.style as StyleOption) || null);
+      // Parse styles from comma-separated string
+      if (data.style) {
+        const styleArray = data.style.split(",").map((s: string) => s.trim()).filter(Boolean) as StyleOption[];
+        setStyles(styleArray);
+      }
       setExistingImageUrl(data.image_url);
       setLoading(false);
     };
@@ -138,7 +142,7 @@ const EditEvent = () => {
           date: format(date, "yyyy-MM-dd"),
           contact: contact.trim() || null,
           image_url: imageUrl,
-          style: style,
+          style: styles.length > 0 ? styles.join(",") : null,
         })
         .eq("id", id);
 
@@ -151,11 +155,8 @@ const EditEvent = () => {
         description: "Évènement modifié avec succès",
       });
 
-      if (fromPage === "profile") {
-        navigate("/compte");
-      } else {
-        navigate(`/concert/${id}`);
-      }
+      // Always navigate to home after editing
+      navigate("/home");
     } catch (error) {
       console.error("Error updating event:", error);
       toast({
@@ -166,6 +167,11 @@ const EditEvent = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleClose = () => {
+    // Navigate to home instead of going back
+    navigate("/home");
   };
 
   if (loading) {
@@ -183,7 +189,7 @@ const EditEvent = () => {
       <div className="max-w-[700px] mx-auto px-4">
         <header className="py-4 flex items-center gap-3">
           <button
-            onClick={() => navigate(-1)}
+            onClick={handleClose}
             className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
             aria-label="Fermer"
           >
@@ -243,8 +249,8 @@ const EditEvent = () => {
             className="min-h-[120px] rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4 py-4 resize-none"
           />
 
-          {/* Style selector */}
-          <StyleSelector value={style} onChange={setStyle} />
+          {/* Style selector - now supports multi-select */}
+          <StyleSelector value={styles} onChange={setStyles} maxSelection={3} />
 
           <div className="relative">
             <MapPin size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
