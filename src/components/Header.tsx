@@ -51,9 +51,9 @@ const Header = () => {
         {user ? `@${displayName}` : "[connexion]"}
       </Link>
       <ThemeToggle />
-      <Link to="/favoris" className="text-primary relative w-8 h-8 flex items-center justify-center" aria-label="Mes favoris">
-        <Heart size={24} strokeWidth={2} />
-        {favoritesCount > 0 && <span className="absolute top-0 right-0 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+      <Link to="/favoris" className={`text-primary relative w-8 h-8 flex items-center justify-center ${user ? 'mr-1' : ''}`} aria-label="Mes favoris">
+        <Heart size={24} strokeWidth={2} fill="hsl(var(--primary))" />
+        {favoritesCount > 0 && <span className="absolute top-0 -right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
             {favoritesCount > 9 ? "9+" : favoritesCount}
           </span>}
       </Link>

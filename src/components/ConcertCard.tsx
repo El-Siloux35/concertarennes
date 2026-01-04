@@ -32,6 +32,9 @@ const ConcertCard = ({
     }
     localStorage.setItem("favorites", JSON.stringify(newFavorites));
     setIsFavorite(!isFavorite);
+    
+    // Dispatch event to update header counter immediately
+    window.dispatchEvent(new Event('favoritesUpdated'));
   };
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
