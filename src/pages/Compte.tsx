@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera } from "lucide-react";
+import { ChevronLeft, Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
@@ -272,14 +272,17 @@ const Compte = () => {
   return (
     <div className="min-h-screen bg-background pb-24">
       <div className="max-w-[700px] mx-auto px-4">
-        {/* Header with close button */}
-        <header className="py-4 flex justify-end">
+        {/* Header with back button */}
+        <header className="py-4 flex justify-start">
           <button
             onClick={handleClose}
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
-            aria-label="Fermer"
+            className="flex items-center gap-2 text-primary"
+            aria-label="Retour aux évènements"
           >
-            <X size={24} className="text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+              <ChevronLeft size={24} className="text-primary-foreground" />
+            </div>
+            <span className="font-medium">Retour aux évènements</span>
           </button>
         </header>
 
