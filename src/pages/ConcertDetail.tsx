@@ -210,30 +210,30 @@ const ConcertDetail = () => {
             {event.organizer || "Organisateur"}
           </div>
 
-          {/* Concert title with edit/delete if owner */}
-          <div className="flex items-start justify-between gap-2 mb-6">
-            <h1 className="text-xl font-semibold text-primary leading-tight">
-              {event.title}
-            </h1>
-            {isOwner && (
-              <div className="flex gap-2 flex-shrink-0">
-                <button
-                  onClick={() => navigate(`/modifier-evenement/${id}`)}
-                  className="text-primary"
-                  aria-label="Modifier"
-                >
-                  <Pencil size={20} />
-                </button>
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  className="text-destructive"
-                  aria-label="Supprimer"
-                >
-                  <Trash2 size={20} />
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Concert title */}
+          <h1 className="text-xl font-semibold text-primary leading-tight mb-3">
+            {event.title}
+          </h1>
+
+          {/* Edit/delete buttons if owner */}
+          {isOwner && (
+            <div className="flex gap-2 mb-6">
+              <button
+                onClick={() => navigate(`/modifier-evenement/${id}`)}
+                className="text-primary"
+                aria-label="Modifier"
+              >
+                <Pencil size={20} />
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(true)}
+                className="text-destructive"
+                aria-label="Supprimer"
+              >
+                <Trash2 size={20} />
+              </button>
+            </div>
+          )}
 
           {/* Description */}
           {event.description && (
