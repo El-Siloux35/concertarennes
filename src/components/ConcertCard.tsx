@@ -95,7 +95,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         >
           <Heart
             size={24}
-            strokeWidth={2}
+            strokeWidth={isFavorite ? 0 : 2}
             fill={isFavorite ? "currentColor" : "none"}
           />
         </button>
