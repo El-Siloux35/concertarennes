@@ -55,6 +55,7 @@ const Favorites = () => {
     const newFavorites = favorites.filter((favId) => favId !== id);
     localStorage.setItem("favorites", JSON.stringify(newFavorites));
     setFavorites(newFavorites);
+    window.dispatchEvent(new Event('favoritesUpdated'));
   };
 
   const formatDate = (dateString: string) => {

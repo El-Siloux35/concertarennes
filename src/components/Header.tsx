@@ -7,6 +7,7 @@ import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [favoritesCount, setFavoritesCount] = useState(0);
 
   useEffect(() => {
     // Set up auth state listener
@@ -24,6 +25,26 @@ const Header = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const updateFavoritesCount = () => {
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      setFavoritesCount(favorites.length);
+    };
+
+    updateFavoritesCount();
+
+    // Listen for storage changes (from other tabs or components)
+    window.addEventListener('storage', updateFavoritesCount);
+    
+    // Custom event for same-tab updates
+    window.addEventListener('favoritesUpdated', updateFavoritesCount);
+
+    return () => {
+      window.removeEventListener('storage', updateFavoritesCount);
+      window.removeEventListener('favoritesUpdated', updateFavoritesCount);
+    };
+  }, []);
+
   const displayName = user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
 
   return (
@@ -35,8 +56,13 @@ const Header = () => {
         {user ? `@${displayName}` : "[connexion]"}
       </Link>
       <ThemeToggle />
-      <Link to="/favoris" className="text-primary" aria-label="Mes favoris">
+      <Link to="/favoris" className="text-primary relative" aria-label="Mes favoris">
         <Heart size={24} strokeWidth={2} />
+        {favoritesCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+            {favoritesCount > 9 ? "9+" : favoritesCount}
+          </span>
+        )}
       </Link>
     </header>
   );
