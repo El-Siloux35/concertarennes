@@ -4,66 +4,55 @@ import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
 import { supabase } from "@/integrations/supabase/client";
-
 const Index = () => {
   const [filter, setFilter] = useState<"all" | "today" | "week" | "weekend">("all");
-  const [events, setEvents] = useState<{ id: string; date: string }[]>([]);
-
+  const [events, setEvents] = useState<{
+    id: string;
+    date: string;
+  }[]>([]);
   useEffect(() => {
     const fetchEvents = async () => {
-      const { data } = await supabase
-        .from("events")
-        .select("id, date")
-        .gte("date", new Date().toISOString().split('T')[0]);
-      
+      const {
+        data
+      } = await supabase.from("events").select("id, date").gte("date", new Date().toISOString().split('T')[0]);
       setEvents(data || []);
     };
-
     fetchEvents();
   }, []);
-
   const counts = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
-
-    const todayCount = events.filter((event) => {
+    const todayCount = events.filter(event => {
       const eventDate = new Date(event.date);
       eventDate.setHours(0, 0, 0, 0);
       return eventDate.getTime() === today.getTime();
     }).length;
-
-    const weekCount = events.filter((event) => {
+    const weekCount = events.filter(event => {
       const eventDate = new Date(event.date);
       return eventDate >= today && eventDate <= endOfWeek;
     }).length;
-
-    const weekendCount = events.filter((event) => {
+    const weekendCount = events.filter(event => {
       const eventDate = new Date(event.date);
       const day = eventDate.getDay();
       return eventDate >= today && (day === 0 || day === 6);
     }).length;
-
     return {
       all: events.length,
       today: todayCount,
       week: weekCount,
-      weekend: weekendCount,
+      weekend: weekendCount
     };
   }, [events]);
-
   const handleFilterChange = (newFilter: "all" | "today" | "week" | "weekend") => {
     setFilter(newFilter);
   };
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       <div className="max-w-[700px] mx-auto">
         {/* Fixed header section */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
-          <div className="px-4">
+          <div className="px-0">
             <Header />
           </div>
           <FilterPills onFilterChange={handleFilterChange} counts={counts} />
@@ -78,8 +67,6 @@ const Index = () => {
 
         <FloatingAddButton />
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
