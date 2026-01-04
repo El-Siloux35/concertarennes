@@ -175,9 +175,7 @@ const EditEvent = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       <div className="max-w-[700px] mx-auto px-4">
-        {/* Header */}
-        <header className="py-4 flex items-center justify-between">
-          <h1 className="text-primary font-semibold text-xl">Modifier l'évènement</h1>
+        <header className="py-4 flex items-center gap-3">
           <button
             onClick={() => navigate(-1)}
             className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
@@ -185,6 +183,7 @@ const EditEvent = () => {
           >
             <X size={24} className="text-primary-foreground" />
           </button>
+          <h1 className="text-primary font-semibold text-xl">Modifier l'évènement</h1>
         </header>
 
         {/* Image upload */}
