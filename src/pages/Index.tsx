@@ -4,12 +4,42 @@ import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
 
-// Mock counts - will be replaced with real data from Supabase
+// Helper pour générer des dates relatives
+const getDateString = (daysFromNow: number) => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromNow);
+  return date.toISOString().split('T')[0];
+};
+
+const getNextSaturday = () => {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
+  const date = new Date(today);
+  date.setDate(today.getDate() + daysUntilSaturday);
+  return date.toISOString().split('T')[0];
+};
+
+const getNextSunday = () => {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const daysUntilSunday = (7 - dayOfWeek) % 7 || 7;
+  const date = new Date(today);
+  date.setDate(today.getDate() + daysUntilSunday);
+  return date.toISOString().split('T')[0];
+};
+
+// Mock counts - synchronized with ConcertList
 const mockConcerts = [
-  { id: "1", date: "2025-12-13" },
-  { id: "2", date: "2025-01-04" },
-  { id: "3", date: "2025-01-03" },
-  { id: "4", date: "2025-01-05" },
+  { id: "1", date: getDateString(0) },
+  { id: "2", date: getDateString(0) },
+  { id: "3", date: getDateString(2) },
+  { id: "4", date: getDateString(5) },
+  { id: "5", date: getNextSaturday() },
+  { id: "6", date: getNextSunday() },
+  { id: "7", date: getDateString(10) },
+  { id: "8", date: getDateString(3) },
+  { id: "9", date: getNextSaturday() },
 ];
 
 const Index = () => {
