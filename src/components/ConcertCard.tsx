@@ -74,7 +74,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     >
       {/* Image thumbnail */}
       {concert.imageUrl && (
-        <div className={isMobile ? "w-full h-[100px]" : "w-[120px] flex-shrink-0"}>
+        <div className={isMobile ? "w-full h-[120px]" : "w-[140px] flex-shrink-0"}>
           <img
             src={concert.imageUrl}
             alt={concert.name}
@@ -88,13 +88,15 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         {/* Favorite button - 44x44 touch target */}
         <button
           onClick={toggleFavorite}
-          className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-primary"
+          className={`absolute top-2 right-2 w-11 h-11 flex items-center justify-center rounded-full ${
+            isFavorite ? "bg-primary text-primary-foreground" : "bg-background text-primary"
+          }`}
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart
             size={24}
             strokeWidth={2}
-            fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"}
+            fill={isFavorite ? "currentColor" : "none"}
           />
         </button>
 
@@ -104,7 +106,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         </div>
 
         {/* Concert name */}
-        <h2 className="font-semibold text-lg text-primary leading-tight mb-4 pr-12">
+        <h2 className="font-semibold text-lg text-primary leading-tight mb-4">
           {concert.name}
         </h2>
 

@@ -218,9 +218,9 @@ const ConcertDetail = () => {
         <div className="h-20"></div>
 
         {/* Concert image */}
-        <div className="px-4 mb-4">
+        <div className="mb-4">
           <div 
-            className="w-full rounded-2xl overflow-hidden border-2 border-primary bg-muted"
+            className="w-full overflow-hidden bg-muted"
             style={{ minHeight: event.image_url ? "auto" : "300px" }}
           >
             {event.image_url ? (
