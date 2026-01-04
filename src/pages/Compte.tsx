@@ -344,17 +344,6 @@ const Compte = () => {
           )}
         </div>
 
-        {/* Logout Button - smaller with icon */}
-        <div className="mt-8 flex justify-center">
-          <Button
-            onClick={() => setShowLogoutModal(true)}
-            variant="outline"
-            className="rounded-full h-10 px-6 border-2 border-primary text-primary bg-transparent font-medium flex items-center gap-2"
-          >
-            <LogOut size={16} />
-            Déconnexion
-          </Button>
-        </div>
 
         {/* Events Section */}
         <div className="mt-8">
@@ -475,6 +464,18 @@ const Compte = () => {
           >
             <Plus size={20} strokeWidth={2} />
             Créer un évènement
+          </Button>
+        </div>
+
+        {/* Logout Button */}
+        <div className="mt-12 flex justify-center">
+          <Button
+            onClick={() => setShowLogoutModal(true)}
+            variant="outline"
+            className="rounded-full h-10 px-6 border-2 border-primary text-primary bg-transparent font-medium flex items-center gap-2"
+          >
+            <LogOut size={16} />
+            Déconnexion
           </Button>
         </div>
 
