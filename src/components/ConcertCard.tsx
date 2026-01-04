@@ -88,7 +88,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         {/* Favorite button - 44x44 touch target */}
         <button
           onClick={toggleFavorite}
-          className={`absolute top-2 right-2 w-11 h-11 flex items-center justify-center rounded-full ${
+          className={`absolute top-2 right-2 w-[38px] h-[38px] flex items-center justify-center rounded-full ${
             isFavorite ? "bg-primary text-primary-foreground" : "bg-background text-primary"
           }`}
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
