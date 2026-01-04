@@ -165,23 +165,28 @@ const ConcertDetail = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       <div className="max-w-[700px] mx-auto">
-        {/* Header with back and favorite buttons */}
-        <div className="p-4 flex justify-between items-center">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Retour"
-          >
-            <ChevronLeft size={24} strokeWidth={2} />
-          </button>
-          <button
-            onClick={toggleFavorite}
-            className="text-primary"
-            aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-          >
-            <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />
-          </button>
+        {/* Header with back and favorite buttons - fixed */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm">
+          <div className="max-w-[700px] mx-auto p-4 flex justify-between items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              aria-label="Retour"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+            <button
+              onClick={toggleFavorite}
+              className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
+              aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+            >
+              <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />
+            </button>
+          </div>
         </div>
+
+        {/* Spacer for fixed header */}
+        <div className="h-20"></div>
 
         {/* Concert image */}
         <div className="px-4 mb-4">
