@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import ConcertDetail from "./pages/ConcertDetail";
 import Splash from "./pages/Splash";
 import Auth from "./pages/Auth";
+import Favorites from "./pages/Favorites";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/home" element={<Index />} />
           <Route path="/concert/:id" element={<ConcertDetail />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/favoris" element={<Favorites />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
