@@ -45,7 +45,7 @@ const Header = () => {
     };
   }, []);
   const displayName = user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
-  return <header className="px-px gap-[16px] flex items-center justify-end pl-0 pr-[32px] py-0">
+  return <header className="flex items-center justify-end gap-4">
       <Link to={user ? "/compte" : "/auth"} className="bg-primary text-primary-foreground font-medium text-sm px-4 h-14 flex items-center rounded-full">
         {user ? `@${displayName}` : "[connexion]"}
       </Link>
