@@ -1,6 +1,5 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useVirtualizer } from "@tanstack/react-virtual";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +12,6 @@ const ConcertList = ({ filter }: ConcertListProps) => {
   const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
   const [loading, setLoading] = useState(true);
-  const parentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   // Fetch all concerts from Supabase
@@ -84,16 +82,6 @@ const ConcertList = ({ filter }: ConcertListProps) => {
     setFilteredConcerts(filtered);
   }, [filter, allConcerts]);
 
-  // Virtualizer configuration - only renders visible items + overscan
-  const virtualizer = useVirtualizer({
-    count: filteredConcerts.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 180, // Estimated height of each card
-    overscan: 3, // Number of items to render outside visible area
-  });
-
-  const items = virtualizer.getVirtualItems();
-
   if (loading) {
     return (
       <div className="flex flex-col gap-4 px-4 pb-24">
@@ -111,42 +99,14 @@ const ConcertList = ({ filter }: ConcertListProps) => {
   }
 
   return (
-    <div 
-      ref={parentRef}
-      className="px-4 pb-24 overflow-auto"
-      style={{ height: 'calc(100vh - 200px)' }}
-    >
-      <div
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-          width: '100%',
-          position: 'relative',
-        }}
-      >
-        {items.map((virtualRow) => {
-          const concert = filteredConcerts[virtualRow.index];
-          return (
-            <div
-              key={virtualRow.key}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: `${virtualRow.size}px`,
-                transform: `translateY(${virtualRow.start}px)`,
-              }}
-            >
-              <div className="pb-4">
-                <ConcertCard 
-                  concert={concert} 
-                  onNavigate={() => navigate(`/concert/${concert.id}`)}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
+    <div className="flex flex-col gap-4 px-4 pb-24">
+      {filteredConcerts.map((concert) => (
+        <ConcertCard 
+          key={concert.id}
+          concert={concert} 
+          onNavigate={() => navigate(`/concert/${concert.id}`)}
+        />
+      ))}
     </div>
   );
 };
