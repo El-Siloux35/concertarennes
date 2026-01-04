@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
+import { resizeImage } from "@/lib/imageUtils";
 
 const EditEvent = () => {
   const navigate = useNavigate();
@@ -103,12 +104,13 @@ const EditEvent = () => {
       let imageUrl = existingImageUrl;
 
       if (imageFile) {
-        const fileExt = imageFile.name.split(".").pop();
-        const filePath = `events/${user.id}/${Date.now()}.${fileExt}`;
+        // Resize image before upload for better performance
+        const resizedImage = await resizeImage(imageFile, 1200, 1200, 0.8);
+        const filePath = `events/${user.id}/${Date.now()}.jpg`;
 
         const { error: uploadError } = await supabase.storage
           .from("event-images")
-          .upload(filePath, imageFile);
+          .upload(filePath, resizedImage);
 
         if (!uploadError) {
           const { data: { publicUrl } } = supabase.storage

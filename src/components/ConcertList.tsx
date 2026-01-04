@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,16 +10,13 @@ interface ConcertListProps {
 }
 
 const ConcertList = ({ filter }: ConcertListProps) => {
-  const [concerts, setConcerts] = useState<Concert[]>([]);
-  const [displayedConcerts, setDisplayedConcerts] = useState<Concert[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
+  const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
   const [loading, setLoading] = useState(true);
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const ITEMS_PER_PAGE = 10;
+  const parentRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Fetch concerts from Supabase
+  // Fetch all concerts from Supabase
   useEffect(() => {
     const fetchConcerts = async () => {
       setLoading(true);
@@ -45,7 +43,7 @@ const ConcertList = ({ filter }: ConcertListProps) => {
         price: event.price || "Prix non spécifié",
       }));
 
-      setConcerts(mappedConcerts);
+      setAllConcerts(mappedConcerts);
       setLoading(false);
     };
 
@@ -60,21 +58,21 @@ const ConcertList = ({ filter }: ConcertListProps) => {
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
 
-    let filtered = [...concerts];
+    let filtered = [...allConcerts];
 
     if (filter === "today") {
-      filtered = concerts.filter((concert) => {
+      filtered = allConcerts.filter((concert) => {
         const concertDate = new Date(concert.date);
         concertDate.setHours(0, 0, 0, 0);
         return concertDate.getTime() === today.getTime();
       });
     } else if (filter === "week") {
-      filtered = concerts.filter((concert) => {
+      filtered = allConcerts.filter((concert) => {
         const concertDate = new Date(concert.date);
         return concertDate >= today && concertDate <= endOfWeek;
       });
     } else if (filter === "weekend") {
-      filtered = concerts.filter((concert) => {
+      filtered = allConcerts.filter((concert) => {
         const concertDate = new Date(concert.date);
         const day = concertDate.getDay();
         return concertDate >= today && (day === 0 || day === 6);
@@ -83,71 +81,18 @@ const ConcertList = ({ filter }: ConcertListProps) => {
 
     // Sort by date
     filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    setFilteredConcerts(filtered);
+  }, [filter, allConcerts]);
 
-    setPage(1);
-    setDisplayedConcerts(filtered.slice(0, ITEMS_PER_PAGE));
-    setHasMore(filtered.length > ITEMS_PER_PAGE);
-  }, [filter, concerts]);
+  // Virtualizer configuration - only renders visible items + overscan
+  const virtualizer = useVirtualizer({
+    count: filteredConcerts.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 180, // Estimated height of each card
+    overscan: 3, // Number of items to render outside visible area
+  });
 
-  // Load more concerts for infinite scroll
-  const loadMore = useCallback(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const endOfWeek = new Date(today);
-    endOfWeek.setDate(today.getDate() + 7);
-
-    let filtered = [...concerts];
-
-    if (filter === "today") {
-      filtered = concerts.filter((concert) => {
-        const concertDate = new Date(concert.date);
-        concertDate.setHours(0, 0, 0, 0);
-        return concertDate.getTime() === today.getTime();
-      });
-    } else if (filter === "week") {
-      filtered = concerts.filter((concert) => {
-        const concertDate = new Date(concert.date);
-        return concertDate >= today && concertDate <= endOfWeek;
-      });
-    } else if (filter === "weekend") {
-      filtered = concerts.filter((concert) => {
-        const concertDate = new Date(concert.date);
-        const day = concertDate.getDay();
-        return concertDate >= today && (day === 0 || day === 6);
-      });
-    }
-
-    const nextPage = page + 1;
-    const startIndex = (nextPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    const newConcerts = filtered.slice(startIndex, endIndex);
-
-    if (newConcerts.length > 0) {
-      setDisplayedConcerts((prev) => [...prev, ...newConcerts]);
-      setPage(nextPage);
-      setHasMore(endIndex < filtered.length);
-    } else {
-      setHasMore(false);
-    }
-  }, [concerts, page, filter]);
-
-  // Intersection Observer for infinite scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          loadMore();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (loaderRef.current) {
-      observer.observe(loaderRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, [hasMore, loadMore]);
+  const items = virtualizer.getVirtualItems();
 
   if (loading) {
     return (
@@ -157,25 +102,51 @@ const ConcertList = ({ filter }: ConcertListProps) => {
     );
   }
 
+  if (filteredConcerts.length === 0) {
+    return (
+      <div className="flex flex-col gap-4 px-4 pb-24">
+        <EmptyState />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-4 px-4 pb-24">
-      {displayedConcerts.map((concert) => (
-        <ConcertCard 
-          key={concert.id} 
-          concert={concert} 
-          onNavigate={() => navigate(`/concert/${concert.id}`)}
-        />
-      ))}
-
-      {displayedConcerts.length === 0 && <EmptyState />}
-
-      {hasMore && displayedConcerts.length > 0 && (
-        <div ref={loaderRef} className="py-4 text-center">
-          <div className="inline-block w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
-      )}
-
-      {!hasMore && displayedConcerts.length > 0 && <EmptyState />}
+    <div 
+      ref={parentRef}
+      className="px-4 pb-24 overflow-auto"
+      style={{ height: 'calc(100vh - 200px)' }}
+    >
+      <div
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          width: '100%',
+          position: 'relative',
+        }}
+      >
+        {items.map((virtualRow) => {
+          const concert = filteredConcerts[virtualRow.index];
+          return (
+            <div
+              key={virtualRow.key}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: `${virtualRow.size}px`,
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
+            >
+              <div className="pb-4">
+                <ConcertCard 
+                  concert={concert} 
+                  onNavigate={() => navigate(`/concert/${concert.id}`)}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
