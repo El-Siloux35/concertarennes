@@ -74,6 +74,7 @@ const ConcertDetail = () => {
     }
     localStorage.setItem("favorites", JSON.stringify(newFavorites));
     setIsFavorite(!isFavorite);
+    window.dispatchEvent(new Event('favoritesUpdated'));
   };
 
   const formatDate = (dateString: string) => {
