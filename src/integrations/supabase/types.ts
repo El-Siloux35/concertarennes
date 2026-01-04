@@ -16,37 +16,49 @@ export type Database = {
     Tables: {
       events: {
         Row: {
+          contact: string | null
           created_at: string | null
           date: string
           description: string | null
           id: string
           image_url: string | null
           location: string | null
+          organizer: string | null
+          price: string | null
           title: string
           updated_at: string | null
           user_id: string
+          venue: string | null
         }
         Insert: {
+          contact?: string | null
           created_at?: string | null
           date: string
           description?: string | null
           id?: string
           image_url?: string | null
           location?: string | null
+          organizer?: string | null
+          price?: string | null
           title: string
           updated_at?: string | null
           user_id: string
+          venue?: string | null
         }
         Update: {
+          contact?: string | null
           created_at?: string | null
           date?: string
           description?: string | null
           id?: string
           image_url?: string | null
           location?: string | null
+          organizer?: string | null
+          price?: string | null
           title?: string
           updated_at?: string | null
           user_id?: string
+          venue?: string | null
         }
         Relationships: []
       }

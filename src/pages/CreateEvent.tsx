@@ -88,7 +88,7 @@ const CreateEvent = () => {
           title: name.trim(),
           organizer: organizer.trim(),
           description: description.trim() || null,
-          venue: venue.trim(),
+          location: venue.trim(),
           price: price.trim() || null,
           date: format(date, "yyyy-MM-dd"),
           contact: contact.trim() || null,
