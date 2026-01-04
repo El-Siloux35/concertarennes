@@ -23,7 +23,7 @@ const FloatingAddButton = () => {
   return (
     <Link
       to={isLoggedIn ? "/creer-evenement" : "/auth"}
-      className="fixed bottom-6 right-6 bg-accent text-accent-foreground rounded-full w-20 h-20 flex items-center justify-center z-50"
+      className="fixed bottom-[10px] right-[10px] bg-accent text-accent-foreground rounded-full w-20 h-20 flex items-center justify-center z-50"
       aria-label="Ajouter un concert"
     >
       <Plus size={32} strokeWidth={2.5} />
