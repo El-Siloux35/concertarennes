@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import ThemeToggle from "./ThemeToggle";
-
 const Header = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
@@ -46,7 +45,7 @@ const Header = () => {
     };
   }, []);
   const displayName = user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
-  return <header className="flex items-center justify-end gap-4 pt-2">
+  return <header className="flex items-center justify-end gap-4 pt-2 pr-[10px]">
       <Link to={user ? "/compte" : "/auth"} className="bg-primary text-primary-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full">
         {user && <User size={18} strokeWidth={2} />}
         {user ? `@${displayName}` : "[connexion]"}
