@@ -7,14 +7,39 @@ interface ConcertListProps {
   filter: "all" | "today" | "week" | "weekend";
 }
 
-// Mock data for demonstration
+// Mock data for demonstration - dates relatives à aujourd'hui
+const today = new Date();
+const getDateString = (daysFromNow: number) => {
+  const date = new Date(today);
+  date.setDate(today.getDate() + daysFromNow);
+  return date.toISOString().split('T')[0];
+};
+
+// Trouver le prochain samedi
+const getNextSaturday = () => {
+  const date = new Date(today);
+  const dayOfWeek = date.getDay();
+  const daysUntilSaturday = (6 - dayOfWeek + 7) % 7 || 7;
+  date.setDate(date.getDate() + daysUntilSaturday);
+  return date.toISOString().split('T')[0];
+};
+
+// Trouver le prochain dimanche
+const getNextSunday = () => {
+  const date = new Date(today);
+  const dayOfWeek = date.getDay();
+  const daysUntilSunday = (7 - dayOfWeek) % 7 || 7;
+  date.setDate(date.getDate() + daysUntilSunday);
+  return date.toISOString().split('T')[0];
+};
+
 const mockConcerts: Concert[] = [
   {
     id: "1",
     organizer: "Capital Taboulé",
     name: "Culture Emotion - Toujours l'été - Nuage Noir",
     venue: "Le bois Harel",
-    date: "2025-12-13",
+    date: getDateString(0), // Aujourd'hui
     price: "Prix Libre",
   },
   {
@@ -22,7 +47,7 @@ const mockConcerts: Concert[] = [
     organizer: "Transmusic",
     name: "Festival des Transmusicales",
     venue: "Parc Expo Rennes",
-    date: "2025-01-04",
+    date: getDateString(0), // Aujourd'hui
     price: "35€",
   },
   {
@@ -30,7 +55,7 @@ const mockConcerts: Concert[] = [
     organizer: "Ubu Club",
     name: "Soirée Electro Underground",
     venue: "L'Ubu",
-    date: "2025-01-03",
+    date: getDateString(2), // Dans 2 jours
     price: "12€",
   },
   {
@@ -38,8 +63,48 @@ const mockConcerts: Concert[] = [
     organizer: "Jazz à l'Ouest",
     name: "Quartet de Jazz Manouche",
     venue: "Le Liberté",
-    date: "2025-01-05",
+    date: getDateString(5), // Dans 5 jours
     price: "18€",
+  },
+  {
+    id: "5",
+    organizer: "Rock en Rennes",
+    name: "Tribute to Queen",
+    venue: "Le Triangle",
+    date: getNextSaturday(), // Prochain samedi
+    price: "25€",
+  },
+  {
+    id: "6",
+    organizer: "Acoustic Live",
+    name: "Session Folk Acoustique",
+    venue: "Bar Le Pastis",
+    date: getNextSunday(), // Prochain dimanche
+    price: "8€",
+  },
+  {
+    id: "7",
+    organizer: "Electro Nights",
+    name: "Techno Marathon 12h",
+    venue: "Warehouse District",
+    date: getDateString(10), // Dans 10 jours
+    price: "20€",
+  },
+  {
+    id: "8",
+    organizer: "Les Petits Concerts",
+    name: "Chanson Française Intimiste",
+    venue: "Café des Arts",
+    date: getDateString(3), // Dans 3 jours
+    price: "Prix Libre",
+  },
+  {
+    id: "9",
+    organizer: "Metal Factory",
+    name: "Heavy Metal Night",
+    venue: "L'Antipode",
+    date: getNextSaturday(), // Prochain samedi
+    price: "15€",
   },
 ];
 
