@@ -10,10 +10,15 @@ import Splash from "./pages/Splash";
 import Auth from "./pages/Auth";
 import Favorites from "./pages/Favorites";
 import Compte from "./pages/Compte";
+import useThemeColor from "./hooks/useThemeColor";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const App = () => {
+  // Dynamically updates status bar color based on system theme
+  useThemeColor();
+  
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -31,7 +36,8 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
-);
+    </QueryClientProvider>
+  );
+};
 
 export default App;
