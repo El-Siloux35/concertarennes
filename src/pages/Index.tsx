@@ -62,8 +62,10 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-[700px] mx-auto">
         {/* Fixed header section */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background px-4">
-          <Header />
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+          <div className="px-4">
+            <Header />
+          </div>
           <FilterPills onFilterChange={handleFilterChange} counts={counts} />
         </div>
 

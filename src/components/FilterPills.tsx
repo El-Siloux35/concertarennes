@@ -28,23 +28,25 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
   ];
 
   return (
-    <div className="flex gap-2 px-4 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-      {filters.map((filter) => (
-        <button
-          key={filter.key}
-          onClick={() => handleFilterClick(filter.key)}
-          className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
-            activeFilter === filter.key
-              ? "bg-primary text-primary-foreground"
-              : "border-2 border-primary text-primary bg-transparent"
-          }`}
-        >
-          {filter.label}
-          <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground">
-            {counts[filter.key]}
-          </span>
-        </button>
-      ))}
+    <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <div className="flex gap-2 px-4 w-max">
+        {filters.map((filter) => (
+          <button
+            key={filter.key}
+            onClick={() => handleFilterClick(filter.key)}
+            className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+              activeFilter === filter.key
+                ? "bg-primary text-primary-foreground"
+                : "border-2 border-primary text-primary bg-transparent"
+            }`}
+          >
+            {filter.label}
+            <span className="text-xs font-medium px-1.5 py-0.5 rounded-full bg-accent text-accent-foreground">
+              {counts[filter.key]}
+            </span>
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
