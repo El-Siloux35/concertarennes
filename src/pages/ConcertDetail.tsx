@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ConfirmModal from "@/components/ConfirmModal";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 
 interface Event {
   id: string;
@@ -28,6 +29,7 @@ const ConcertDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { isAdmin } = useIsAdmin();
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -146,7 +148,7 @@ const ConcertDetail = () => {
     navigate("/home");
   };
 
-  const isOwner = currentUserId && event?.user_id === currentUserId;
+  const canEdit = (currentUserId && event?.user_id === currentUserId) || isAdmin;
 
   if (loading) {
     return (
@@ -222,8 +224,8 @@ const ConcertDetail = () => {
             {event.title}
           </h1>
 
-          {/* Edit/delete buttons if owner */}
-          {isOwner && (
+          {/* Edit/delete buttons if owner or admin */}
+          {canEdit && (
             <div className="flex gap-2 mb-6">
               <button
                 onClick={() => navigate(`/modifier-evenement/${id}`)}
