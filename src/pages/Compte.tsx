@@ -372,14 +372,14 @@ const Compte = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex gap-2 mt-3">
+                  <div className="flex gap-2 mt-3 justify-end">
                     <Button
                       onClick={() => navigate(`/modifier-evenement/${event.id}`)}
                       variant="outline"
-                      className="flex-1 h-10 rounded-full border-2 border-primary text-primary bg-transparent font-medium flex items-center justify-center gap-2"
+                      className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0"
+                      aria-label="Modifier"
                     >
-                      <Pencil size={14} />
-                      Modifier
+                      <Pencil size={16} />
                     </Button>
                     <Button
                       onClick={() => {
@@ -387,10 +387,10 @@ const Compte = () => {
                         setShowDeleteEventModal(true);
                       }}
                       variant="outline"
-                      className="flex-1 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent font-medium flex items-center justify-center gap-2"
+                      className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0"
+                      aria-label="Supprimer"
                     >
-                      <Trash2 size={14} />
-                      Supprimer
+                      <Trash2 size={16} />
                     </Button>
                   </div>
                 </div>
