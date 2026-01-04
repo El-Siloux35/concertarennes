@@ -72,7 +72,7 @@ const Index = () => {
         </div>
 
         {/* Spacer for fixed header */}
-        <div className="h-32"></div>
+        <div className="h-40"></div>
 
         <main className="flex flex-col gap-4">
           <ConcertList filter={filter} />
