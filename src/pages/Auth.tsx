@@ -1,4 +1,4 @@
-import { X, AtSign, Mail, Lock } from "lucide-react";
+import { X, AtSign, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,11 +9,13 @@ import { useToast } from "@/hooks/use-toast";
 const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,7 +42,9 @@ const Auth = () => {
       if (error) {
         toast({
           title: "Erreur",
-          description: error.message,
+          description: error.message === "Invalid login credentials" 
+            ? "Email ou mot de passe incorrect" 
+            : error.message,
           variant: "destructive",
         });
         return;
@@ -68,7 +72,9 @@ const Auth = () => {
       if (error) {
         toast({
           title: "Erreur",
-          description: error.message,
+          description: error.message === "User already registered"
+            ? "Un compte existe déjà avec cet email"
+            : error.message,
           variant: "destructive",
         });
         return;
@@ -81,6 +87,106 @@ const Auth = () => {
       navigate("/home");
     }
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez entrer votre adresse email",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Email envoyé",
+      description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe",
+    });
+    setShowForgotPassword(false);
+  };
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen bg-background px-4 pt-4">
+        {/* Close button */}
+        <div className="flex justify-end mb-12">
+          <button
+            onClick={() => setShowForgotPassword(false)}
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+            aria-label="Retour"
+          >
+            <X size={20} strokeWidth={2} />
+          </button>
+        </div>
+
+        {/* Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-2xl font-bold text-primary mb-2">
+            Mot de passe oublié
+          </h1>
+          <p className="text-primary text-sm">
+            Entrez votre email pour recevoir un lien de réinitialisation.
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleForgotPassword} className="space-y-4">
+          {/* Email input */}
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
+              <Mail size={20} strokeWidth={1.5} />
+            </div>
+            <Input
+              type="email"
+              placeholder="Mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            />
+          </div>
+
+          {/* Submit button */}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base mt-8 hover:bg-accent"
+          >
+            {isLoading ? "Envoi..." : "Envoyer le lien"}
+          </Button>
+        </form>
+
+        {/* Back to login link */}
+        <div className="text-center mt-12">
+          <button
+            type="button"
+            onClick={() => setShowForgotPassword(false)}
+            className="text-primary underline text-sm font-medium"
+          >
+            retour à la connexion
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background px-4 pt-4">
@@ -145,13 +251,33 @@ const Auth = () => {
             <Lock size={20} strokeWidth={1.5} />
           </div>
           <Input
-            type="password"
+            type={showPassword ? "text" : "password"}
             placeholder="Mot de passe"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-14 pl-12 pr-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-primary"
+          >
+            {showPassword ? <EyeOff size={20} strokeWidth={1.5} /> : <Eye size={20} strokeWidth={1.5} />}
+          </button>
         </div>
+
+        {/* Forgot password link - only for login */}
+        {isLogin && (
+          <div className="text-right">
+            <button
+              type="button"
+              onClick={() => setShowForgotPassword(true)}
+              className="text-primary/70 text-sm underline"
+            >
+              mot de passe oublié ?
+            </button>
+          </div>
+        )}
 
         {/* Submit button */}
         <Button
