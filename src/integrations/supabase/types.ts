@@ -25,6 +25,7 @@ export type Database = {
           location: string | null
           organizer: string | null
           price: string | null
+          style: string | null
           title: string
           updated_at: string | null
           user_id: string
@@ -40,6 +41,7 @@ export type Database = {
           location?: string | null
           organizer?: string | null
           price?: string | null
+          style?: string | null
           title: string
           updated_at?: string | null
           user_id: string
@@ -55,6 +57,7 @@ export type Database = {
           location?: string | null
           organizer?: string | null
           price?: string | null
+          style?: string | null
           title?: string
           updated_at?: string | null
           user_id?: string

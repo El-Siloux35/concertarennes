@@ -4,51 +4,67 @@ import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
 import { supabase } from "@/integrations/supabase/client";
+
+type PeriodFilter = "all" | "today" | "week" | "weekend";
+type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
+
 const Index = () => {
-  const [filter, setFilter] = useState<"all" | "today" | "week" | "weekend">("all");
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
+  const [styleFilter, setStyleFilter] = useState<StyleFilter>("all");
   const [events, setEvents] = useState<{
     id: string;
     date: string;
   }[]>([]);
+
   useEffect(() => {
     const fetchEvents = async () => {
-      const {
-        data
-      } = await supabase.from("events").select("id, date").gte("date", new Date().toISOString().split('T')[0]);
+      const { data } = await supabase
+        .from("events")
+        .select("id, date")
+        .gte("date", new Date().toISOString().split("T")[0]);
       setEvents(data || []);
     };
     fetchEvents();
   }, []);
+
   const counts = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
-    const todayCount = events.filter(event => {
+    const todayCount = events.filter((event) => {
       const eventDate = new Date(event.date);
       eventDate.setHours(0, 0, 0, 0);
       return eventDate.getTime() === today.getTime();
     }).length;
-    const weekCount = events.filter(event => {
+    const weekCount = events.filter((event) => {
       const eventDate = new Date(event.date);
       return eventDate >= today && eventDate <= endOfWeek;
     }).length;
-    const weekendCount = events.filter(event => {
+    const weekendCount = events.filter((event) => {
       const eventDate = new Date(event.date);
       const day = eventDate.getDay();
-      return eventDate >= today && (day === 0 || day === 6);
+      // Include Friday (5), Saturday (6), and Sunday (0)
+      return eventDate >= today && (day === 0 || day === 5 || day === 6);
     }).length;
     return {
       all: events.length,
       today: todayCount,
       week: weekCount,
-      weekend: weekendCount
+      weekend: weekendCount,
     };
   }, [events]);
-  const handleFilterChange = (newFilter: "all" | "today" | "week" | "weekend") => {
-    setFilter(newFilter);
+
+  const handleFilterChange = (
+    newPeriodFilter: PeriodFilter,
+    newStyleFilter: StyleFilter
+  ) => {
+    setPeriodFilter(newPeriodFilter);
+    setStyleFilter(newStyleFilter);
   };
-  return <div className="min-h-screen bg-background border-muted">
+
+  return (
+    <div className="min-h-screen bg-background border-muted">
       <div className="max-w-[700px] mx-auto">
         {/* Fixed header section */}
         <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
@@ -68,11 +84,13 @@ const Index = () => {
         <div className="h-40"></div>
 
         <main className="flex flex-col gap-4">
-          <ConcertList filter={filter} />
+          <ConcertList periodFilter={periodFilter} styleFilter={styleFilter} />
         </main>
 
         <FloatingAddButton />
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
