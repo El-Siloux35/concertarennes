@@ -1,7 +1,7 @@
 import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart, Share2, Pencil, Trash2 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ConfirmModal from "@/components/ConfirmModal";
@@ -28,8 +28,6 @@ const ConcertDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
-  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -65,22 +63,6 @@ const ConcertDetail = () => {
     setIsFavorite(favorites.includes(id));
   }, [id]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
-        setIsHeaderVisible(false);
-      } else {
-        setIsHeaderVisible(true);
-      }
-      
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const toggleFavorite = () => {
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -185,7 +167,7 @@ const ConcertDetail = () => {
     <div className="min-h-screen bg-background pb-32">
       <div className="max-w-[700px] mx-auto">
         {/* Header with back and favorite buttons - fixed */}
-        <div className={`fixed top-0 left-0 right-0 z-50 bg-background transition-transform duration-200 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <div className="max-w-[700px] mx-auto p-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
