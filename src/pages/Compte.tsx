@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, Calendar, Trash2 } from "lucide-react";
+import { ArrowLeft, Pencil, Calendar, Trash2, Check, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +35,9 @@ const Compte = () => {
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
+  
+  const [isEditingPseudo, setIsEditingPseudo] = useState(false);
+  const [newPseudo, setNewPseudo] = useState("");
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -71,9 +75,9 @@ const Compte = () => {
       .from("profiles")
       .select("*")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
     
-    if (error && error.code !== "PGRST116") {
+    if (error) {
       console.error("Error fetching profile:", error);
     }
     
@@ -145,6 +149,48 @@ const Compte = () => {
       title: "Succès",
       description: "Photo de profil mise à jour",
     });
+  };
+
+  const handleStartEditPseudo = () => {
+    setNewPseudo(profile?.pseudo || "");
+    setIsEditingPseudo(true);
+  };
+
+  const handleSavePseudo = async () => {
+    if (!user || !newPseudo.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Le pseudo ne peut pas être vide",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .update({ pseudo: newPseudo.trim() })
+      .eq("id", user.id);
+
+    if (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de mettre à jour le pseudo",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setProfile(prev => prev ? { ...prev, pseudo: newPseudo.trim() } : null);
+    setIsEditingPseudo(false);
+    toast({
+      title: "Succès",
+      description: "Pseudo mis à jour",
+    });
+  };
+
+  const handleCancelEditPseudo = () => {
+    setIsEditingPseudo(false);
+    setNewPseudo("");
   };
 
   const handleLogout = async () => {
@@ -249,7 +295,41 @@ const Compte = () => {
               className="hidden"
             />
           </div>
-          <p className="text-primary font-medium text-lg mt-4">[{displayName}]</p>
+          
+          {/* Pseudo with edit */}
+          {isEditingPseudo ? (
+            <div className="flex items-center gap-2 mt-4">
+              <Input
+                type="text"
+                value={newPseudo}
+                onChange={(e) => setNewPseudo(e.target.value)}
+                className="h-10 w-40 rounded-[8px] border-2 border-primary bg-transparent text-primary text-center focus-visible:ring-0 focus-visible:ring-offset-0"
+                autoFocus
+              />
+              <button
+                onClick={handleSavePseudo}
+                className="w-8 h-8 rounded-full bg-primary flex items-center justify-center"
+              >
+                <Check size={14} className="text-primary-foreground" />
+              </button>
+              <button
+                onClick={handleCancelEditPseudo}
+                className="w-8 h-8 rounded-full bg-muted flex items-center justify-center"
+              >
+                <X size={14} className="text-primary" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 mt-4">
+              <p className="text-primary font-medium text-lg">[{displayName}]</p>
+              <button
+                onClick={handleStartEditPseudo}
+                className="text-primary/60"
+              >
+                <Pencil size={14} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Logout Button */}
