@@ -179,13 +179,24 @@ const ConcertDetail = () => {
             >
               <ChevronLeft size={24} strokeWidth={2} />
             </button>
-            <button
-              onClick={toggleFavorite}
-              className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
-              aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
-            >
-              <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />
-            </button>
+            <div className="flex items-center gap-2">
+              {canEdit && (
+                <button
+                  onClick={() => navigate(`/modifier-evenement/${id}`)}
+                  className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
+                  aria-label="Modifier"
+                >
+                  <Pencil size={24} strokeWidth={2} />
+                </button>
+              )}
+              <button
+                onClick={toggleFavorite}
+                className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
+                aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+              >
+                <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -224,18 +235,6 @@ const ConcertDetail = () => {
             {event.title}
           </h1>
 
-          {/* Edit button if owner or admin */}
-          {canEdit && (
-            <div className="flex gap-2 mb-6">
-              <button
-                onClick={() => navigate(`/modifier-evenement/${id}`)}
-                className="text-primary"
-                aria-label="Modifier"
-              >
-                <Pencil size={20} />
-              </button>
-            </div>
-          )}
 
           {/* Description */}
           {event.description && (
