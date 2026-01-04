@@ -28,6 +28,20 @@ const ConcertDetail = () => {
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [headerOpacity, setHeaderOpacity] = useState(1);
+
+  // Scroll handler for header opacity
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const maxScroll = 150;
+      const opacity = Math.max(0, 1 - scrollY / maxScroll);
+      setHeaderOpacity(opacity);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -165,8 +179,11 @@ const ConcertDetail = () => {
   return (
     <div className="min-h-screen bg-background pb-32">
       <div className="max-w-[700px] mx-auto">
-        {/* Header with back and favorite buttons - fixed */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm">
+        {/* Header with back and favorite buttons - fixed with scroll opacity */}
+        <div 
+          className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm transition-opacity duration-150"
+          style={{ opacity: headerOpacity }}
+        >
           <div className="max-w-[700px] mx-auto p-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
