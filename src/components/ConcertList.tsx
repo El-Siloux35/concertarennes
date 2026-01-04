@@ -128,13 +128,11 @@ const ConcertList = ({ filter }: ConcertListProps) => {
   return (
     <div className="flex flex-col gap-4 px-4 pb-24">
       {displayedConcerts.map((concert) => (
-        <div 
+        <ConcertCard 
           key={concert.id} 
-          onClick={() => navigate(`/concert/${concert.id}`)}
-          className="cursor-pointer"
-        >
-          <ConcertCard concert={concert} />
-        </div>
+          concert={concert} 
+          onNavigate={() => navigate(`/concert/${concert.id}`)}
+        />
       ))}
 
       {displayedConcerts.length === 0 && <EmptyState />}

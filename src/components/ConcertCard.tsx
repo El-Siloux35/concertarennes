@@ -1,5 +1,6 @@
 import { MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
+
 export interface Concert {
   id: string;
   organizer: string;
@@ -8,18 +9,22 @@ export interface Concert {
   date: string;
   price: string;
 }
+
 interface ConcertCardProps {
   concert: Concert;
+  onNavigate?: () => void;
 }
-const ConcertCard = ({
-  concert
-}: ConcertCardProps) => {
+
+const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
+
   useEffect(() => {
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     setIsFavorite(favorites.includes(concert.id));
   }, [concert.id]);
-  const toggleFavorite = () => {
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
     let newFavorites: string[];
     if (isFavorite) {
@@ -30,6 +35,7 @@ const ConcertCard = ({
     localStorage.setItem("favorites", JSON.stringify(newFavorites));
     setIsFavorite(!isFavorite);
   };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("fr-FR", {
@@ -38,9 +44,18 @@ const ConcertCard = ({
       year: "numeric"
     });
   };
-  return <article className="bg-card border-2 border-primary rounded-2xl p-4 animate-fade-in relative">
-      {/* Favorite button */}
-      <button onClick={toggleFavorite} className="absolute top-4 right-4 text-primary" aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}>
+
+  return (
+    <article 
+      className="bg-card border-2 border-primary rounded-2xl p-4 animate-fade-in relative cursor-pointer"
+      onClick={onNavigate}
+    >
+      {/* Favorite button - 44x44 touch target */}
+      <button 
+        onClick={toggleFavorite} 
+        className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center text-primary" 
+        aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+      >
         <Heart size={24} strokeWidth={2} fill={isFavorite ? "hsl(259, 75%, 42%)" : "none"} />
       </button>
 
@@ -50,7 +65,7 @@ const ConcertCard = ({
       </div>
 
       {/* Concert name */}
-      <h2 className="font-semibold text-lg text-primary leading-tight mb-4 pr-8">
+      <h2 className="font-semibold text-lg text-primary leading-tight mb-4 pr-12">
         {concert.name}
       </h2>
 
@@ -72,6 +87,8 @@ const ConcertCard = ({
           </div>
         </div>
       </div>
-    </article>;
+    </article>
+  );
 };
+
 export default ConcertCard;

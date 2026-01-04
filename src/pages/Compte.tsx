@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, Calendar, Trash2, Check, X } from "lucide-react";
+import { ArrowLeft, Pencil, Calendar, Trash2, Check, X, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ConfirmModal from "@/components/ConfirmModal";
+import EventEmptyState from "@/components/EventEmptyState";
 import { useToast } from "@/hooks/use-toast";
-
 interface Profile {
   id: string;
   pseudo: string | null;
@@ -266,9 +266,9 @@ const Compte = () => {
         <header className="py-4">
           <button
             onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center"
+            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
           >
-            <ArrowLeft size={20} className="text-primary-foreground" />
+            <ArrowLeft size={24} className="text-primary-foreground" />
           </button>
         </header>
 
@@ -348,7 +348,7 @@ const Compte = () => {
           <h2 className="text-primary font-semibold text-center mb-4">Vos évènements crées</h2>
           
           {events.length === 0 ? (
-            <p className="text-primary/60 text-center text-sm">Aucun évènement créé</p>
+            <EventEmptyState />
           ) : (
             <div className="flex flex-col gap-3">
               {events.map((event) => (
@@ -395,10 +395,7 @@ const Compte = () => {
           onClick={() => navigate("/creer-evenement")}
           className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M22 2L11 13" />
-            <path d="M22 2L15 22L11 13L2 9L22 2Z" />
-          </svg>
+          <Send size={20} strokeWidth={2} />
           Créer un évènement
         </Button>
       </div>
