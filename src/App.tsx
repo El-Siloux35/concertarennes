@@ -10,6 +10,7 @@ import Splash from "./pages/Splash";
 import Auth from "./pages/Auth";
 import Favorites from "./pages/Favorites";
 import Compte from "./pages/Compte";
+import CreateEvent from "./pages/CreateEvent";
 import useThemeColor from "./hooks/useThemeColor";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => {
           <Route path="/auth" element={<Auth />} />
           <Route path="/favoris" element={<Favorites />} />
           <Route path="/compte" element={<Compte />} />
+          <Route path="/creer-evenement" element={<CreateEvent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

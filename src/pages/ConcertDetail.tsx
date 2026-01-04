@@ -1,7 +1,8 @@
-import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Send, Heart } from "lucide-react";
+import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Send, Heart, Share2, MessageCircle } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data - in real app would fetch based on id
 const mockConcert = {
@@ -13,12 +14,14 @@ const mockConcert = {
   date: "2025-12-13",
   price: "Prix Libre",
   createdBy: "@colin",
-  image: "/placeholder.svg"
+  image: "/placeholder.svg",
+  contact: "+33612345678" // Signal contact number
 };
 
 const ConcertDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
@@ -47,13 +50,48 @@ const ConcertDetail = () => {
     });
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: mockConcert.name,
+      text: `${mockConcert.name} - ${mockConcert.venue} le ${formatDate(mockConcert.date)}`,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({
+          title: "Lien copié",
+          description: "Le lien a été copié dans le presse-papier",
+        });
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+    }
+  };
+
+  const handleContactSignal = () => {
+    if (mockConcert.contact) {
+      // Open Signal with the contact number
+      const signalUrl = `https://signal.me/#p/${mockConcert.contact.replace(/\+/g, '')}`;
+      window.open(signalUrl, '_blank');
+    } else {
+      toast({
+        title: "Contact non disponible",
+        description: "L'organisateur n'a pas renseigné de numéro de contact",
+      });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-background pb-8">
+    <div className="min-h-screen bg-background pb-32">
       {/* Header with back and favorite buttons */}
       <div className="p-4 flex justify-between items-center">
         <button
           onClick={() => navigate(-1)}
-          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+          className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
           aria-label="Retour"
         >
           <ChevronLeft size={24} strokeWidth={2} />
@@ -114,26 +152,30 @@ const ConcertDetail = () => {
         </div>
 
         {/* Created by */}
-        <p className="text-primary text-sm mb-8">
+        <p className="text-primary text-sm">
           Crée par <span className="underline">{mockConcert.createdBy}</span>
         </p>
+      </div>
 
-        {/* Action buttons */}
-        <div className="space-y-3">
-          <Button
-            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2 hover:bg-accent"
-          >
-            <Send size={20} strokeWidth={2} />
-            Envoyer le lien
-          </Button>
+      {/* Floating action buttons */}
+      <div className="fixed bottom-6 left-4 right-4 max-w-[700px] mx-auto flex flex-col gap-3">
+        <Button
+          onClick={handleShare}
+          className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2"
+        >
+          <Share2 size={20} strokeWidth={2} />
+          Envoyer le lien
+        </Button>
 
+        {mockConcert.contact && (
           <Button
+            onClick={handleContactSignal}
             variant="ghost"
-            className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-base hover:bg-secondary"
+            className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-base"
           >
             Obtenir plus d'infos
           </Button>
-        </div>
+        )}
       </div>
     </div>
   );
