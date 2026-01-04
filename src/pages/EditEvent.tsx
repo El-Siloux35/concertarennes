@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,8 @@ import { resizeImage } from "@/lib/imageUtils";
 const EditEvent = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const fromPage = searchParams.get("from");
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -143,7 +145,11 @@ const EditEvent = () => {
         description: "Évènement modifié avec succès",
       });
 
-      navigate("/compte");
+      if (fromPage === "profile") {
+        navigate("/compte");
+      } else {
+        navigate(`/concert/${id}`);
+      }
     } catch (error) {
       console.error("Error updating event:", error);
       toast({
