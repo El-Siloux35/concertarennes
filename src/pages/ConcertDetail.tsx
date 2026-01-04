@@ -224,7 +224,7 @@ const ConcertDetail = () => {
             {event.title}
           </h1>
 
-          {/* Edit/delete buttons if owner or admin */}
+          {/* Edit button if owner or admin */}
           {canEdit && (
             <div className="flex gap-2 mb-6">
               <button
@@ -234,21 +234,28 @@ const ConcertDetail = () => {
               >
                 <Pencil size={20} />
               </button>
-              <button
-                onClick={() => setShowDeleteModal(true)}
-                className="text-destructive"
-                aria-label="Supprimer"
-              >
-                <Trash2 size={20} />
-              </button>
             </div>
           )}
 
           {/* Description */}
           {event.description && (
-            <p className="text-primary text-sm leading-relaxed mb-6">
+            <p className="text-primary text-sm leading-relaxed">
               {event.description}
             </p>
+          )}
+
+          {/* Delete button if owner or admin */}
+          {canEdit && (
+            <div className="mt-12">
+              <Button
+                onClick={() => setShowDeleteModal(true)}
+                variant="destructive"
+                className="gap-2"
+              >
+                <Trash2 size={20} />
+                Supprimer
+              </Button>
+            </div>
           )}
 
           {/* Venue */}
