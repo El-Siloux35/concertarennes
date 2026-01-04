@@ -239,10 +239,28 @@ const ConcertDetail = () => {
 
           {/* Description */}
           {event.description && (
-            <p className="text-primary text-sm leading-relaxed">
+            <p className="text-primary text-sm leading-relaxed mb-6">
               {event.description}
             </p>
           )}
+
+          {/* Venue */}
+          <div className="flex items-center text-primary text-sm gap-2 mb-2">
+            <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
+            <span>{event.location || "Lieu non spécifié"}</span>
+          </div>
+
+          {/* Date and price */}
+          <div className="flex items-center gap-4 text-primary text-sm">
+            <div className="flex items-center gap-2">
+              <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
+              <span>{formatDate(event.date)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
+              <span>{event.price || "Prix non spécifié"}</span>
+            </div>
+          </div>
 
           {/* Delete button if owner or admin */}
           {canEdit && (
@@ -257,24 +275,6 @@ const ConcertDetail = () => {
               </Button>
             </div>
           )}
-
-          {/* Venue */}
-          <div className="flex items-center text-primary text-sm gap-2 mb-2">
-            <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
-            <span>{event.location || "Lieu non spécifié"}</span>
-          </div>
-
-          {/* Date and price */}
-          <div className="flex items-center gap-4 text-primary text-sm mb-4">
-            <div className="flex items-center gap-2">
-              <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
-              <span>{formatDate(event.date)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
-              <span>{event.price || "Prix non spécifié"}</span>
-            </div>
-          </div>
         </div>
 
         {/* Floating action buttons */}
