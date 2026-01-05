@@ -129,7 +129,6 @@ const CreateEvent = () => {
       <div className="max-w-[700px] mx-auto px-4">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">
-          <h1 className="text-primary font-semibold text-xl">Ajouter un évènement</h1>
           <button
             onClick={() => navigate(-1)}
             className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
@@ -137,6 +136,8 @@ const CreateEvent = () => {
           >
             <X size={24} className="text-primary-foreground" />
           </button>
+          <h1 className="text-primary font-semibold text-xl">Ajouter un évènement</h1>
+          <div className="w-12" /> {/* Spacer for centering */}
         </header>
 
         {/* Image upload */}
