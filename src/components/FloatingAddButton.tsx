@@ -20,9 +20,14 @@ const FloatingAddButton = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Hide button if not logged in
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <Link
-      to={isLoggedIn ? "/creer-evenement" : "/auth"}
+      to="/creer-evenement"
       className="fixed bottom-[10px] right-[10px] bg-accent text-accent-foreground rounded-full w-20 h-20 flex items-center justify-center z-50"
       aria-label="Ajouter un concert"
     >

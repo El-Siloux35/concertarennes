@@ -1,32 +1,28 @@
 import { Link } from "react-router-dom";
-import { Heart, User } from "lucide-react";
+import { Heart, User, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import ThemeToggle from "./ThemeToggle";
+import AuthDrawer from "./AuthDrawer";
+
 const Header = () => {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [authOpen, setAuthOpen] = useState(false);
+
   useEffect(() => {
-    // Set up auth state listener
-    const {
-      data: {
-        subscription
-      }
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
     });
 
-    // Check for existing session
-    supabase.auth.getSession().then(({
-      data: {
-        session
-      }
-    }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
     });
+
     return () => subscription.unsubscribe();
   }, []);
+
   useEffect(() => {
     const updateFavoritesCount = () => {
       const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -34,29 +30,54 @@ const Header = () => {
     };
     updateFavoritesCount();
 
-    // Listen for storage changes (from other tabs or components)
     window.addEventListener('storage', updateFavoritesCount);
-
-    // Custom event for same-tab updates
     window.addEventListener('favoritesUpdated', updateFavoritesCount);
+
     return () => {
       window.removeEventListener('storage', updateFavoritesCount);
       window.removeEventListener('favoritesUpdated', updateFavoritesCount);
     };
   }, []);
+
   const displayName = user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
-  return <header className="gap-4 pt-2 pr-[10px] flex items-center justify-end py-0">
-      <Link to={user ? "/compte" : "/auth"} className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full">
-        {user && <User size={18} strokeWidth={2} />}
-        {user ? `@${displayName}` : "[connexion]"}
-      </Link>
-      <ThemeToggle />
-      <Link to="/favoris" className={`text-primary relative w-8 h-8 flex items-center justify-center ${user ? 'mr-1' : ''}`} aria-label="Mes favoris">
-        <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
-        {favoritesCount > 0 && <span className="absolute top-0 -right-2 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-            {favoritesCount > 9 ? "9+" : favoritesCount}
-          </span>}
-      </Link>
-    </header>;
+
+  return (
+    <>
+      <header className="gap-4 pt-2 pr-[10px] flex items-center justify-end py-0">
+        {user ? (
+          <Link
+            to="/compte"
+            className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
+          >
+            <User size={18} strokeWidth={2} />
+            @{displayName}
+          </Link>
+        ) : (
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
+          >
+            <Lock size={18} strokeWidth={2} />
+            Orga
+          </button>
+        )}
+        <ThemeToggle />
+        <Link
+          to="/favoris"
+          className={`text-primary relative w-8 h-8 flex items-center justify-center ${user ? 'mr-1' : ''}`}
+          aria-label="Mes favoris"
+        >
+          <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
+          {favoritesCount > 0 && (
+            <span className="absolute top-0 -right-2 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              {favoritesCount > 9 ? "9+" : favoritesCount}
+            </span>
+          )}
+        </Link>
+      </header>
+      <AuthDrawer open={authOpen} onOpenChange={setAuthOpen} />
+    </>
+  );
 };
+
 export default Header;
