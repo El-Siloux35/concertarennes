@@ -117,21 +117,21 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   };
 
   const content = (
-    <div className="px-6 pb-8">
+    <div className="px-5 pb-6">
       {/* Icon + Title */}
-      <div className="flex flex-col items-center mb-6">
-        <div className="w-11 h-11 rounded-full bg-accent flex items-center justify-center mb-4">
-          <Lock size={20} className="text-accent-foreground" />
+      <div className="flex flex-col items-center mb-4">
+        <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
+          <Lock size={18} className="text-accent-foreground" />
         </div>
-        <h2 className="text-xl font-bold text-primary">Espace orga</h2>
-        <p className="text-primary/70 text-sm text-center mt-2 max-w-[300px]">
+        <h2 className="text-lg font-bold text-primary">Espace orga</h2>
+        <p className="text-primary/70 text-xs text-center mt-1.5 max-w-[280px] leading-relaxed">
           Te donne le droit d'ajouter et modifier tes évènements, une modération pourra être appliqué par les admins !
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <h3 className="text-primary font-semibold text-base">
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <h3 className="text-primary font-semibold text-sm">
           {isLogin ? "Connexion orga" : "Créer un compte orga"}
         </h3>
 
@@ -142,47 +142,47 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
             placeholder="Pseudo ou Prénom"
             value={pseudo}
             onChange={(e) => setPseudo(e.target.value)}
-            className="h-14 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-11 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
         )}
 
         {/* Email input */}
         <div className="relative">
-          <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-            <Mail size={20} strokeWidth={1.5} />
+          <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
+            <Mail size={18} strokeWidth={1.5} />
           </div>
           <Input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-11 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
         </div>
 
         {/* Password input */}
         <div>
           <div className="relative">
-            <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-              <Lock size={20} strokeWidth={1.5} />
+            <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
+              <Lock size={18} strokeWidth={1.5} />
             </div>
             <Input
               type={showPassword ? "text" : "password"}
               placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-14 pl-12 pr-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+              className="h-11 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-[50%] -translate-y-1/2 text-primary"
+              className="absolute right-3 top-[50%] -translate-y-1/2 text-primary"
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
           {!isLogin && (
-            <p className="text-primary/60 text-xs mt-2 ml-1">
+            <p className="text-primary/60 text-[11px] mt-1.5 ml-1">
               Minimum 6 caractères
             </p>
           )}
@@ -192,7 +192,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base hover:bg-accent/90"
+          className="w-full h-11 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:bg-accent/90"
         >
           {isLoading
             ? isLogin
@@ -205,7 +205,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
       </form>
 
       {/* Toggle link as button */}
-      <div className="mt-6">
+      <div className="mt-4">
         <Button
           type="button"
           variant="outline"
@@ -213,7 +213,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
             setIsLogin(!isLogin);
             setPassword("");
           }}
-          className="w-full h-12 rounded-full border-2 border-primary text-primary font-medium hover:bg-primary hover:text-primary-foreground"
+          className="w-full h-10 rounded-full border-2 border-primary text-primary text-sm font-medium hover:bg-primary hover:text-primary-foreground"
         >
           {isLogin ? "Créer un compte orga" : "J'ai déjà un compte orga"}
         </Button>
@@ -225,14 +225,14 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="max-h-[90vh]">
-          <DrawerHeader className="flex justify-start pt-4 pb-2">
+        <DrawerContent className="max-h-[85vh]">
+          <DrawerHeader className="flex justify-start pt-3 pb-1">
             <button
               onClick={() => onOpenChange(false)}
-              className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Fermer"
             >
-              <X size={20} strokeWidth={2} />
+              <X size={18} strokeWidth={2} />
             </button>
           </DrawerHeader>
           {content}
@@ -241,17 +241,17 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     );
   }
 
-  // Desktop: Centered dialog
+  // Desktop: Centered dialog with scale animation
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] p-0 gap-0">
-        <div className="flex justify-start p-4">
+      <DialogContent className="sm:max-w-[380px] p-0 gap-0">
+        <div className="flex justify-start p-3">
           <button
             onClick={() => onOpenChange(false)}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+            className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
             aria-label="Fermer"
           >
-            <X size={20} strokeWidth={2} />
+            <X size={18} strokeWidth={2} />
           </button>
         </div>
         {content}
