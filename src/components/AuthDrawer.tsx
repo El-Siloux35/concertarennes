@@ -241,19 +241,10 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     );
   }
 
-  // Desktop: Centered dialog with scale animation
+  // Desktop: Centered dialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[380px] p-0 gap-0">
-        <div className="flex justify-start p-3">
-          <button
-            onClick={() => onOpenChange(false)}
-            className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Fermer"
-          >
-            <X size={18} strokeWidth={2} />
-          </button>
-        </div>
         {content}
       </DialogContent>
     </Dialog>
