@@ -23,7 +23,8 @@ const Index = () => {
     const fetchEvents = async () => {
       const { data } = await supabase
         .from("events")
-        .select("id, date, style, venue");
+        .select("id, date, style, venue")
+        .eq("is_draft", false);
       setEvents(data || []);
     };
     fetchEvents();

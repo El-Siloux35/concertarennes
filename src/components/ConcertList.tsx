@@ -23,7 +23,8 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     const fetchConcerts = async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*");
+        .select("*")
+        .eq("is_draft", false);
 
       if (error) {
         console.error("Error fetching events:", error);
