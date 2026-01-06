@@ -297,10 +297,10 @@ const ConcertDetail = () => {
               </div>
             )}
 
-            {/* Venue tag in light blue */}
+            {/* Venue tag in light purple */}
             {event.venue && (
               <div className="mt-3">
-                <span className="h-6 px-3 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300 text-xs font-medium inline-flex items-center">
+                <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium inline-flex items-center">
                   {getVenueLabel(event.venue)}
                 </span>
               </div>

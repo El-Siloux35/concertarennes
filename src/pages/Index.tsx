@@ -82,10 +82,15 @@ const Index = () => {
       return styles.includes("exposition");
     }).length;
 
-    const autresCount = events.filter((event) => {
+    const autresStyleCount = events.filter((event) => {
       const styles = event.style?.split(",").map(s => s.trim()) || [];
       return styles.includes("autres");
     }).length;
+
+    // Count by venue type
+    const barsCount = events.filter((event) => event.venue === "bars").length;
+    const ombresCount = events.filter((event) => event.venue === "ombres-electriques").length;
+    const autresVenueCount = events.filter((event) => event.venue === "autres").length;
 
     return {
       all: futureEvents.length,
@@ -96,7 +101,10 @@ const Index = () => {
       concert: concertCount,
       projection: projectionCount,
       exposition: expositionCount,
-      autres: autresCount,
+      autres: autresStyleCount,
+      bars: barsCount,
+      "ombres-electriques": ombresCount,
+      autresVenue: autresVenueCount,
     };
   }, [events]);
 
