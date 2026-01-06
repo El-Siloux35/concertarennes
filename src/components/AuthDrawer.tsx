@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Lock, Mail, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import { X, Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -124,11 +124,11 @@ const content = (
           <Lock size={18} className="text-accent-foreground" />
         </div>
         <h2 className="text-[20px] font-bold text-primary">
-          {isLogin ? "Espace orga" : "Créer un compte"}
+          {isLogin ? "Connexion" : "Créer un compte"}
         </h2>
         {isLogin && (
           <p className="text-primary/70 text-[16px] text-center mt-2 max-w-[300px] leading-relaxed">
-            Connexion en tant qu'organisateur d'évènements
+            Connexion à mon espace orga
           </p>
         )}
       </div>
@@ -194,14 +194,14 @@ const content = (
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:bg-accent"
+            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[16px] hover:bg-accent"
           >
             {isLoading
               ? isLogin
                 ? "Connexion..."
                 : "Création..."
               : isLogin
-              ? "Me connecter"
+              ? "Connexion"
               : "Créer mon compte"}
           </Button>
 
@@ -214,9 +214,9 @@ const content = (
                 setIsLogin(false);
                 setPassword("");
               }}
-              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary"
+              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[16px] hover:bg-secondary"
             >
-              Créer un compte orga
+              Créer un compte
             </Button>
           ) : (
             <button
@@ -225,10 +225,9 @@ const content = (
                 setIsLogin(true);
                 setPassword("");
               }}
-              className="flex items-center justify-center gap-2 text-primary font-medium text-sm mt-2"
+              className="flex items-center justify-center text-primary font-medium text-sm mt-2"
             >
-              <ArrowLeft size={16} strokeWidth={2} />
-              J'ai déjà un compte orga
+              J'ai déjà un compte
             </button>
           )}
         </div>
@@ -259,7 +258,7 @@ const content = (
   // Desktop: Centered dialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] p-0 gap-0 rounded-[32px]">
+      <DialogContent className="sm:max-w-[400px] p-0 gap-0">
         {content}
       </DialogContent>
     </Dialog>
