@@ -34,8 +34,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [visualViewportHeight, setVisualViewportHeight] = useState<number | null>(null);
-  const [keyboardOffset, setKeyboardOffset] = useState(0);
+  const [keyboardInset, setKeyboardInset] = useState(0);
 
   // Reset form when drawer closes
   useEffect(() => {
@@ -45,12 +44,11 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
       setEmail("");
       setPassword("");
       setShowPassword(false);
-      setVisualViewportHeight(null);
-      setKeyboardOffset(0);
+      setKeyboardInset(0);
     }
   }, [open]);
 
-  // Mobile keyboard avoidance: shrink the drawer to the visible viewport height
+  // Mobile keyboard: add scroll space so the focused input can move above the keyboard
   useEffect(() => {
     if (!isMobile || !open) return;
 
@@ -58,12 +56,11 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     if (!vv) return;
 
     const update = () => {
-      setVisualViewportHeight(vv.height);
-      const bottom = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
-      setKeyboardOffset(bottom);
+      const inset = Math.max(0, window.innerHeight - vv.height);
+      setKeyboardInset(inset);
     };
-    update();
 
+    update();
     vv.addEventListener("resize", update);
     vv.addEventListener("scroll", update);
 
@@ -74,13 +71,18 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   }, [isMobile, open]);
 
   const handleFieldFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    // iOS: defer until after keyboard animation
-    window.setTimeout(() => {
-      e.currentTarget.scrollIntoView({
-        behavior: "smooth",
+    const el = e.currentTarget;
+
+    const scroll = () => {
+      el.scrollIntoView({
+        behavior: "auto",
         block: "center",
       });
-    }, 250);
+    };
+
+    // Do it twice: immediately + after the keyboard animation
+    scroll();
+    window.setTimeout(scroll, 300);
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -371,12 +373,8 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent
-          className="flex flex-col overflow-hidden transition-[bottom] duration-200"
-          style={{
-            height: visualViewportHeight ? `${visualViewportHeight}px` : "100dvh",
-            maxHeight: visualViewportHeight ? `${visualViewportHeight}px` : "100dvh",
-            bottom: keyboardOffset ? `${keyboardOffset}px` : undefined,
-          }}
+          className="flex flex-col overflow-hidden"
+          style={{ height: "100dvh", maxHeight: "100dvh" }}
         >
           <DrawerHeader className="flex justify-start pt-3 pb-1 shrink-0">
             <button
@@ -390,7 +388,10 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
 
           <div
             className="flex-1 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
-            style={{ paddingBottom: keyboardOffset ? keyboardOffset + 24 : 24 }}
+            style={{
+              paddingBottom: keyboardInset ? keyboardInset + 24 : 24,
+              scrollPaddingBottom: keyboardInset ? keyboardInset + 24 : 24,
+            }}
           >
             {content}
           </div>
