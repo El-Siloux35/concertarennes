@@ -152,7 +152,7 @@ const Favorites = () => {
         </header>
 
         {/* Page Title */}
-        <h1 className="text-xl font-bold text-primary text-center mb-4">Mes favoris</h1>
+        <h1 className="text-xl font-bold text-primary text-center mb-4 mt-8">Mes favoris</h1>
 
         {/* Filter Tabs */}
         <div className="px-4 mb-4">
