@@ -21,12 +21,14 @@ interface AuthDrawerProps {
   onOpenChange: (open: boolean) => void;
 }
 
+type AuthMode = "login" | "signup" | "forgot-password";
+
 const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<AuthMode>("login");
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +38,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   // Reset form when drawer closes
   useEffect(() => {
     if (!open) {
-      setIsLogin(true);
+      setMode("login");
       setPseudo("");
       setEmail("");
       setPassword("");
@@ -47,7 +49,43 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password || (!isLogin && !pseudo)) {
+    if (mode === "forgot-password") {
+      if (!email) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez entrer votre email",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/home`,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Email envoyé",
+          description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+        });
+        setMode("login");
+        setEmail("");
+      } catch (error: any) {
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible d'envoyer l'email de réinitialisation.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    if (!email || !password || (mode === "signup" && !pseudo)) {
       toast({
         title: "Erreur",
         description: "Veuillez remplir tous les champs",
@@ -59,7 +97,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     setIsLoading(true);
 
     try {
-      if (isLogin) {
+      if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -92,7 +130,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
           description: "Vous pouvez maintenant vous connecter.",
         });
 
-        setIsLogin(true);
+        setMode("login");
         setPassword("");
       }
     } catch (error: any) {
@@ -116,7 +154,29 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     }
   };
 
-const content = (
+  const getTitle = () => {
+    switch (mode) {
+      case "login":
+        return "Connexion";
+      case "signup":
+        return "Créer un compte";
+      case "forgot-password":
+        return "Mot de passe oublié";
+    }
+  };
+
+  const getSubtitle = () => {
+    switch (mode) {
+      case "login":
+        return "Connexion à mon espace orga";
+      case "forgot-password":
+        return "Entrez votre email pour recevoir un lien de réinitialisation";
+      default:
+        return null;
+    }
+  };
+
+  const content = (
     <div className="px-8 pb-[38px] pt-14">
       {/* Icon + Title */}
       <div className="flex flex-col items-center mb-6">
@@ -124,11 +184,11 @@ const content = (
           <Lock size={18} className="text-accent-foreground" />
         </div>
         <h2 className="text-[20px] font-bold text-primary">
-          {isLogin ? "Connexion" : "Créer un compte"}
+          {getTitle()}
         </h2>
-        {isLogin && (
+        {getSubtitle() && (
           <p className="text-primary/70 text-[14px] text-center mt-2 max-w-[300px] leading-relaxed">
-            Connexion à mon espace orga
+            {getSubtitle()}
           </p>
         )}
       </div>
@@ -136,7 +196,7 @@ const content = (
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col">
         {/* Pseudo input - only for signup */}
-        {!isLogin && (
+        {mode === "signup" && (
           <Input
             type="text"
             placeholder="Pseudo ou Prénom"
@@ -160,33 +220,46 @@ const content = (
           />
         </div>
 
-        {/* Password input */}
-        <div className="mt-3">
-          <div className="relative">
-            <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-              <Lock size={18} strokeWidth={1.5} />
+        {/* Password input - hide for forgot password */}
+        {mode !== "forgot-password" && (
+          <div className="mt-3">
+            <div className="relative">
+              <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
+                <Lock size={18} strokeWidth={1.5} />
+              </div>
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-14 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-[50%] -translate-y-1/2 text-primary"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="Mot de passe"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="h-14 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-[50%] -translate-y-1/2 text-primary"
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
+            {mode === "signup" && (
+              <p className="text-primary/60 text-[11px] mt-1.5 ml-1">
+                Minimum 6 caractères
+              </p>
+            )}
           </div>
-          {!isLogin && (
-            <p className="text-primary/60 text-[11px] mt-1.5 ml-1">
-              Minimum 6 caractères
-            </p>
-          )}
-        </div>
+        )}
+
+        {/* Forgot password link - only for login */}
+        {mode === "login" && (
+          <button
+            type="button"
+            onClick={() => setMode("forgot-password")}
+            className="text-primary/70 text-[13px] mt-2 text-right hover:text-primary transition-colors"
+          >
+            Mot de passe oublié ?
+          </button>
+        )}
 
         {/* Buttons */}
         <div className="flex flex-col gap-3 mt-6">
@@ -197,37 +270,56 @@ const content = (
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] hover:bg-accent"
           >
             {isLoading
-              ? isLogin
+              ? mode === "forgot-password"
+                ? "Envoi..."
+                : mode === "login"
                 ? "Connexion..."
                 : "Création..."
-              : isLogin
+              : mode === "forgot-password"
+              ? "Envoyer le lien"
+              : mode === "login"
               ? "Connexion"
               : "Créer mon compte"}
           </Button>
 
-          {/* Toggle link as button */}
-          {isLogin ? (
+          {/* Toggle buttons */}
+          {mode === "login" && (
             <Button
               type="button"
               variant="secondary"
               onClick={() => {
-                setIsLogin(false);
+                setMode("signup");
                 setPassword("");
               }}
               className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px] hover:bg-secondary"
             >
               Créer un compte
             </Button>
-          ) : (
+          )}
+
+          {mode === "signup" && (
             <button
               type="button"
               onClick={() => {
-                setIsLogin(true);
+                setMode("login");
                 setPassword("");
               }}
               className="flex items-center justify-center text-primary font-medium text-sm mt-6"
             >
               J'ai déjà un compte
+            </button>
+          )}
+
+          {mode === "forgot-password" && (
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setEmail("");
+              }}
+              className="flex items-center justify-center text-primary font-medium text-sm mt-2"
+            >
+              Retour à la connexion
             </button>
           )}
         </div>
