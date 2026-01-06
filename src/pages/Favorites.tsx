@@ -12,6 +12,7 @@ interface Event {
   price: string | null;
   organizer: string | null;
   image_url: string | null;
+  venue: string | null;
 }
 
 type FilterTab = "upcoming" | "past";
