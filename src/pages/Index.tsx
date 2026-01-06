@@ -135,16 +135,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background border-muted">
-      <div className="max-w-[700px] mx-auto">
+      <div className="max-w-[900px] mx-auto">
         {/* Fixed header section */}
         <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
           <div className="bg-background py-[12px] pb-[8px]">
-            <div className="max-w-[700px] mx-auto px-4">
+            <div className="max-w-[900px] mx-auto px-4">
               <Header />
             </div>
           </div>
           <div className="bg-background pt-3 pb-3">
-            <div className="max-w-[700px] mx-auto">
+            <div className="max-w-[900px] mx-auto">
               <FilterPills 
                 onFilterChange={handleFilterChange} 
                 counts={counts} 

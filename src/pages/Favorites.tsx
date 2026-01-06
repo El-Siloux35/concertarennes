@@ -69,6 +69,7 @@ const Favorites = () => {
 
   return (
     <div className="min-h-screen bg-background pb-8">
+      <div className="max-w-[900px] mx-auto">
       {/* Header */}
       <div className="p-4 flex items-center gap-4">
         <button
@@ -142,6 +143,7 @@ const Favorites = () => {
             </article>
           ))
         )}
+      </div>
       </div>
     </div>
   );
