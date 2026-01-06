@@ -80,7 +80,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
         behavior: "smooth",
         block: "center",
       });
-    }, 50);
+    }, 250);
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -371,17 +371,14 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent
-          className="overflow-y-auto transition-[bottom] duration-200"
-          style={
-            visualViewportHeight || keyboardOffset
-              ? {
-                  maxHeight: visualViewportHeight ? `${visualViewportHeight}px` : undefined,
-                  bottom: keyboardOffset ? `${keyboardOffset}px` : undefined,
-                }
-              : undefined
-          }
+          className="flex flex-col overflow-hidden transition-[bottom] duration-200"
+          style={{
+            height: visualViewportHeight ? `${visualViewportHeight}px` : "100dvh",
+            maxHeight: visualViewportHeight ? `${visualViewportHeight}px` : "100dvh",
+            bottom: keyboardOffset ? `${keyboardOffset}px` : undefined,
+          }}
         >
-          <DrawerHeader className="flex justify-start pt-3 pb-1">
+          <DrawerHeader className="flex justify-start pt-3 pb-1 shrink-0">
             <button
               onClick={() => onOpenChange(false)}
               className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
@@ -390,7 +387,11 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
               <X size={18} strokeWidth={2} />
             </button>
           </DrawerHeader>
-          <div className="pb-8">
+
+          <div
+            className="flex-1 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
+            style={{ paddingBottom: keyboardOffset ? keyboardOffset + 24 : 24 }}
+          >
             {content}
           </div>
         </DrawerContent>
