@@ -331,7 +331,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="max-h-[85vh]">
+        <DrawerContent className="max-h-[90vh] overflow-y-auto">
           <DrawerHeader className="flex justify-start pt-3 pb-1">
             <button
               onClick={() => onOpenChange(false)}
@@ -341,7 +341,9 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
               <X size={18} strokeWidth={2} />
             </button>
           </DrawerHeader>
-          {content}
+          <div className="pb-8">
+            {content}
+          </div>
         </DrawerContent>
       </Drawer>
     );
