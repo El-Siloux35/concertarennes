@@ -63,6 +63,15 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     return styles[style] || style;
   };
 
+  const getVenueLabel = (venue: string) => {
+    const venues: Record<string, string> = {
+      bars: "Bars",
+      "ombres-electriques": "Ombres Électriques",
+      autres: "Autres",
+    };
+    return venues[venue] || venue;
+  };
+
   // Parse styles (can be comma-separated for multi-tags)
   const styleArray = concert.style ? concert.style.split(",").map(s => s.trim()).filter(Boolean) : [];
 
@@ -135,14 +144,19 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
           </div>
         </div>
 
-        {/* Style tags */}
-        {styleArray.length > 0 && (
+        {/* Style and Venue tags */}
+        {(styleArray.length > 0 || concert.venueType) && (
           <div className="mt-3 flex flex-wrap gap-2">
             {styleArray.map((s) => (
               <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
                 {getStyleLabel(s)}
               </span>
             ))}
+            {concert.venueType && (
+              <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
+                {getVenueLabel(concert.venueType)}
+              </span>
+            )}
           </div>
         )}
       </div>
