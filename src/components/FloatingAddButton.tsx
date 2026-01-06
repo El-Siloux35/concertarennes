@@ -26,13 +26,17 @@ const FloatingAddButton = () => {
   }
 
   return (
-    <Link
-      to="/creer-evenement"
-      className="fixed bottom-[10px] right-[10px] bg-accent text-accent-foreground rounded-full w-20 h-20 flex items-center justify-center z-50"
-      aria-label="Ajouter un concert"
-    >
-      <Plus size={32} strokeWidth={2.5} />
-    </Link>
+    <div className="fixed bottom-[10px] left-0 right-0 z-50 pointer-events-none">
+      <div className="max-w-[900px] mx-auto px-4 flex justify-end pointer-events-none">
+        <Link
+          to="/creer-evenement"
+          className="bg-accent text-accent-foreground rounded-full w-20 h-20 flex items-center justify-center pointer-events-auto"
+          aria-label="Ajouter un concert"
+        >
+          <Plus size={32} strokeWidth={2.5} />
+        </Link>
+      </div>
+    </div>
   );
 };
 
