@@ -237,7 +237,7 @@ const Compte = () => {
       </div>;
   }
   return <div className="min-h-screen bg-background pb-24">
-      <div className="max-w-[700px] mx-auto px-4">
+      <div className="max-w-[900px] mx-auto px-4">
         {/* Header with back button */}
         <header className="py-4 flex justify-start">
           <button onClick={handleClose} className="flex items-center gap-2 text-primary" aria-label="Retour aux évènements">

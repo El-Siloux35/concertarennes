@@ -126,7 +126,7 @@ const CreateEvent = () => {
 
   return (
     <div className="min-h-screen bg-background pb-32">
-      <div className="max-w-[700px] mx-auto px-4">
+      <div className="max-w-[900px] mx-auto px-4">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">
           <button
@@ -248,7 +248,7 @@ const CreateEvent = () => {
         </div>
 
         {/* Submit button - floating */}
-        <div className="fixed bottom-6 left-4 right-4 max-w-[700px] mx-auto">
+        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto">
           <Button
             onClick={handleSubmit}
             disabled={isSubmitting}
