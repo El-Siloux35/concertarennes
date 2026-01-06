@@ -1,4 +1,4 @@
-import { X, MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
+import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -138,16 +138,18 @@ const Favorites = () => {
     <div className="min-h-screen bg-background pb-8">
       <div className="max-w-[900px] mx-auto">
         {/* Header */}
-        <div className="p-4 flex items-center gap-4">
+        <header className="py-4 px-4 flex justify-start">
           <button
             onClick={() => navigate("/home")}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Fermer"
+            className="flex items-center gap-2 text-primary"
+            aria-label="Retour aux évènements"
           >
-            <X size={24} strokeWidth={2} />
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+              <ChevronLeft size={24} className="text-primary-foreground" />
+            </div>
+            <span className="font-medium">Mes favoris</span>
           </button>
-          <h1 className="text-xl font-bold text-primary">Mes favoris</h1>
-        </div>
+        </header>
 
         {/* Filter Tabs */}
         <div className="px-4 mb-4">
