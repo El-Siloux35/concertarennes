@@ -278,8 +278,8 @@ const CreateEvent = () => {
           <Button
             onClick={() => handleSubmit(true)}
             disabled={isSubmitting}
-            variant="outline"
-            className="w-full h-12 rounded-full border-2 border-primary text-primary bg-transparent font-medium flex items-center justify-center gap-2"
+            variant="secondary"
+            className="w-full h-12 rounded-full font-medium flex items-center justify-center gap-2"
           >
             <Save size={18} strokeWidth={2} />
             Enregistrer en brouillon
