@@ -116,25 +116,21 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     }
   };
 
-  const content = (
-    <div className="px-5 pb-6">
+const content = (
+    <div className="px-5 pb-6 pt-6">
       {/* Icon + Title */}
-      <div className="flex flex-col items-center mb-4">
+      <div className="flex flex-col items-center mb-6">
         <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
           <Lock size={18} className="text-accent-foreground" />
         </div>
-        <h2 className="text-lg font-bold text-primary">Espace orga</h2>
-        <p className="text-primary/70 text-xs text-center mt-1.5 max-w-[280px] leading-relaxed">
-          Te donne le droit d'ajouter et modifier tes évènements, une modération pourra être appliqué par les admins !
+        <h2 className="text-[20px] font-bold text-primary">Espace orga</h2>
+        <p className="text-primary/70 text-[16px] text-center mt-2 max-w-[300px] leading-relaxed">
+          Se connecter pour ajouter des évènements !
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-3">
-        <h3 className="text-primary font-semibold text-sm">
-          {isLogin ? "Connexion orga" : "Créer un compte orga"}
-        </h3>
-
+      <form onSubmit={handleSubmit} className="flex flex-col">
         {/* Pseudo input - only for signup */}
         {!isLogin && (
           <Input
@@ -142,7 +138,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
             placeholder="Pseudo ou Prénom"
             value={pseudo}
             onChange={(e) => setPseudo(e.target.value)}
-            className="h-11 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-12 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary mb-4"
           />
         )}
 
@@ -156,12 +152,12 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-11 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-12 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
         </div>
 
         {/* Password input */}
-        <div>
+        <div className="mt-4">
           <div className="relative">
             <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
               <Lock size={18} strokeWidth={1.5} />
@@ -171,7 +167,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
               placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-11 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+              className="h-12 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
             />
             <button
               type="button"
@@ -188,36 +184,37 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
           )}
         </div>
 
-        {/* Submit button */}
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full h-11 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:bg-accent/90"
-        >
-          {isLoading
-            ? isLogin
-              ? "Connexion..."
-              : "Création..."
-            : isLogin
-            ? "Se connecter"
-            : "Créer mon compte"}
-        </Button>
-      </form>
+        {/* Buttons */}
+        <div className="flex flex-col gap-4 mt-6">
+          {/* Submit button */}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-sm hover:bg-accent"
+          >
+            {isLoading
+              ? isLogin
+                ? "Connexion..."
+                : "Création..."
+              : isLogin
+              ? "Faire une demande de compte"
+              : "Créer mon compte"}
+          </Button>
 
-      {/* Toggle link as button */}
-      <div className="mt-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            setIsLogin(!isLogin);
-            setPassword("");
-          }}
-          className="w-full h-10 rounded-full border-2 border-primary text-primary text-sm font-medium hover:bg-primary hover:text-primary-foreground"
-        >
-          {isLogin ? "Créer un compte orga" : "J'ai déjà un compte orga"}
-        </Button>
-      </div>
+          {/* Toggle link as button */}
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setPassword("");
+            }}
+            className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary"
+          >
+            {isLogin ? "Créer un compte orga" : "J'ai déjà un compte orga"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 
