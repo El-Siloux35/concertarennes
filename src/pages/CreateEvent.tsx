@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Send } from "lucide-react";
+import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Send, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -51,11 +51,21 @@ const CreateEvent = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!organizer.trim() || !name.trim() || !location.trim() || !date) {
+  const handleSubmit = async (isDraft: boolean = false) => {
+    // For drafts, only require organizer name
+    if (!isDraft && (!organizer.trim() || !name.trim() || !location.trim() || !date)) {
       toast({
         title: "Erreur",
         description: "Veuillez remplir tous les champs obligatoires",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isDraft && !name.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez au moins donner un nom à l'évènement",
         variant: "destructive",
       });
       return;
@@ -95,15 +105,16 @@ const CreateEvent = () => {
         .insert({
           user_id: user.id,
           title: name.trim(),
-          organizer: organizer.trim(),
+          organizer: organizer.trim() || null,
           description: description.trim() || null,
-          location: location.trim(),
+          location: location.trim() || null,
           venue: venueType,
           price: price.trim() || null,
-          date: format(date, "yyyy-MM-dd"),
+          date: date ? format(date, "yyyy-MM-dd") : new Date().toISOString().split('T')[0],
           contact: contact.trim() || null,
           image_url: imageUrl,
           style: styles.length > 0 ? styles.join(",") : null,
+          is_draft: isDraft,
         });
 
       if (error) {
@@ -112,7 +123,7 @@ const CreateEvent = () => {
 
       toast({
         title: "Succès",
-        description: "Évènement créé avec succès",
+        description: isDraft ? "Brouillon enregistré" : "Évènement créé avec succès",
       });
 
       navigate("/compte");
@@ -129,7 +140,7 @@ const CreateEvent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-40">
       <div className="max-w-[900px] mx-auto px-4">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">
@@ -254,15 +265,24 @@ const CreateEvent = () => {
           </div>
         </div>
 
-        {/* Submit button - floating */}
-        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto">
+        {/* Submit buttons - floating */}
+        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto flex flex-col gap-2">
           <Button
-            onClick={handleSubmit}
+            onClick={() => handleSubmit(false)}
             disabled={isSubmitting}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
           >
             <Send size={20} strokeWidth={2} />
-            {isSubmitting ? "Création..." : "Ajouter l'évènement"}
+            {isSubmitting ? "Création..." : "Publier l'évènement"}
+          </Button>
+          <Button
+            onClick={() => handleSubmit(true)}
+            disabled={isSubmitting}
+            variant="outline"
+            className="w-full h-12 rounded-full border-2 border-primary text-primary bg-transparent font-medium flex items-center justify-center gap-2"
+          >
+            <Save size={18} strokeWidth={2} />
+            Enregistrer en brouillon
           </Button>
         </div>
       </div>
