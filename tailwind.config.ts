@@ -56,6 +56,7 @@ export default {
         },
         concert: {
           purple: "hsl(var(--concert-purple))",
+          "purple-light": "hsl(var(--concert-purple-light))",
           light: "hsl(var(--concert-light))",
           orange: "hsl(var(--concert-orange))",
           white: "hsl(var(--concert-white))",

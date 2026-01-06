@@ -35,7 +35,7 @@ const VenueSelector = ({ value, onChange }: VenueSelectorProps) => {
               onClick={() => handleToggle(option.key)}
               className={`h-10 px-4 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
                 isSelected
-                  ? "bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300 border-2 border-sky-400"
+                  ? "bg-concert-purple-light text-primary border-2 border-primary"
                   : "border-2 border-primary text-primary bg-transparent"
               }`}
             >

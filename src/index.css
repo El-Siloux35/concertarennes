@@ -39,6 +39,7 @@
 
     /* Custom tokens */
     --concert-purple: 259 75% 42%;
+    --concert-purple-light: 259 60% 90%;
     --concert-light: 245 100% 97%;
     --concert-orange: 27 100% 50%;
     --concert-white: 0 0% 100%;
@@ -72,6 +73,7 @@
 
     /* Custom tokens dark */
     --concert-purple: 259 65% 65%;
+    --concert-purple-light: 259 40% 30%;
     --concert-light: 259 40% 18%;
     --concert-orange: 27 100% 50%;
     --concert-white: 0 0% 95%;

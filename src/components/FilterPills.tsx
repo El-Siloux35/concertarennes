@@ -30,6 +30,9 @@ interface FilterPillsProps {
     projection: number;
     exposition: number;
     autres: number;
+    bars: number;
+    "ombres-electriques": number;
+    autresVenue: number;
   };
 }
 
@@ -126,6 +129,11 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
     return counts[period] || 0;
   };
 
+  const getVenueCount = (venue: VenueFilter) => {
+    if (venue === "autres") return counts.autresVenue;
+    return counts[venue] || 0;
+  };
+
   const getStyleCount = (style: StyleFilter) => {
     if (style === "all") return counts.all;
     return counts[style] || 0;
@@ -204,20 +212,29 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           <button
             key={option.key}
             onClick={() => handleVenueToggle(option.key)}
-            className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+            className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center justify-between ${
               isSelected
                 ? "bg-primary text-primary-foreground"
                 : "text-primary hover:bg-primary/10"
             }`}
           >
-            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-              isSelected
-                ? "bg-primary-foreground border-primary-foreground"
-                : "border-primary"
-            }`}>
-              {isSelected && <Check size={14} className="text-primary" />}
+            <div className="flex items-center gap-2">
+              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                isSelected
+                  ? "bg-primary-foreground border-primary-foreground"
+                  : "border-primary"
+              }`}>
+                {isSelected && <Check size={14} className="text-primary" />}
+              </div>
+              <span>{option.label}</span>
             </div>
-            <span>{option.label}</span>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+              isSelected
+                ? "bg-primary-foreground/20 text-primary-foreground"
+                : "bg-accent text-accent-foreground"
+            }`}>
+              {getVenueCount(option.key)}
+            </span>
           </button>
         );
       })}
