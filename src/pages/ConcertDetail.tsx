@@ -12,6 +12,7 @@ interface Event {
   title: string;
   description: string | null;
   location: string | null;
+  venue: string | null;
   date: string;
   price: string | null;
   organizer: string | null;
@@ -97,6 +98,15 @@ const ConcertDetail = () => {
       autres: "Autres",
     };
     return styles[style] || style;
+  };
+
+  const getVenueLabel = (venue: string) => {
+    const venues: Record<string, string> = {
+      bars: "Bars",
+      "ombres-electriques": "Ombres Électriques",
+      autres: "Autres",
+    };
+    return venues[venue] || venue;
   };
 
   const handleShare = async () => {
@@ -284,6 +294,15 @@ const ConcertDetail = () => {
                     {getStyleLabel(s)}
                   </span>
                 ))}
+              </div>
+            )}
+
+            {/* Venue tag in light blue */}
+            {event.venue && (
+              <div className="mt-3">
+                <span className="h-6 px-3 rounded-full bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300 text-xs font-medium inline-flex items-center">
+                  {getVenueLabel(event.venue)}
+                </span>
               </div>
             )}
 

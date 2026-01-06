@@ -11,46 +11,23 @@ type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
 const Index = () => {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
   const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
-  const [organizerFilters, setOrganizerFilters] = useState<string[]>([]);
+  const [venueFilters, setVenueFilters] = useState<string[]>([]);
   const [events, setEvents] = useState<{
     id: string;
     date: string;
     style: string | null;
-    organizer: string | null;
+    venue: string | null;
   }[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
       const { data } = await supabase
         .from("events")
-        .select("id, date, style, organizer");
+        .select("id, date, style, venue");
       setEvents(data || []);
     };
     fetchEvents();
   }, []);
-
-  // Extract unique organizers
-  const organizers = useMemo(() => {
-    const uniqueOrganizers = new Set<string>();
-    events.forEach((event) => {
-      if (event.organizer && event.organizer.trim()) {
-        uniqueOrganizers.add(event.organizer.trim());
-      }
-    });
-    return Array.from(uniqueOrganizers).sort((a, b) => a.localeCompare(b, 'fr'));
-  }, [events]);
-
-  // Count events per organizer
-  const organizerCounts = useMemo(() => {
-    const counts: Record<string, number> = {};
-    events.forEach((event) => {
-      if (event.organizer && event.organizer.trim()) {
-        const org = event.organizer.trim();
-        counts[org] = (counts[org] || 0) + 1;
-      }
-    });
-    return counts;
-  }, [events]);
 
   const counts = useMemo(() => {
     const today = new Date();
@@ -126,11 +103,11 @@ const Index = () => {
   const handleFilterChange = (
     newPeriodFilter: PeriodFilter,
     newStyleFilters: StyleFilter[],
-    newOrganizerFilters: string[]
+    newVenueFilters: string[]
   ) => {
     setPeriodFilter(newPeriodFilter);
     setStyleFilters(newStyleFilters);
-    setOrganizerFilters(newOrganizerFilters);
+    setVenueFilters(newVenueFilters);
   };
 
   return (
@@ -148,8 +125,6 @@ const Index = () => {
               <FilterPills 
                 onFilterChange={handleFilterChange} 
                 counts={counts} 
-                organizers={organizers}
-                organizerCounts={organizerCounts}
               />
             </div>
           </div>
@@ -162,7 +137,7 @@ const Index = () => {
           <ConcertList 
             periodFilter={periodFilter} 
             styleFilters={styleFilters} 
-            organizerFilters={organizerFilters}
+            venueFilters={venueFilters}
           />
         </main>
 

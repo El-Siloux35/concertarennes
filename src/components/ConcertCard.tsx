@@ -7,6 +7,7 @@ export interface Concert {
   organizer: string;
   name: string;
   venue: string;
+  venueType?: string | null;
   date: string;
   price: string;
   imageUrl?: string | null;

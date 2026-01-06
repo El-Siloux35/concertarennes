@@ -10,10 +10,10 @@ type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
 interface ConcertListProps {
   periodFilter: PeriodFilter;
   styleFilters: StyleFilter[];
-  organizerFilters: string[];
+  venueFilters: string[];
 }
 
-const ConcertList = ({ periodFilter, styleFilters, organizerFilters }: ConcertListProps) => {
+const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListProps) => {
   const navigate = useNavigate();
   const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
@@ -36,6 +36,7 @@ const ConcertList = ({ periodFilter, styleFilters, organizerFilters }: ConcertLi
         organizer: event.organizer || "Organisateur",
         name: event.title,
         venue: event.location || "Lieu non spécifié",
+        venueType: event.venue || null,
         date: event.date,
         price: event.price || "Prix non spécifié",
         imageUrl: event.image_url,
@@ -102,10 +103,10 @@ const ConcertList = ({ periodFilter, styleFilters, organizerFilters }: ConcertLi
       });
     }
 
-    // Filter by organizers (multi-select)
-    if (organizerFilters.length > 0) {
+    // Filter by venue type
+    if (venueFilters.length > 0) {
       filtered = filtered.filter((concert) => {
-        return organizerFilters.includes(concert.organizer);
+        return concert.venueType && venueFilters.includes(concert.venueType);
       });
     }
 
@@ -119,7 +120,7 @@ const ConcertList = ({ periodFilter, styleFilters, organizerFilters }: ConcertLi
     }
 
     setFilteredConcerts(filtered);
-  }, [periodFilter, styleFilters, organizerFilters, allConcerts]);
+  }, [periodFilter, styleFilters, venueFilters, allConcerts]);
 
   if (loading) {
     return (
