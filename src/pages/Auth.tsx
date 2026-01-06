@@ -1,5 +1,5 @@
-import { X, AtSign, Mail, Lock, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { X, AtSign, Mail, Lock } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -8,7 +8,10 @@ import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  const from = (location.state as any)?.from as string | undefined;
   
   const [isLogin, setIsLogin] = useState(true);
   
@@ -49,7 +52,7 @@ const Auth = () => {
           description: "Bienvenue !",
         });
         
-        navigate("/home");
+        navigate(from ?? "/home");
       } else {
         // Sign up with email/password
         const { error } = await supabase.auth.signUp({
@@ -94,38 +97,31 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background px-4 flex flex-col">
-      {/* Close button - fixed at top */}
-      <div className="max-w-[700px] w-full mx-auto pt-4">
-        <div className="flex justify-end">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Fermer"
-          >
-            <X size={20} strokeWidth={2} />
-          </button>
-        </div>
-      </div>
+    <div className="min-h-[100dvh] bg-background px-4">
+      <header className="max-w-[700px] w-full mx-auto pt-4 flex justify-end">
+        <button
+          onClick={() => (from ? navigate(from) : navigate(-1))}
+          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+          aria-label="Fermer"
+        >
+          <X size={20} strokeWidth={2} />
+        </button>
+      </header>
 
-      {/* Centered content */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="max-w-[700px] w-full">
-          {/* Title */}
-          <div className="text-center mb-12">
+      <main className="max-w-[700px] w-full mx-auto pb-10 pt-6">
+        <section className="rounded-[20px] border bg-card text-card-foreground shadow-sm px-5 py-8">
+          <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-primary mb-2">
               {isLogin ? "Se connecter" : "Créer un compte"}
             </h1>
-            <p className="text-primary text-sm">
-              {isLogin 
+            <p className="text-primary/70 text-sm">
+              {isLogin
                 ? "Entrez vos identifiants pour continuer."
                 : "Remplissez le formulaire pour créer votre compte."}
             </p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Pseudo input - only for signup */}
             {!isLogin && (
               <div className="relative">
                 <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
@@ -141,7 +137,6 @@ const Auth = () => {
               </div>
             )}
 
-            {/* Email input */}
             <div className="relative">
               <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
                 <Mail size={20} strokeWidth={1.5} />
@@ -155,7 +150,6 @@ const Auth = () => {
               />
             </div>
 
-            {/* Password input */}
             <div>
               <div className="relative">
                 <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
@@ -176,20 +170,22 @@ const Auth = () => {
               )}
             </div>
 
-            {/* Submit button */}
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base mt-8 hover:bg-accent"
+              className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base mt-6 hover:bg-accent"
             >
-              {isLoading 
-                ? (isLogin ? "Connexion..." : "Création...") 
-                : (isLogin ? "Se connecter" : "Créer mon compte")}
+              {isLoading
+                ? isLogin
+                  ? "Connexion..."
+                  : "Création..."
+                : isLogin
+                  ? "Se connecter"
+                  : "Créer mon compte"}
             </Button>
           </form>
 
-          {/* Toggle link */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-8">
             <button
               type="button"
               onClick={() => {
@@ -201,8 +197,8 @@ const Auth = () => {
               {isLogin ? "créer un compte" : "j'ai déjà un compte"}
             </button>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 };
