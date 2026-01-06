@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { X, Lock, Mail, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
@@ -117,16 +117,20 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   };
 
 const content = (
-    <div className="px-8 pb-8 pt-8">
+    <div className="px-8 pb-8 pt-10">
       {/* Icon + Title */}
       <div className="flex flex-col items-center mb-6">
         <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
           <Lock size={18} className="text-accent-foreground" />
         </div>
-        <h2 className="text-[20px] font-bold text-primary">Espace orga</h2>
-        <p className="text-primary/70 text-[16px] text-center mt-2 max-w-[300px] leading-relaxed">
-          Connexion en tant qu'organisateur d'évènements
-        </p>
+        <h2 className="text-[20px] font-bold text-primary">
+          {isLogin ? "Espace orga" : "Créer un compte"}
+        </h2>
+        {isLogin && (
+          <p className="text-primary/70 text-[16px] text-center mt-2 max-w-[300px] leading-relaxed">
+            Connexion en tant qu'organisateur d'évènements
+          </p>
+        )}
       </div>
 
       {/* Form */}
@@ -202,17 +206,31 @@ const content = (
           </Button>
 
           {/* Toggle link as button */}
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setPassword("");
-            }}
-            className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary"
-          >
-            {isLogin ? "Créer un compte orga" : "J'ai déjà un compte orga"}
-          </Button>
+          {isLogin ? (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setIsLogin(false);
+                setPassword("");
+              }}
+              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-sm hover:bg-secondary"
+            >
+              Créer un compte orga
+            </Button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setIsLogin(true);
+                setPassword("");
+              }}
+              className="flex items-center justify-center gap-2 text-primary font-medium text-sm mt-2"
+            >
+              <ArrowLeft size={16} strokeWidth={2} />
+              J'ai déjà un compte orga
+            </button>
+          )}
         </div>
       </form>
     </div>
@@ -241,7 +259,7 @@ const content = (
   // Desktop: Centered dialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] p-0 gap-0">
+      <DialogContent className="sm:max-w-[400px] p-0 gap-0 rounded-[32px]">
         {content}
       </DialogContent>
     </Dialog>
