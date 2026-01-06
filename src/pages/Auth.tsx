@@ -152,9 +152,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background animate-slide-up">
+    <div className="fixed inset-x-0 bottom-0 top-16 z-50 bg-background rounded-t-[20px] shadow-2xl animate-slide-up flex flex-col">
       {/* Close button */}
-      <header className="px-4 pt-4 flex justify-start">
+      <header className="px-4 pt-4 flex justify-start shrink-0">
         <button
           onClick={() => (from ? navigate(from) : navigate(-1))}
           className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
@@ -164,8 +164,8 @@ const Auth = () => {
         </button>
       </header>
 
-      {/* Content */}
-      <main className="px-8 pt-10 pb-10 max-w-md mx-auto">
+      {/* Content - centered */}
+      <main className="flex-1 flex flex-col justify-center px-8 pb-10 max-w-md mx-auto w-full overflow-y-auto">
         {/* Icon + Title */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
