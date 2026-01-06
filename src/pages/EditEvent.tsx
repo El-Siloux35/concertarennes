@@ -12,8 +12,10 @@ import { format, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import { resizeImage } from "@/lib/imageUtils";
 import StyleSelector from "@/components/StyleSelector";
+import VenueSelector from "@/components/VenueSelector";
 
 type StyleOption = "concert" | "projection" | "exposition" | "autres";
+type VenueOption = "bars" | "ombres-electriques" | "autres";
 
 const EditEvent = () => {
   const navigate = useNavigate();
@@ -26,7 +28,8 @@ const EditEvent = () => {
   const [organizer, setOrganizer] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [venue, setVenue] = useState("");
+  const [location, setLocation] = useState("");
+  const [venueType, setVenueType] = useState<VenueOption | null>(null);
   const [price, setPrice] = useState("");
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [contact, setContact] = useState("");
@@ -60,7 +63,8 @@ const EditEvent = () => {
       setOrganizer(data.organizer || "");
       setName(data.title || "");
       setDescription(data.description || "");
-      setVenue(data.location || "");
+      setLocation(data.location || "");
+      setVenueType(data.venue as VenueOption | null);
       setPrice(data.price || "");
       setDate(data.date ? parseISO(data.date) : undefined);
       setContact(data.contact || "");
@@ -93,7 +97,7 @@ const EditEvent = () => {
   };
 
   const handleSubmit = async () => {
-    if (!organizer.trim() || !name.trim() || !venue.trim() || !date) {
+    if (!organizer.trim() || !name.trim() || !location.trim() || !date) {
       toast({
         title: "Erreur",
         description: "Veuillez remplir tous les champs obligatoires",
@@ -137,7 +141,8 @@ const EditEvent = () => {
           title: name.trim(),
           organizer: organizer.trim(),
           description: description.trim() || null,
-          location: venue.trim(),
+          location: location.trim(),
+          venue: venueType,
           price: price.trim() || null,
           date: format(date, "yyyy-MM-dd"),
           contact: contact.trim() || null,
@@ -252,12 +257,15 @@ const EditEvent = () => {
           {/* Style selector - now supports multi-select */}
           <StyleSelector value={styles} onChange={setStyles} maxSelection={3} />
 
+          {/* Venue type selector */}
+          <VenueSelector value={venueType} onChange={setVenueType} />
+
           <div className="relative">
             <MapPin size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
             <Input
-              placeholder="lieu"
-              value={venue}
-              onChange={(e) => setVenue(e.target.value)}
+              placeholder="Adresse / lieu"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
               className="h-14 rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 pl-12 pr-4"
             />
           </div>

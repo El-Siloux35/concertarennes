@@ -16,9 +16,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
+type VenueFilter = "bars" | "ombres-electriques" | "autres";
 
 interface FilterPillsProps {
-  onFilterChange: (periodFilter: PeriodFilter, styleFilters: StyleFilter[], organizerFilters: string[]) => void;
+  onFilterChange: (periodFilter: PeriodFilter, styleFilters: StyleFilter[], venueFilters: string[]) => void;
   counts: {
     all: number;
     today: number;
@@ -30,22 +31,20 @@ interface FilterPillsProps {
     exposition: number;
     autres: number;
   };
-  organizers: string[];
-  organizerCounts: Record<string, number>;
 }
 
-const FilterPills = ({ onFilterChange, counts, organizers, organizerCounts }: FilterPillsProps) => {
+const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
   const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
-  const [organizerFilters, setOrganizerFilters] = useState<string[]>([]);
+  const [venueFilters, setVenueFilters] = useState<VenueFilter[]>([]);
   const [periodOpen, setPeriodOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
-  const [organizerOpen, setOrganizerOpen] = useState(false);
+  const [venueOpen, setVenueOpen] = useState(false);
   const isMobile = useIsMobile();
 
   const handlePeriodChange = (filter: PeriodFilter) => {
     setPeriodFilter(filter);
-    onFilterChange(filter, styleFilters, organizerFilters);
+    onFilterChange(filter, styleFilters, venueFilters);
     setPeriodOpen(false);
   };
 
@@ -59,24 +58,24 @@ const FilterPills = ({ onFilterChange, counts, organizers, organizerCounts }: Fi
       newFilters = [...styleFilters, filter];
     }
     setStyleFilters(newFilters);
-    onFilterChange(periodFilter, newFilters, organizerFilters);
+    onFilterChange(periodFilter, newFilters, venueFilters);
   };
 
-  const handleOrganizerToggle = (organizer: string) => {
-    let newFilters: string[];
-    if (organizerFilters.includes(organizer)) {
-      newFilters = organizerFilters.filter(o => o !== organizer);
+  const handleVenueToggle = (venue: VenueFilter) => {
+    let newFilters: VenueFilter[];
+    if (venueFilters.includes(venue)) {
+      newFilters = venueFilters.filter(v => v !== venue);
     } else {
-      newFilters = [...organizerFilters, organizer];
+      newFilters = [...venueFilters, venue];
     }
-    setOrganizerFilters(newFilters);
+    setVenueFilters(newFilters);
     onFilterChange(periodFilter, styleFilters, newFilters);
   };
 
   const handleAllClick = () => {
     setPeriodFilter("all");
     setStyleFilters([]);
-    setOrganizerFilters([]);
+    setVenueFilters([]);
     onFilterChange("all", [], []);
   };
 
@@ -94,6 +93,12 @@ const FilterPills = ({ onFilterChange, counts, organizers, organizerCounts }: Fi
     { key: "autres", label: "Autres" },
   ];
 
+  const venueOptions: { key: VenueFilter; label: string }[] = [
+    { key: "bars", label: "Bars" },
+    { key: "ombres-electriques", label: "Ombres Électriques" },
+    { key: "autres", label: "Autres" },
+  ];
+
   const getPeriodLabel = () => {
     if (periodFilter === "all") return "Période";
     return periodOptions.find((o) => o.key === periodFilter)?.label || "Période";
@@ -107,15 +112,15 @@ const FilterPills = ({ onFilterChange, counts, organizers, organizerCounts }: Fi
     return `${styleFilters.length} styles`;
   };
 
-  const getOrganizerLabel = () => {
-    if (organizerFilters.length === 0) return "Organisateur";
-    if (organizerFilters.length === 1) {
-      return organizerFilters[0];
+  const getVenueLabel = () => {
+    if (venueFilters.length === 0) return "Lieux";
+    if (venueFilters.length === 1) {
+      return venueOptions.find((o) => o.key === venueFilters[0])?.label || "Lieux";
     }
-    return `${organizerFilters.length} orgas`;
+    return `${venueFilters.length} lieux`;
   };
 
-  const isAllActive = periodFilter === "all" && styleFilters.length === 0 && organizerFilters.length === 0;
+  const isAllActive = periodFilter === "all" && styleFilters.length === 0 && venueFilters.length === 0;
 
   const getPeriodCount = (period: PeriodFilter) => {
     return counts[period] || 0;
@@ -190,38 +195,29 @@ const FilterPills = ({ onFilterChange, counts, organizers, organizerCounts }: Fi
     </div>
   );
 
-  // Organizer filter content (shared between drawer and popover)
-  const OrganizerContent = () => (
-    <div className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
-      {organizers.map((organizer) => {
-        const isSelected = organizerFilters.includes(organizer);
+  // Venue filter content
+  const VenueContent = () => (
+    <div className="flex flex-col gap-1">
+      {venueOptions.map((option) => {
+        const isSelected = venueFilters.includes(option.key);
         return (
           <button
-            key={organizer}
-            onClick={() => handleOrganizerToggle(organizer)}
-            className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center justify-between ${
+            key={option.key}
+            onClick={() => handleVenueToggle(option.key)}
+            className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center gap-2 ${
               isSelected
                 ? "bg-primary text-primary-foreground"
                 : "text-primary hover:bg-primary/10"
             }`}
           >
-            <div className="flex items-center gap-2">
-              <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                isSelected
-                  ? "bg-primary-foreground border-primary-foreground"
-                  : "border-primary"
-              }`}>
-                {isSelected && <Check size={14} className="text-primary" />}
-              </div>
-              <span className="truncate max-w-[150px]">{organizer}</span>
-            </div>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
               isSelected
-                ? "bg-primary-foreground/20 text-primary-foreground"
-                : "bg-accent text-accent-foreground"
+                ? "bg-primary-foreground border-primary-foreground"
+                : "border-primary"
             }`}>
-              {organizerCounts[organizer] || 0}
-            </span>
+              {isSelected && <Check size={14} className="text-primary" />}
+            </div>
+            <span>{option.label}</span>
           </button>
         );
       })}
@@ -334,50 +330,48 @@ const FilterPills = ({ onFilterChange, counts, organizers, organizerCounts }: Fi
           </Popover>
         )}
 
-        {/* Organisateur - Drawer on mobile, Popover on desktop */}
-        {organizers.length > 0 && (
-          isMobile ? (
-            <Drawer open={organizerOpen} onOpenChange={setOrganizerOpen}>
-              <DrawerTrigger asChild>
-                <button
-                  className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
-                    organizerFilters.length > 0
-                      ? "bg-primary text-primary-foreground"
-                      : "border-2 border-primary text-primary bg-transparent"
-                  }`}
-                >
-                  {getOrganizerLabel()}
-                  <ChevronDown size={16} className="ml-1" />
-                </button>
-              </DrawerTrigger>
-              <DrawerContent className="bg-background border-t-2 border-primary">
-                <DrawerHeader>
-                  <DrawerTitle className="text-primary">Organisateur</DrawerTitle>
-                </DrawerHeader>
-                <div className="px-4 pb-8">
-                  <OrganizerContent />
-                </div>
-              </DrawerContent>
-            </Drawer>
-          ) : (
-            <Popover open={organizerOpen} onOpenChange={setOrganizerOpen}>
-              <PopoverTrigger asChild>
-                <button
-                  className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
-                    organizerFilters.length > 0
-                      ? "bg-primary text-primary-foreground"
-                      : "border-2 border-primary text-primary bg-transparent"
-                  }`}
-                >
-                  {getOrganizerLabel()}
-                  <ChevronDown size={16} className="ml-1" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
-                <OrganizerContent />
-              </PopoverContent>
-            </Popover>
-          )
+        {/* Lieux - Drawer on mobile, Popover on desktop */}
+        {isMobile ? (
+          <Drawer open={venueOpen} onOpenChange={setVenueOpen}>
+            <DrawerTrigger asChild>
+              <button
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                  venueFilters.length > 0
+                    ? "bg-primary text-primary-foreground"
+                    : "border-2 border-primary text-primary bg-transparent"
+                }`}
+              >
+                {getVenueLabel()}
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+            </DrawerTrigger>
+            <DrawerContent className="bg-background border-t-2 border-primary">
+              <DrawerHeader>
+                <DrawerTitle className="text-primary">Lieux</DrawerTitle>
+              </DrawerHeader>
+              <div className="px-4 pb-8">
+                <VenueContent />
+              </div>
+            </DrawerContent>
+          </Drawer>
+        ) : (
+          <Popover open={venueOpen} onOpenChange={setVenueOpen}>
+            <PopoverTrigger asChild>
+              <button
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                  venueFilters.length > 0
+                    ? "bg-primary text-primary-foreground"
+                    : "border-2 border-primary text-primary bg-transparent"
+                }`}
+              >
+                {getVenueLabel()}
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+              <VenueContent />
+            </PopoverContent>
+          </Popover>
         )}
       </div>
     </div>
