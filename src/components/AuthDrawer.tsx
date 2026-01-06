@@ -34,6 +34,8 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [visualViewportHeight, setVisualViewportHeight] = useState<number | null>(null);
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
 
   // Reset form when drawer closes
   useEffect(() => {
@@ -43,9 +45,43 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
       setEmail("");
       setPassword("");
       setShowPassword(false);
+      setVisualViewportHeight(null);
+      setKeyboardOffset(0);
     }
   }, [open]);
 
+  // Mobile keyboard avoidance: shrink the drawer to the visible viewport height
+  useEffect(() => {
+    if (!isMobile || !open) return;
+
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const update = () => {
+      setVisualViewportHeight(vv.height);
+      const bottom = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+      setKeyboardOffset(bottom);
+    };
+    update();
+
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, [isMobile, open]);
+
+  const handleFieldFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    // iOS: defer until after keyboard animation
+    window.setTimeout(() => {
+      e.currentTarget.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 50);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -202,6 +238,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
             placeholder="Pseudo ou Prénom"
             value={pseudo}
             onChange={(e) => setPseudo(e.target.value)}
+            onFocus={handleFieldFocus}
             className="h-14 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary mb-3"
           />
         )}
@@ -216,6 +253,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            onFocus={handleFieldFocus}
             className="h-14 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
         </div>
@@ -232,6 +270,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
                 placeholder="Mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onFocus={handleFieldFocus}
                 className="h-14 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
               />
               <button
@@ -331,7 +370,17 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="max-h-[90vh] overflow-y-auto">
+        <DrawerContent
+          className="overflow-y-auto transition-[bottom] duration-200"
+          style={
+            visualViewportHeight || keyboardOffset
+              ? {
+                  maxHeight: visualViewportHeight ? `${visualViewportHeight}px` : undefined,
+                  bottom: keyboardOffset ? `${keyboardOffset}px` : undefined,
+                }
+              : undefined
+          }
+        >
           <DrawerHeader className="flex justify-start pt-3 pb-1">
             <button
               onClick={() => onOpenChange(false)}
