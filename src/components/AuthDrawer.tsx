@@ -34,6 +34,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [visualViewportHeight, setVisualViewportHeight] = useState<number | null>(null);
   const [keyboardInset, setKeyboardInset] = useState(0);
 
   // Reset form when drawer closes
@@ -44,11 +45,12 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
       setEmail("");
       setPassword("");
       setShowPassword(false);
+      setVisualViewportHeight(null);
       setKeyboardInset(0);
     }
   }, [open]);
 
-  // Mobile keyboard: add scroll space so the focused input can move above the keyboard
+  // Mobile keyboard: rely on VisualViewport (iOS) to size the drawer and add scroll space.
   useEffect(() => {
     if (!isMobile || !open) return;
 
@@ -56,7 +58,9 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     if (!vv) return;
 
     const update = () => {
-      const inset = Math.max(0, window.innerHeight - vv.height);
+      setVisualViewportHeight(vv.height);
+      // Keyboard height/inset can be inferred from how much the visual viewport shrank + moved.
+      const inset = Math.max(0, window.innerHeight - (vv.height + vv.offsetTop));
       setKeyboardInset(inset);
     };
 
@@ -76,7 +80,8 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
     const scroll = () => {
       el.scrollIntoView({
         behavior: "auto",
-        block: "center",
+        block: "nearest",
+        inline: "nearest",
       });
     };
 
@@ -374,7 +379,10 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
       <Drawer open={open} onOpenChange={onOpenChange}>
         <DrawerContent
           className="flex flex-col overflow-hidden"
-          style={{ height: "100dvh", maxHeight: "100dvh" }}
+          style={{
+            height: visualViewportHeight ? `${visualViewportHeight}px` : "100dvh",
+            maxHeight: visualViewportHeight ? `${visualViewportHeight}px` : "100dvh",
+          }}
         >
           <DrawerHeader className="flex justify-start pt-3 pb-1 shrink-0">
             <button
