@@ -127,7 +127,7 @@ const content = (
           {isLogin ? "Connexion" : "Créer un compte"}
         </h2>
         {isLogin && (
-          <p className="text-primary/70 text-[16px] text-center mt-2 max-w-[300px] leading-relaxed">
+          <p className="text-primary/70 text-[14px] text-center mt-2 max-w-[300px] leading-relaxed">
             Connexion à mon espace orga
           </p>
         )}
@@ -194,7 +194,7 @@ const content = (
           <Button
             type="submit"
             disabled={isLoading}
-            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[16px] hover:bg-accent"
+            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] hover:bg-accent"
           >
             {isLoading
               ? isLogin
@@ -214,7 +214,7 @@ const content = (
                 setIsLogin(false);
                 setPassword("");
               }}
-              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[16px] hover:bg-secondary"
+              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px] hover:bg-secondary"
             >
               Créer un compte
             </Button>
