@@ -117,7 +117,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   };
 
 const content = (
-    <div className="px-5 pb-6 pt-6">
+    <div className="px-8 pb-8 pt-8">
       {/* Icon + Title */}
       <div className="flex flex-col items-center mb-6">
         <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
@@ -125,7 +125,7 @@ const content = (
         </div>
         <h2 className="text-[20px] font-bold text-primary">Espace orga</h2>
         <p className="text-primary/70 text-[16px] text-center mt-2 max-w-[300px] leading-relaxed">
-          Se connecter pour ajouter des évènements !
+          Connexion en tant qu'organisateur d'évènements
         </p>
       </div>
 
@@ -138,7 +138,7 @@ const content = (
             placeholder="Pseudo ou Prénom"
             value={pseudo}
             onChange={(e) => setPseudo(e.target.value)}
-            className="h-12 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary mb-4"
+            className="h-14 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary mb-3"
           />
         )}
 
@@ -152,12 +152,12 @@ const content = (
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            className="h-14 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
           />
         </div>
 
         {/* Password input */}
-        <div className="mt-4">
+        <div className="mt-3">
           <div className="relative">
             <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
               <Lock size={18} strokeWidth={1.5} />
@@ -167,7 +167,7 @@ const content = (
               placeholder="Mot de passe"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="h-12 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+              className="h-14 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
             />
             <button
               type="button"
@@ -185,7 +185,7 @@ const content = (
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-4 mt-6">
+        <div className="flex flex-col gap-3 mt-6">
           {/* Submit button */}
           <Button
             type="submit"
@@ -197,7 +197,7 @@ const content = (
                 ? "Connexion..."
                 : "Création..."
               : isLogin
-              ? "Faire une demande de compte"
+              ? "Me connecter"
               : "Créer mon compte"}
           </Button>
 
@@ -241,7 +241,7 @@ const content = (
   // Desktop: Centered dialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[380px] p-0 gap-0">
+      <DialogContent className="sm:max-w-[400px] p-0 gap-0">
         {content}
       </DialogContent>
     </Dialog>
