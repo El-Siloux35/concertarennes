@@ -19,6 +19,7 @@ interface Event {
   title: string;
   date: string;
   created_at: string;
+  is_draft: boolean;
 }
 const Compte = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Compte = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
+  const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "drafts">("upcoming");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
@@ -38,8 +39,10 @@ const Compte = () => {
   const [isEditingPseudo, setIsEditingPseudo] = useState(false);
   const [newPseudo, setNewPseudo] = useState("");
   const today = new Date().toISOString().split('T')[0];
-  const upcomingEvents = events.filter(e => e.date >= today);
-  const pastEvents = events.filter(e => e.date < today);
+  const publishedEvents = events.filter(e => !e.is_draft);
+  const upcomingEvents = publishedEvents.filter(e => e.date >= today);
+  const pastEvents = publishedEvents.filter(e => e.date < today);
+  const draftEvents = events.filter(e => e.is_draft);
   useEffect(() => {
     const {
       data: {
@@ -88,7 +91,7 @@ const Compte = () => {
     const {
       data,
       error
-    } = await supabase.from("events").select("id, title, date, created_at").eq("user_id", user.id).order("date", {
+    } = await supabase.from("events").select("id, title, date, created_at, is_draft").eq("user_id", user.id).order("date", {
       ascending: false
     });
     if (error) {
@@ -281,15 +284,26 @@ const Compte = () => {
         </div>
 
 
+        {/* Create Event Button - above events */}
+        <div className="mt-8 mb-6">
+          <Button onClick={() => navigate("/creer-evenement")} className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2">
+            <Plus size={20} strokeWidth={2} />
+            Créer un évènement
+          </Button>
+        </div>
+
         {/* Events Section */}
-        <div className="mt-8">
+        <div>
           {/* Tabs */}
-          <div className="flex justify-center gap-2 mb-4">
+          <div className="flex justify-center gap-2 mb-4 flex-wrap">
             <button onClick={() => setActiveTab("upcoming")} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "upcoming" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
               À venir ({upcomingEvents.length})
             </button>
             <button onClick={() => setActiveTab("past")} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "past" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
               Passés ({pastEvents.length})
+            </button>
+            <button onClick={() => setActiveTab("drafts")} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "drafts" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+              Brouillons ({draftEvents.length})
             </button>
           </div>
           
@@ -316,7 +330,7 @@ const Compte = () => {
                       </Button>
                     </div>
                   </div>)}
-              </div> : pastEvents.length === 0 ? <div className="text-center py-8 text-primary/60">
+              </div> : activeTab === "past" ? pastEvents.length === 0 ? <div className="text-center py-8 text-primary/60">
                 Aucun évènement passé
               </div> : <div className="flex flex-col gap-3">
                 {pastEvents.map(event => <div key={event.id} className="bg-card border-2 border-primary/50 rounded-2xl p-4 opacity-70">
@@ -338,15 +352,35 @@ const Compte = () => {
                       </Button>
                     </div>
                   </div>)}
+              </div> : draftEvents.length === 0 ? <div className="text-center py-8 text-primary/60">
+                Aucun brouillon
+              </div> : <div className="flex flex-col gap-3">
+                {draftEvents.map(event => <div key={event.id} className="bg-card border-2 border-dashed border-primary rounded-2xl p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-primary font-medium">{event.title || "Sans titre"}</h3>
+                          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded">Brouillon</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
+                          <Calendar size={14} />
+                          <span>{event.date ? new Date(event.date).toLocaleDateString("fr-FR") : "Date non définie"}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 mt-3 justify-end">
+                      <Button onClick={() => navigate(`/modifier-evenement/${event.id}?from=profile`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
+                        <Pencil size={16} />
+                      </Button>
+                      <Button onClick={() => {
+                setEventToDelete(event.id);
+                setShowDeleteEventModal(true);
+              }} variant="outline" className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0" aria-label="Supprimer">
+                        <Trash2 size={16} />
+                      </Button>
+                    </div>
+                  </div>)}
               </div>}
-        </div>
-
-        {/* Create Event Button - not fixed, after events */}
-        <div className="mt-6">
-          <Button onClick={() => navigate("/creer-evenement")} className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2">
-            <Plus size={20} strokeWidth={2} />
-            Créer un évènement
-          </Button>
         </div>
 
         {/* Logout Button */}

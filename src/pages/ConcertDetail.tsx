@@ -1,5 +1,5 @@
 import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart, Share2, Pencil, Trash2 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +25,8 @@ interface Event {
 const ConcertDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const fromPage = searchParams.get("from");
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [event, setEvent] = useState<Event | null>(null);
@@ -197,7 +199,7 @@ const ConcertDetail = () => {
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <div className="max-w-[900px] mx-auto p-4 flex justify-between items-center">
             <button
-              onClick={() => navigate("/home")}
+              onClick={() => navigate(fromPage === "favorites" ? "/favoris" : "/home")}
               className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >

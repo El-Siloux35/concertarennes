@@ -1,4 +1,4 @@
-import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
+import { X, MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,11 +14,16 @@ interface Event {
   image_url: string | null;
 }
 
+type FilterTab = "upcoming" | "past";
+
 const Favorites = () => {
   const navigate = useNavigate();
   const [favorites, setFavorites] = useState<string[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<FilterTab>("upcoming");
+
+  const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
     const storedFavorites = JSON.parse(localStorage.getItem("favorites") || "[]");
@@ -67,19 +72,49 @@ const Favorites = () => {
     });
   };
 
+  const upcomingEvents = events.filter(e => e.date >= today);
+  const pastEvents = events.filter(e => e.date < today);
+  const filteredEvents = activeTab === "upcoming" ? upcomingEvents : pastEvents;
+
   return (
     <div className="min-h-screen bg-background pb-8">
       <div className="max-w-[900px] mx-auto">
       {/* Header */}
       <div className="p-4 flex items-center gap-4">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/home")}
           className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-          aria-label="Retour"
+          aria-label="Fermer"
         >
-          <ChevronLeft size={24} strokeWidth={2} />
+          <X size={24} strokeWidth={2} />
         </button>
         <h1 className="text-xl font-bold text-primary">Mes favoris</h1>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="px-4 mb-4">
+        <div className="flex justify-center gap-2">
+          <button
+            onClick={() => setActiveTab("upcoming")}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeTab === "upcoming"
+                ? "bg-primary text-primary-foreground"
+                : "border-2 border-primary text-primary bg-transparent"
+            }`}
+          >
+            À venir ({upcomingEvents.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("past")}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              activeTab === "past"
+                ? "bg-primary text-primary-foreground"
+                : "border-2 border-primary text-primary bg-transparent"
+            }`}
+          >
+            Passés ({pastEvents.length})
+          </button>
+        </div>
       </div>
 
       {/* Favorites list */}
@@ -88,17 +123,23 @@ const Favorites = () => {
           <div className="text-center py-12">
             <p className="text-primary/60">Chargement...</p>
           </div>
-        ) : events.length === 0 ? (
+        ) : filteredEvents.length === 0 ? (
           <div className="text-center py-12">
             <Heart size={48} className="mx-auto text-primary/30 mb-4" />
-            <p className="text-primary/60">Aucun favori pour le moment</p>
+            <p className="text-primary/60">
+              {activeTab === "upcoming" 
+                ? "Aucun évènement à venir dans vos favoris" 
+                : "Aucun évènement passé dans vos favoris"}
+            </p>
           </div>
         ) : (
-          events.map((event) => (
+          filteredEvents.map((event) => (
             <article
               key={event.id}
-              onClick={() => navigate(`/concert/${event.id}`)}
-              className="bg-card border-2 border-primary rounded-2xl p-4 cursor-pointer relative"
+              onClick={() => navigate(`/concert/${event.id}?from=favorites`)}
+              className={`bg-card border-2 border-primary rounded-2xl p-4 cursor-pointer relative ${
+                activeTab === "past" ? "opacity-70" : ""
+              }`}
             >
               {/* Remove favorite button */}
               <button
