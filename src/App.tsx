@@ -14,6 +14,7 @@ import Compte from "./pages/Compte";
 import CreateEvent from "./pages/CreateEvent";
 import EditEvent from "./pages/EditEvent";
 import useThemeColor from "./hooks/useThemeColor";
+import SeoManager from "./components/SeoManager";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <SeoManager />
             <Routes>
               <Route path="/" element={<Splash />} />
               <Route path="/home" element={<Index />} />

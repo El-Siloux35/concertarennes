@@ -1,12 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Heart, User, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import ThemeToggle from "./ThemeToggle";
 import AuthDrawer from "./AuthDrawer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isMobile = useIsMobile();
+
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);
@@ -54,7 +59,13 @@ const Header = () => {
           </Link>
         ) : (
           <button
-            onClick={() => setAuthOpen(true)}
+            onClick={() => {
+              if (isMobile) {
+                navigate("/auth", { state: { from: location.pathname } });
+                return;
+              }
+              setAuthOpen(true);
+            }}
             className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
           >
             <Lock size={18} strokeWidth={2} />
@@ -75,7 +86,7 @@ const Header = () => {
           )}
         </Link>
       </header>
-      <AuthDrawer open={authOpen} onOpenChange={setAuthOpen} />
+      {!isMobile && <AuthDrawer open={authOpen} onOpenChange={setAuthOpen} />}
     </>
   );
 };
