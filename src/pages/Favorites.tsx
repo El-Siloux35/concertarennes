@@ -147,9 +147,12 @@ const Favorites = () => {
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
               <ChevronLeft size={24} className="text-primary-foreground" />
             </div>
-            <span className="font-medium">Mes favoris</span>
+            <span className="font-medium">Retour</span>
           </button>
         </header>
+
+        {/* Page Title */}
+        <h1 className="text-xl font-bold text-primary text-center mb-4">Mes favoris</h1>
 
         {/* Filter Tabs */}
         <div className="px-4 mb-4">
