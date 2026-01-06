@@ -117,7 +117,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   };
 
 const content = (
-    <div className="px-8 pb-8 pt-14">
+    <div className="px-8 pb-[38px] pt-14">
       {/* Icon + Title */}
       <div className="flex flex-col items-center mb-6">
         <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
@@ -225,7 +225,7 @@ const content = (
                 setIsLogin(true);
                 setPassword("");
               }}
-              className="flex items-center justify-center text-primary font-medium text-sm mt-5"
+              className="flex items-center justify-center text-primary font-medium text-sm mt-6"
             >
               J'ai déjà un compte
             </button>
