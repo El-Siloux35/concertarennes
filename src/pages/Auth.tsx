@@ -1,4 +1,4 @@
-import { X, AtSign, Mail, Lock } from "lucide-react";
+import { X, Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,27 +6,62 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+type AuthMode = "login" | "signup" | "forgot-password";
+
 const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
 
   const from = (location.state as any)?.from as string | undefined;
-  
-  const [isLogin, setIsLogin] = useState(true);
-  
-  // Form states
+
+  const [mode, setMode] = useState<AuthMode>("login");
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
-  // UI states
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !password || (!isLogin && !pseudo)) {
+
+    if (mode === "forgot-password") {
+      if (!email) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez entrer votre email",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/home`,
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Email envoyé",
+          description: "Vérifiez votre boîte mail pour réinitialiser votre mot de passe.",
+        });
+        setMode("login");
+        setEmail("");
+      } catch (error: any) {
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible d'envoyer l'email de réinitialisation.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+      return;
+    }
+
+    if (!email || !password || (mode === "signup" && !pseudo)) {
       toast({
         title: "Erreur",
         description: "Veuillez remplir tous les champs",
@@ -36,10 +71,9 @@ const Auth = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
-      if (isLogin) {
-        // Login with email/password
+      if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -50,18 +84,18 @@ const Auth = () => {
         toast({
           title: "Connexion réussie",
           description: "Bienvenue !",
+          duration: 2500,
         });
-        
+
         navigate(from ?? "/home");
       } else {
-        // Sign up with email/password
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
             data: { pseudo },
-          }
+          },
         });
 
         if (error) throw error;
@@ -70,14 +104,13 @@ const Auth = () => {
           title: "Compte créé",
           description: "Vous pouvez maintenant vous connecter.",
         });
-        
-        // Switch to login mode after successful signup
-        setIsLogin(true);
+
+        setMode("login");
         setPassword("");
       }
     } catch (error: any) {
       let message = error.message;
-      
+
       if (error.message?.includes("Invalid login credentials")) {
         message = "Email ou mot de passe incorrect.";
       } else if (error.message?.includes("User already registered")) {
@@ -85,7 +118,7 @@ const Auth = () => {
       } else if (error.message?.includes("Password should be at least")) {
         message = "Le mot de passe doit contenir au moins 6 caractères.";
       }
-      
+
       toast({
         title: "Erreur",
         description: message,
@@ -96,108 +129,185 @@ const Auth = () => {
     }
   };
 
+  const getTitle = () => {
+    switch (mode) {
+      case "login":
+        return "Connexion";
+      case "signup":
+        return "Créer un compte";
+      case "forgot-password":
+        return "Mot de passe oublié";
+    }
+  };
+
+  const getSubtitle = () => {
+    switch (mode) {
+      case "login":
+        return "Connexion à mon espace orga";
+      case "forgot-password":
+        return "Entrez votre email pour recevoir un lien de réinitialisation";
+      default:
+        return null;
+    }
+  };
+
   return (
-    <div className="min-h-[100dvh] bg-background px-4">
-      <header className="max-w-[700px] w-full mx-auto pt-4 flex justify-end">
+    <div className="fixed inset-0 z-50 bg-background animate-slide-up">
+      {/* Close button */}
+      <header className="px-4 pt-4 flex justify-start">
         <button
           onClick={() => (from ? navigate(from) : navigate(-1))}
-          className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+          className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
           aria-label="Fermer"
         >
-          <X size={20} strokeWidth={2} />
+          <X size={18} strokeWidth={2} />
         </button>
       </header>
 
-      <main className="max-w-[700px] w-full mx-auto pb-10 pt-6">
-        <section className="rounded-[20px] border bg-card text-card-foreground shadow-sm px-5 py-8">
-          <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-primary mb-2">
-              {isLogin ? "Se connecter" : "Créer un compte"}
-            </h1>
-            <p className="text-primary/70 text-sm">
-              {isLogin
-                ? "Entrez vos identifiants pour continuer."
-                : "Remplissez le formulaire pour créer votre compte."}
+      {/* Content */}
+      <main className="px-8 pt-10 pb-10 max-w-md mx-auto">
+        {/* Icon + Title */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
+            <Lock size={18} className="text-accent-foreground" />
+          </div>
+          <h1 className="text-[20px] font-bold text-primary">{getTitle()}</h1>
+          {getSubtitle() && (
+            <p className="text-primary/70 text-[14px] text-center mt-2 max-w-[300px] leading-relaxed">
+              {getSubtitle()}
             </p>
+          )}
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          {/* Pseudo input - only for signup */}
+          {mode === "signup" && (
+            <Input
+              type="text"
+              placeholder="Pseudo ou Prénom"
+              value={pseudo}
+              onChange={(e) => setPseudo(e.target.value)}
+              className="h-14 text-sm rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary mb-3"
+            />
+          )}
+
+          {/* Email input */}
+          <div className="relative">
+            <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
+              <Mail size={18} strokeWidth={1.5} />
+            </div>
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="h-14 text-sm pl-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
+          {/* Password input - hide for forgot password */}
+          {mode !== "forgot-password" && (
+            <div className="mt-3">
               <div className="relative">
-                <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-                  <AtSign size={20} strokeWidth={1.5} />
+                <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
+                  <Lock size={18} strokeWidth={1.5} />
                 </div>
                 <Input
-                  type="text"
-                  placeholder="Pseudo ou Prénom"
-                  value={pseudo}
-                  onChange={(e) => setPseudo(e.target.value)}
-                  className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
-                />
-              </div>
-            )}
-
-            <div className="relative">
-              <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-                <Mail size={20} strokeWidth={1.5} />
-              </div>
-              <Input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
-              />
-            </div>
-
-            <div>
-              <div className="relative">
-                <div className="absolute left-4 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-                  <Lock size={20} strokeWidth={1.5} />
-                </div>
-                <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Mot de passe"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-14 pl-12 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
+                  className="h-14 text-sm pl-10 pr-10 rounded-[8px] border-2 border-primary bg-transparent text-primary placeholder:text-primary/60 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-primary"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-[50%] -translate-y-1/2 text-primary"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
-              {!isLogin && (
-                <p className="text-primary/60 text-xs mt-2 ml-1">
+              {mode === "signup" && (
+                <p className="text-primary/60 text-[11px] mt-1.5 ml-1">
                   Minimum 6 caractères
                 </p>
               )}
             </div>
+          )}
 
+          {/* Forgot password link - only for login */}
+          {mode === "login" && (
+            <button
+              type="button"
+              onClick={() => setMode("forgot-password")}
+              className="text-primary/70 text-[13px] mt-2 text-right hover:text-primary transition-colors"
+            >
+              Mot de passe oublié ?
+            </button>
+          )}
+
+          {/* Buttons */}
+          <div className="flex flex-col gap-3 mt-6">
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base mt-6 hover:bg-accent"
+              className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] hover:bg-accent"
             >
               {isLoading
-                ? isLogin
-                  ? "Connexion..."
-                  : "Création..."
-                : isLogin
-                  ? "Se connecter"
-                  : "Créer mon compte"}
+                ? mode === "forgot-password"
+                  ? "Envoi..."
+                  : mode === "login"
+                    ? "Connexion..."
+                    : "Création..."
+                : mode === "forgot-password"
+                  ? "Envoyer le lien"
+                  : mode === "login"
+                    ? "Connexion"
+                    : "Créer mon compte"}
             </Button>
-          </form>
 
-          <div className="text-center mt-8">
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setPassword("");
-              }}
-              className="text-primary underline text-sm font-medium"
-            >
-              {isLogin ? "créer un compte" : "j'ai déjà un compte"}
-            </button>
+            {mode === "login" && (
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setMode("signup");
+                  setPassword("");
+                }}
+                className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px] hover:bg-secondary"
+              >
+                Créer un compte
+              </Button>
+            )}
+
+            {mode === "signup" && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("login");
+                  setPassword("");
+                }}
+                className="flex items-center justify-center text-primary font-medium text-sm mt-6"
+              >
+                J'ai déjà un compte
+              </button>
+            )}
+
+            {mode === "forgot-password" && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("login");
+                  setEmail("");
+                }}
+                className="flex items-center justify-center text-primary font-medium text-sm mt-2"
+              >
+                Retour à la connexion
+              </button>
+            )}
           </div>
-        </section>
+        </form>
       </main>
     </div>
   );
