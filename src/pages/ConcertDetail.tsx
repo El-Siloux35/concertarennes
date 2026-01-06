@@ -217,88 +217,90 @@ const ConcertDetail = () => {
         {/* Spacer for fixed header */}
         <div className="h-20"></div>
 
-        {/* Concert image */}
-        <div className="mb-4">
-          <div 
-            className="w-full overflow-hidden bg-muted"
-            style={{ minHeight: event.image_url ? "auto" : "300px" }}
-          >
-            {event.image_url ? (
-              <img
-                src={event.image_url}
-                alt={event.title}
-                className="w-full h-auto object-cover"
-              />
-            ) : (
-              <div className="w-full h-[300px] flex items-center justify-center">
-                <span className="text-primary/50">Pas d'image</span>
+        {/* Two-column layout on desktop, single column on mobile */}
+        <div className="md:flex md:gap-6 px-4">
+          {/* Left column - Image (400px on desktop) */}
+          <div className="md:w-[400px] md:flex-shrink-0 mb-4 md:mb-0">
+            <div 
+              className="w-full overflow-hidden bg-muted"
+              style={{ minHeight: event.image_url ? "auto" : "300px" }}
+            >
+              {event.image_url ? (
+                <img
+                  src={event.image_url}
+                  alt={event.title}
+                  className="w-full h-auto object-cover"
+                />
+              ) : (
+                <div className="w-full h-[300px] flex items-center justify-center">
+                  <span className="text-primary/50">Pas d'image</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right column - Content */}
+          <div className="md:flex-1">
+            {/* Organizer badge */}
+            <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
+              {event.organizer || "Organisateur"}
+            </div>
+
+            {/* Concert title */}
+            <h1 className="text-xl font-semibold text-primary leading-tight mb-3">
+              {event.title}
+            </h1>
+
+            {/* Description */}
+            {event.description && (
+              <p className="text-primary text-sm leading-relaxed mb-6 whitespace-pre-line">
+                {event.description}
+              </p>
+            )}
+
+            {/* Venue */}
+            <div className="flex items-center text-primary text-sm gap-2 mb-2">
+              <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
+              <span>{event.location || "Lieu non spécifié"}</span>
+            </div>
+
+            {/* Date and price */}
+            <div className="flex items-center gap-4 text-primary text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <span>{formatDate(event.date)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <span>{event.price || "Prix non spécifié"}</span>
+              </div>
+            </div>
+
+            {/* Style tags */}
+            {styleArray.length > 0 && (
+              <div className="mt-6 flex flex-wrap gap-2">
+                {styleArray.map((s) => (
+                  <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
+                    {getStyleLabel(s)}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Delete button if owner or admin */}
+            {canEdit && (
+              <div className="mt-12">
+                <Button
+                  onClick={() => setShowDeleteModal(true)}
+                  variant="destructive"
+                  className="gap-2"
+                >
+                  <Trash2 size={20} />
+                  Supprimer
+                </Button>
               </div>
             )}
           </div>
-        </div>
-
-        {/* Content */}
-        <div className="px-4">
-          {/* Organizer badge */}
-          <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
-            {event.organizer || "Organisateur"}
-          </div>
-
-          {/* Concert title */}
-          <h1 className="text-xl font-semibold text-primary leading-tight mb-3">
-            {event.title}
-          </h1>
-
-
-          {/* Description */}
-          {event.description && (
-            <p className="text-primary text-sm leading-relaxed mb-6 whitespace-pre-line">
-              {event.description}
-            </p>
-          )}
-
-          {/* Venue */}
-          <div className="flex items-center text-primary text-sm gap-2 mb-2">
-            <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
-            <span>{event.location || "Lieu non spécifié"}</span>
-          </div>
-
-          {/* Date and price */}
-          <div className="flex items-center gap-4 text-primary text-sm">
-            <div className="flex items-center gap-2">
-              <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
-              <span>{formatDate(event.date)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
-              <span>{event.price || "Prix non spécifié"}</span>
-            </div>
-          </div>
-
-          {/* Style tags */}
-          {styleArray.length > 0 && (
-            <div className="mt-6 flex flex-wrap gap-2">
-              {styleArray.map((s) => (
-                <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
-                  {getStyleLabel(s)}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Delete button if owner or admin */}
-          {canEdit && (
-            <div className="mt-12">
-              <Button
-                onClick={() => setShowDeleteModal(true)}
-                variant="destructive"
-                className="gap-2"
-              >
-                <Trash2 size={20} />
-                Supprimer
-              </Button>
-            </div>
-          )}
         </div>
 
         {/* Floating action buttons */}
