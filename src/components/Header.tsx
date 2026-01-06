@@ -58,7 +58,7 @@ const Header = () => {
             className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
           >
             <Lock size={18} strokeWidth={2} />
-            Orga
+            Connexion orga
           </button>
         )}
         <ThemeToggle />
