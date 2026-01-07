@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ConfirmModal from "@/components/ConfirmModal";
 import EventEmptyState from "@/components/EventEmptyState";
 import { useToast } from "@/hooks/use-toast";
+import Footer from "@/components/Footer";
 interface Profile {
   id: string;
   pseudo: string | null;
@@ -255,7 +256,11 @@ const Compte = () => {
         <div className="flex flex-col items-center mt-6">
           <div className="relative">
             <Avatar className="w-40 h-40 border-4 border-card">
-              <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
+              <AvatarImage 
+                src={profile?.avatar_url || undefined} 
+                alt={displayName} 
+                className="object-cover"
+              />
               <AvatarFallback className="bg-card text-primary text-4xl">
                 {displayName.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -397,6 +402,8 @@ const Compte = () => {
             Supprimer mon compte
           </button>
         </div>
+        
+        <Footer />
       </div>
 
       {/* Modals */}

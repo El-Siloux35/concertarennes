@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
+import Footer from "@/components/Footer";
 
 interface Event {
   id: string;
@@ -343,6 +344,10 @@ const ConcertDetail = () => {
               Obtenir plus d'infos
             </Button>
           )}
+        </div>
+
+        <div className="px-4">
+          <Footer />
         </div>
       </div>
 

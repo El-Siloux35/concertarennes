@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import Footer from "@/components/Footer";
 
 interface Event {
   id: string;
@@ -260,6 +261,7 @@ const Favorites = () => {
             ))
           )}
         </div>
+        <Footer />
       </div>
     </div>
   );

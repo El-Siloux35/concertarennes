@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check } from "lucide-react";
+import { ChevronLeft, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check, Send, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -39,6 +39,7 @@ const EditEvent = () => {
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isDraft, setIsDraft] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -74,6 +75,7 @@ const EditEvent = () => {
         setStyles(styleArray);
       }
       setExistingImageUrl(data.image_url);
+      setIsDraft(data.is_draft);
       setLoading(false);
     };
 
@@ -96,11 +98,33 @@ const EditEvent = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!organizer.trim() || !name.trim() || !location.trim() || !date) {
+  const handleSubmit = async (saveAsDraft: boolean = false, publish: boolean = false) => {
+    // For drafts, only require name
+    if (!saveAsDraft && !publish) {
+      // Regular save for non-draft
+      if (!organizer.trim() || !name.trim() || !location.trim() || !date) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez remplir tous les champs obligatoires",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
+    if (publish && (!organizer.trim() || !name.trim() || !location.trim() || !date)) {
       toast({
         title: "Erreur",
-        description: "Veuillez remplir tous les champs obligatoires",
+        description: "Veuillez remplir tous les champs obligatoires pour publier",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (saveAsDraft && !name.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez au moins donner un nom à l'évènement",
         variant: "destructive",
       });
       return;
@@ -139,15 +163,16 @@ const EditEvent = () => {
         .from("events")
         .update({
           title: name.trim(),
-          organizer: organizer.trim(),
+          organizer: organizer.trim() || null,
           description: description.trim() || null,
-          location: location.trim(),
+          location: location.trim() || null,
           venue: venueType,
           price: price.trim() || null,
-          date: format(date, "yyyy-MM-dd"),
+          date: date ? format(date, "yyyy-MM-dd") : new Date().toISOString().split('T')[0],
           contact: contact.trim() || null,
           image_url: imageUrl,
           style: styles.length > 0 ? styles.join(",") : null,
+          is_draft: saveAsDraft ? true : publish ? false : isDraft,
         })
         .eq("id", id);
 
@@ -155,13 +180,30 @@ const EditEvent = () => {
         throw error;
       }
 
-      toast({
-        title: "Succès",
-        description: "Évènement modifié avec succès",
-      });
-
-      // Always navigate to home after editing
-      navigate("/home");
+      if (saveAsDraft) {
+        toast({
+          title: "Succès",
+          description: "Brouillon enregistré",
+        });
+        navigate("/compte");
+      } else if (publish) {
+        toast({
+          title: "Succès",
+          description: "Évènement publié !",
+        });
+        navigate(`/concert/${id}`);
+      } else {
+        toast({
+          title: "Succès",
+          description: "Évènement modifié avec succès",
+        });
+        // Navigate based on origin
+        if (fromPage === "profile") {
+          navigate("/compte");
+        } else {
+          navigate(-1);
+        }
+      }
     } catch (error) {
       console.error("Error updating event:", error);
       toast({
@@ -175,8 +217,12 @@ const EditEvent = () => {
   };
 
   const handleClose = () => {
-    // Navigate to home instead of going back
-    navigate("/home");
+    // Navigate based on origin
+    if (fromPage === "profile") {
+      navigate("/compte");
+    } else {
+      navigate(-1);
+    }
   };
 
   if (loading) {
@@ -190,17 +236,19 @@ const EditEvent = () => {
   const displayImage = imagePreview || existingImageUrl;
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-40">
       <div className="max-w-[900px] mx-auto px-4">
-        <header className="py-4 flex items-center gap-3">
+        <header className="py-4 flex items-start">
           <button
             onClick={handleClose}
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
-            aria-label="Fermer"
+            className="flex items-center gap-2 text-primary"
+            aria-label="Retour"
           >
-            <X size={24} className="text-primary-foreground" />
+            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+              <ChevronLeft size={24} className="text-primary-foreground" />
+            </div>
+            <span className="font-medium">Retour</span>
           </button>
-          <h1 className="text-primary font-semibold text-xl">Modifier l'évènement</h1>
         </header>
 
         {/* Image upload */}
@@ -251,7 +299,7 @@ const EditEvent = () => {
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[120px] rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4 py-4 resize-none"
+            className="min-h-[180px] rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4 py-4 resize-none"
           />
 
           {/* Style selector - now supports multi-select */}
@@ -313,16 +361,38 @@ const EditEvent = () => {
           </div>
         </div>
 
-        {/* Submit button - floating */}
-        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto">
-          <Button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
-          >
-            <Check size={20} strokeWidth={2} />
-            {isSubmitting ? "Enregistrement..." : "Enregistrer les modifications"}
-          </Button>
+        {/* Submit buttons - floating */}
+        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto flex flex-col gap-2">
+          {isDraft ? (
+            <>
+              <Button
+                onClick={() => handleSubmit(false, true)}
+                disabled={isSubmitting}
+                className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
+              >
+                <Send size={20} strokeWidth={2} />
+                {isSubmitting ? "Publication..." : "Publier"}
+              </Button>
+              <Button
+                onClick={() => handleSubmit(true, false)}
+                disabled={isSubmitting}
+                variant="secondary"
+                className="w-full h-12 rounded-full font-medium flex items-center justify-center gap-2"
+              >
+                <Save size={18} strokeWidth={2} />
+                Enregistrer le brouillon
+              </Button>
+            </>
+          ) : (
+            <Button
+              onClick={() => handleSubmit(false, false)}
+              disabled={isSubmitting}
+              className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
+            >
+              <Check size={20} strokeWidth={2} />
+              {isSubmitting ? "Enregistrement..." : "Enregistrer les modifications"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

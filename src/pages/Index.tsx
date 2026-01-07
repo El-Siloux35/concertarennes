@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
+import Footer from "../components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
@@ -151,6 +152,7 @@ const Index = () => {
         </main>
 
         <FloatingAddButton />
+        <Footer />
       </div>
     </div>
   );

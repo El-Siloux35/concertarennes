@@ -7,26 +7,50 @@ import ThemeToggle from "./ThemeToggle";
 import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
+// Truncate name to max 12 chars with ellipsis
+const truncateName = (name: string, maxLength: number = 12): string => {
+  if (name.length <= maxLength) return name;
+  return name.slice(0, maxLength) + "…";
+};
+
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
 
   const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [profile, setProfile] = useState<{ pseudo: string | null } | null>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      } else {
+        setProfile(null);
+      }
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const fetchProfile = async (userId: string) => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("pseudo")
+      .eq("id", userId)
+      .maybeSingle();
+    setProfile(data);
+  };
 
   useEffect(() => {
     const updateFavoritesCount = () => {
@@ -44,7 +68,7 @@ const Header = () => {
     };
   }, []);
 
-  const displayName = user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
+  const displayName = profile?.pseudo || user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
 
   return (
     <>
@@ -55,7 +79,7 @@ const Header = () => {
             className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
           >
             <User size={18} strokeWidth={2} />
-            @{displayName}
+            @{truncateName(displayName)}
           </Link>
         ) : (
           <button
