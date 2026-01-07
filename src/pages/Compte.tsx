@@ -193,9 +193,11 @@ const Compte = () => {
   };
   const handleDeleteAccount = async () => {
     if (!user) return;
-    const {
-      error
-    } = await supabase.from("profiles").delete().eq("id", user.id);
+    
+    // Call the edge function to properly delete the auth user
+    // This cascades to profiles, user_roles, and events
+    const { error } = await supabase.functions.invoke("delete-account");
+    
     if (error) {
       toast({
         title: "Erreur",
@@ -204,6 +206,7 @@ const Compte = () => {
       });
       return;
     }
+    
     await supabase.auth.signOut();
     navigate("/home");
     toast({

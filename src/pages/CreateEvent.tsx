@@ -17,6 +17,18 @@ import VenueSelector from "@/components/VenueSelector";
 type StyleOption = "concert" | "projection" | "exposition" | "autres";
 type VenueOption = "bars" | "ombres-electriques" | "autres";
 
+// Input validation constants
+const MAX_LENGTHS = {
+  title: 200,
+  description: 5000,
+  organizer: 200,
+  location: 300,
+  price: 100,
+  contact: 50,
+};
+
+const validatePhone = (phone: string) => /^[0-9\s\+\-\(\)]*$/.test(phone);
+
 const CreateEvent = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -68,6 +80,36 @@ const CreateEvent = () => {
         description: "Veuillez au moins donner un nom à l'évènement",
         variant: "destructive",
       });
+      return;
+    }
+
+    // Validate field lengths
+    if (name.length > MAX_LENGTHS.title) {
+      toast({ title: "Erreur", description: `Le nom est trop long (max ${MAX_LENGTHS.title} caractères)`, variant: "destructive" });
+      return;
+    }
+    if (description.length > MAX_LENGTHS.description) {
+      toast({ title: "Erreur", description: `La description est trop longue (max ${MAX_LENGTHS.description} caractères)`, variant: "destructive" });
+      return;
+    }
+    if (organizer.length > MAX_LENGTHS.organizer) {
+      toast({ title: "Erreur", description: `Le nom de l'organisateur est trop long (max ${MAX_LENGTHS.organizer} caractères)`, variant: "destructive" });
+      return;
+    }
+    if (location.length > MAX_LENGTHS.location) {
+      toast({ title: "Erreur", description: `L'adresse est trop longue (max ${MAX_LENGTHS.location} caractères)`, variant: "destructive" });
+      return;
+    }
+    if (price.length > MAX_LENGTHS.price) {
+      toast({ title: "Erreur", description: `Le prix est trop long (max ${MAX_LENGTHS.price} caractères)`, variant: "destructive" });
+      return;
+    }
+    if (contact.length > MAX_LENGTHS.contact) {
+      toast({ title: "Erreur", description: `Le contact est trop long (max ${MAX_LENGTHS.contact} caractères)`, variant: "destructive" });
+      return;
+    }
+    if (contact && !validatePhone(contact)) {
+      toast({ title: "Erreur", description: "Format de contact invalide (chiffres, espaces, +, -, (, ) uniquement)", variant: "destructive" });
       return;
     }
 
