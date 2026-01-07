@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 import { supabase } from "@/integrations/supabase/client";
@@ -144,6 +145,28 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
           onNavigate={() => navigate(`/concert/${concert.id}`)}
         />
       ))}
+
+      {/* Zamigo Promo Card */}
+      <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
+        <h3 className="font-semibold text-lg mb-1">Zamigo</h3>
+        <p className="text-sm opacity-90 mb-4">
+          L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
+        </p>
+        <Link
+          to="/a-propos"
+          className="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-2"
+        >
+          En savoir plus
+          <ArrowRight size={16} />
+        </Link>
+      </div>
+
+      {/* Empty End Card */}
+      <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center">
+        <p className="text-primary/50 text-sm">
+          C'est tout pour le moment !
+        </p>
+      </div>
     </div>
   );
 };
