@@ -5,13 +5,38 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// Vérification des variables d'environnement
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  const missingVars = [];
+  if (!SUPABASE_URL) missingVars.push('VITE_SUPABASE_URL');
+  if (!SUPABASE_PUBLISHABLE_KEY) missingVars.push('VITE_SUPABASE_PUBLISHABLE_KEY');
+  
+  console.error(
+    `❌ Variables d'environnement Supabase manquantes: ${missingVars.join(', ')}\n` +
+    `Assurez-vous d'avoir configuré ces variables dans votre fichier .env (local) ou dans les paramètres Vercel (production).\n` +
+    `Voir VERCEL_SETUP.md pour plus d'informations.`
+  );
+} else {
+  // Debug en production pour vérifier que les variables sont bien chargées
+  if (import.meta.env.PROD) {
+    console.log('✅ Variables Supabase chargées:', {
+      url: SUPABASE_URL ? `${SUPABASE_URL.substring(0, 20)}...` : 'MANQUANTE',
+      key: SUPABASE_PUBLISHABLE_KEY ? `${SUPABASE_PUBLISHABLE_KEY.substring(0, 20)}...` : 'MANQUANTE'
+    });
+  }
+}
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
+export const supabase = createClient<Database>(
+  SUPABASE_URL || '', 
+  SUPABASE_PUBLISHABLE_KEY || '', 
+  {
+    auth: {
+      storage: localStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+    }
   }
-});
+);

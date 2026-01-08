@@ -142,7 +142,7 @@ const CreateEvent = () => {
         }
       }
 
-      const { error } = await supabase
+      const { error, data: insertedData } = await supabase
         .from("events")
         .insert({
           user_id: user.id,
@@ -157,10 +157,21 @@ const CreateEvent = () => {
           image_url: imageUrl,
           style: styles.length > 0 ? styles.join(",") : null,
           is_draft: isDraft,
-        });
+        })
+        .select()
+        .single();
 
       if (error) {
-        throw error;
+        console.error('Erreur lors de la création:', error);
+        // Erreur de permission RLS
+        if (error.code === '42501' || error.message?.includes('permission denied') || error.message?.includes('policy')) {
+          throw new Error("Vous n'avez pas la permission de créer un évènement. Vérifiez que vous êtes bien connecté.");
+        }
+        throw new Error(error.message || "Impossible de créer l'évènement");
+      }
+
+      if (!insertedData) {
+        throw new Error("La création a échoué - aucune donnée retournée");
       }
 
       toast({
@@ -169,11 +180,12 @@ const CreateEvent = () => {
       });
 
       navigate("/compte");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating event:", error);
+      const errorMessage = error?.message || error?.error_description || "Impossible de créer l'évènement";
       toast({
         title: "Erreur",
-        description: "Impossible de créer l'évènement",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {

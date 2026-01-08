@@ -57,6 +57,18 @@ const EditEvent = () => {
     const fetchEvent = async () => {
       if (!id) return;
 
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour modifier un évènement",
+          variant: "destructive",
+        });
+        navigate("/auth");
+        return;
+      }
+
       const { data, error } = await supabase
         .from("events")
         .select("*")
@@ -72,6 +84,11 @@ const EditEvent = () => {
         navigate(-1);
         return;
       }
+
+      // Note: On ne bloque pas ici si l'utilisateur n'est pas le propriétaire
+      // On laisse RLS gérer les permissions lors de la modification
+      // Cela permet aux admins de modifier les événements même s'ils ne sont pas propriétaires
+      console.log('Event loaded - user_id:', data.user_id, 'current_user_id:', user.id);
 
       setOrganizer(data.organizer || "");
       setName(data.title || "");
@@ -175,12 +192,35 @@ const EditEvent = () => {
     setIsSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      // Vérifier l'authentification et forcer le rafraîchissement de la session
+      const { data: { user }, error: authError } = await supabase.auth.getUser();
       
-      if (!user) {
+      if (authError || !user) {
+        console.error('Erreur d\'authentification:', authError);
+        toast({
+          title: "Erreur",
+          description: "Vous devez être connecté pour modifier un évènement",
+          variant: "destructive",
+        });
         navigate("/auth");
         return;
       }
+
+      // Vérifier que la session est valide
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.error('Aucune session active');
+        toast({
+          title: "Erreur",
+          description: "Votre session a expiré. Veuillez vous reconnecter.",
+          variant: "destructive",
+        });
+        navigate("/auth");
+        return;
+      }
+
+      console.log('✅ Utilisateur authentifié:', user.id);
+      console.log('✅ Session active:', !!session);
 
       let imageUrl = existingImageUrl;
 
@@ -201,25 +241,33 @@ const EditEvent = () => {
         }
       }
 
-      const { error } = await supabase
+      // Mise à jour de l'événement
+      const { data: updatedData, error } = await supabase
         .from("events")
         .update({
           title: name.trim(),
           organizer: organizer.trim() || null,
           description: description.trim() || null,
           location: location.trim() || null,
-          venue: venueType,
+          venue: venueType || null,
           price: price.trim() || null,
           date: date ? format(date, "yyyy-MM-dd") : new Date().toISOString().split('T')[0],
           contact: contact.trim() || null,
-          image_url: imageUrl,
+          image_url: imageUrl || null,
           style: styles.length > 0 ? styles.join(",") : null,
           is_draft: saveAsDraft ? true : publish ? false : isDraft,
         })
-        .eq("id", id);
+        .eq("id", id)
+        .select()
+        .single();
 
       if (error) {
-        throw error;
+        console.error('Erreur lors de la mise à jour:', error);
+        throw new Error(error.message || "Impossible de modifier l'évènement");
+      }
+
+      if (!updatedData) {
+        throw new Error("La modification a échoué - aucune donnée retournée");
       }
 
       if (saveAsDraft) {
@@ -246,11 +294,12 @@ const EditEvent = () => {
           navigate(-1);
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating event:", error);
+      const errorMessage = error?.message || error?.error_description || "Impossible de modifier l'évènement";
       toast({
         title: "Erreur",
-        description: "Impossible de modifier l'évènement",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
