@@ -25,7 +25,7 @@
     --muted: 245 100% 97%;
     --muted-foreground: 259 75% 42%;
 
-    --accent: 27 100% 50%; /* #FF7B00 */
+    --accent: 142 76% 36%; /* Green */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -41,7 +41,7 @@
     --concert-purple: 259 75% 42%;
     --concert-purple-light: 259 60% 90%;
     --concert-light: 245 100% 97%;
-    --concert-orange: 27 100% 50%;
+    --concert-orange: 142 76% 36%;
     --concert-white: 0 0% 100%;
     --concert-black: 0 0% 0%;
 
@@ -63,7 +63,7 @@
     --secondary-foreground: 245 100% 95%;
     --muted: 259 30% 20%;
     --muted-foreground: 245 60% 80%;
-    --accent: 27 100% 50%;
+    --accent: 142 70% 45%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 70% 55%;
     --destructive-foreground: 0 0% 100%;
@@ -75,7 +75,7 @@
     --concert-purple: 259 65% 65%;
     --concert-purple-light: 259 40% 30%;
     --concert-light: 259 40% 18%;
-    --concert-orange: 27 100% 50%;
+    --concert-orange: 142 70% 45%;
     --concert-white: 0 0% 95%;
     --concert-black: 220 20% 8%;
 
