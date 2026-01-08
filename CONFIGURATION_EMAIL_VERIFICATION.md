@@ -22,10 +22,10 @@
 1. **Allez sur** : https://supabase.com/dashboard/project/pfvfssqlcfodwbsbiciu/auth/url-configuration
 2. **Dans "Redirect URLs"**, ajoutez vos URLs autorisées :
    ```
-   http://localhost:8081/home
-   http://localhost:5173/home
-   https://votre-domaine-vercel.vercel.app/home
-   https://votre-domaine-production.com/home
+   http://localhost:8081/email-confirmed
+   http://localhost:5173/email-confirmed
+   https://votre-domaine-vercel.vercel.app/email-confirmed
+   https://votre-domaine-production.com/email-confirmed
    ```
 3. **Cliquez sur "Save"**
 

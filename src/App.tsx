@@ -13,6 +13,7 @@ import Favorites from "./pages/Favorites";
 import Compte from "./pages/Compte";
 import CreateEvent from "./pages/CreateEvent";
 import EditEvent from "./pages/EditEvent";
+import EmailConfirmed from "./pages/EmailConfirmed";
 import useThemeColor from "./hooks/useThemeColor";
 import SeoManager from "./components/SeoManager";
 
@@ -39,6 +40,7 @@ const App = () => {
               <Route path="/compte" element={<Compte />} />
               <Route path="/creer-evenement" element={<CreateEvent />} />
               <Route path="/modifier-evenement/:id" element={<EditEvent />} />
+              <Route path="/email-confirmed" element={<EmailConfirmed />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

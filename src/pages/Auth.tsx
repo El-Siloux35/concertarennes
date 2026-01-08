@@ -24,16 +24,40 @@ const Auth = () => {
 
   // Gérer la confirmation d'email et la connexion automatique
   useEffect(() => {
+    // Vérifier si on arrive via un lien de confirmation d'email
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const isEmailConfirmation = hashParams.get('type') === 'signup' || hashParams.get('type') === 'email';
+
     // Écouter les changements d'état d'authentification
     const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session) {
-        // L'utilisateur vient de se connecter (via lien email ou login normal)
-        toast({
-          title: "Connexion réussie",
-          description: "Bienvenue !",
-          duration: 2500,
-        });
-        navigate(from ?? "/home");
+        // Si c'est une confirmation d'email
+        if (isEmailConfirmation) {
+          toast({
+            title: "✅ Email confirmé !",
+            description: "Redirection en cours...",
+            duration: 2000,
+          });
+
+          // Attendre un peu puis rediriger
+          setTimeout(() => {
+            navigate("/home");
+
+            // Essayer de fermer l'onglet si c'est un nouvel onglet
+            // (fonctionne seulement si l'onglet a été ouvert par window.open)
+            setTimeout(() => {
+              window.close();
+            }, 500);
+          }, 1500);
+        } else {
+          // Connexion normale (login)
+          toast({
+            title: "Connexion réussie",
+            description: "Bienvenue !",
+            duration: 2500,
+          });
+          navigate(from ?? "/home");
+        }
       }
     });
 
@@ -113,7 +137,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/home`,
+            emailRedirectTo: `${window.location.origin}/email-confirmed`,
             data: { pseudo },
           },
         });
