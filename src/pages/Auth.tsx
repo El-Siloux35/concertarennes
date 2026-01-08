@@ -2,7 +2,7 @@ import { X, Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -21,6 +21,26 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Gérer la confirmation d'email et la connexion automatique
+  useEffect(() => {
+    // Écouter les changements d'état d'authentification
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // L'utilisateur vient de se connecter (via lien email ou login normal)
+        toast({
+          title: "Connexion réussie",
+          description: "Bienvenue !",
+          duration: 2500,
+        });
+        navigate(from ?? "/home");
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [navigate, from, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,24 +109,36 @@ const Auth = () => {
 
         navigate(from ?? "/home");
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
+            emailRedirectTo: `${window.location.origin}/home`,
             data: { pseudo },
           },
         });
 
         if (error) throw error;
 
-        toast({
-          title: "Compte créé",
-          description: "Vous pouvez maintenant vous connecter.",
-        });
+        // Si l'email doit être confirmé, afficher le message approprié
+        if (data?.user && !data.session) {
+          toast({
+            title: "Compte créé !",
+            description: "Vérifiez votre email pour confirmer votre compte. Vous serez automatiquement connecté après confirmation.",
+            duration: 8000,
+          });
+        } else {
+          // Si la confirmation email est désactivée, connexion directe
+          toast({
+            title: "Compte créé",
+            description: "Vous êtes maintenant connecté !",
+          });
+          navigate(from ?? "/home");
+        }
 
-        setMode("login");
+        setEmail("");
         setPassword("");
+        setPseudo("");
       }
     } catch (error: any) {
       let message = error.message;
