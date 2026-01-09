@@ -73,7 +73,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="gap-2 pt-2 pr-0 flex items-center justify-end py-0">
+      <header className="gap-1 pt-2 pr-0 flex items-center justify-end py-0">
         <Link
           to="/a-propos"
           className="text-primary w-12 h-12 flex items-center justify-center"
@@ -97,7 +97,7 @@ const Header = () => {
         {user ? (
           <Link
             to="/compte"
-            className="bg-accent text-accent-foreground font-medium text-sm h-12 flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2"
+            className="bg-accent text-accent-foreground font-medium text-sm h-12 flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2 ml-1.5"
           >
             <Avatar className="w-9 h-9 border-2 border-accent-foreground/20">
               <AvatarImage
@@ -120,7 +120,7 @@ const Header = () => {
               }
               setAuthOpen(true);
             }}
-            className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-12 flex items-center gap-2 rounded-full"
+            className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-12 flex items-center gap-2 rounded-full ml-1.5"
           >
             <Lock size={18} strokeWidth={2} />
             Connexion
