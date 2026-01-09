@@ -91,11 +91,12 @@
   }
 
   html {
-    background-color: hsl(var(--background));
+    background-color: hsl(var(--background)) !important;
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
+    background-color: hsl(var(--background)) !important;
     font-family: 'Kode Mono', monospace;
     min-height: 100vh;
     min-height: 100dvh;
