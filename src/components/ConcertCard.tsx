@@ -79,7 +79,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     <article
       onClick={onNavigate}
       className={`bg-card border-2 rounded-2xl animate-fade-in relative cursor-pointer border-muted overflow-hidden ${
-        isMobile ? "flex flex-col" : "flex h-[202px]"
+        isMobile ? "flex flex-col" : "flex h-[194px]"
       }`}
     >
       {/* Image thumbnail */}
@@ -94,7 +94,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
       )}
 
       {/* Content */}
-      <div className={`flex-1 ${isMobile ? "p-4" : "py-6 px-4"} flex flex-col`}>
+      <div className={`flex-1 ${isMobile ? "p-4" : "pt-4 pb-6 px-4"} flex flex-col`}>
         {/* Favorite button - 44x44 touch target */}
         <button
           onClick={toggleFavorite}
