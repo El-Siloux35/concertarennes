@@ -142,8 +142,8 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Spacer for fixed header */}
-        <div className="h-40"></div>
+        {/* Spacer for fixed header + banner */}
+        <div className="h-56"></div>
 
         <main className="flex flex-col gap-4">
           <ConcertList 
