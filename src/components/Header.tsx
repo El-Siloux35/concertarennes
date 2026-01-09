@@ -1,8 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Heart, User, Lock } from "lucide-react";
+import { Heart, Lock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import ThemeToggle from "./ThemeToggle";
 import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -19,7 +20,7 @@ const Header = () => {
   const isMobile = useIsMobile();
 
   const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [profile, setProfile] = useState<{ pseudo: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ pseudo: string | null; avatar_url: string | null } | null>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);
 
@@ -46,7 +47,7 @@ const Header = () => {
   const fetchProfile = async (userId: string) => {
     const { data } = await supabase
       .from("profiles")
-      .select("pseudo")
+      .select("pseudo, avatar_url")
       .eq("id", userId)
       .maybeSingle();
     setProfile(data);
@@ -73,13 +74,35 @@ const Header = () => {
   return (
     <>
       <header className="gap-4 pt-2 pr-[10px] flex items-center justify-end py-0">
+        <ThemeToggle />
+        <Link
+          to="/favoris"
+          className="text-primary relative w-12 h-12 flex items-center justify-center"
+          aria-label="Mes favoris"
+        >
+          <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
+          {favoritesCount > 0 && (
+            <span className="absolute top-1 right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              {favoritesCount > 9 ? "9+" : favoritesCount}
+            </span>
+          )}
+        </Link>
         {user ? (
           <Link
             to="/compte"
-            className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
+            className="bg-accent text-accent-foreground font-medium text-sm h-12 flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2"
           >
-            <User size={18} strokeWidth={2} />
-            @{truncateName(displayName)}
+            <Avatar className="w-9 h-9 border-2 border-accent-foreground/20">
+              <AvatarImage
+                src={profile?.avatar_url || undefined}
+                alt={displayName}
+                className="object-cover"
+              />
+              <AvatarFallback className="bg-accent-foreground/10 text-accent-foreground text-sm">
+                {displayName.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <span>@{truncateName(displayName)}</span>
           </Link>
         ) : (
           <button
@@ -90,25 +113,12 @@ const Header = () => {
               }
               setAuthOpen(true);
             }}
-            className="bg-accent text-accent-foreground font-medium text-sm px-4 h-14 flex items-center gap-2 rounded-full"
+            className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-12 flex items-center gap-2 rounded-full"
           >
             <Lock size={18} strokeWidth={2} />
-            Connexion orga
+            Connexion
           </button>
         )}
-        <ThemeToggle />
-        <Link
-          to="/favoris"
-          className={`text-primary relative w-8 h-8 flex items-center justify-center ${user ? 'mr-1' : ''}`}
-          aria-label="Mes favoris"
-        >
-          <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
-          {favoritesCount > 0 && (
-            <span className="absolute top-0 -right-2 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-              {favoritesCount > 9 ? "9+" : favoritesCount}
-            </span>
-          )}
-        </Link>
       </header>
       {!isMobile && <AuthDrawer open={authOpen} onOpenChange={setAuthOpen} />}
     </>
