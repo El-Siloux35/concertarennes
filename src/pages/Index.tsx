@@ -165,7 +165,7 @@ const Index = () => {
           </div>
         </div>
 
-        <main className="flex flex-col gap-4">
+        <main className="flex flex-col gap-4 pt-4">
           <ConcertList 
             periodFilter={periodFilter} 
             styleFilters={styleFilters} 
