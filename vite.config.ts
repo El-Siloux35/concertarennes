@@ -47,7 +47,41 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Important: Active le fallback pour les navigations
+        navigateFallback: "index.html",
+        navigateFallbackDenylist: [/^\/api/, /^\/auth\/callback/],
+        // Stratégie pour éviter les pages blanches
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
         runtimeCaching: [
+          // Navigation (pages HTML) - Network First pour toujours avoir le dernier contenu
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "pages-cache",
+              networkTimeoutSeconds: 3,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24, // 24 heures
+              },
+            },
+          },
+          // API Supabase - Network First avec timeout court
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "supabase-api-cache",
+              networkTimeoutSeconds: 5,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 5, // 5 minutes
+              },
+            },
+          },
+          // Google Fonts
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: "CacheFirst",
@@ -73,6 +107,18 @@ export default defineConfig(({ mode }) => ({
               },
               cacheableResponse: {
                 statuses: [0, 200],
+              },
+            },
+          },
+          // Images - Cache First mais avec expiration
+          {
+            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "images-cache",
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 7, // 1 semaine
               },
             },
           },
