@@ -243,10 +243,10 @@ const Compte = () => {
         <div className="text-primary">Chargement...</div>
       </div>;
   }
-  return <div className="min-h-screen bg-background pb-24">
+  return <div className="min-h-screen bg-background pb-24 pt-0">
       <div className="max-w-[900px] mx-auto px-4">
         {/* Header with back button */}
-        <header className="py-4 flex justify-start">
+        <header className="pt-2 pb-4 flex justify-start">
           <button onClick={handleClose} className="flex items-center gap-2 text-primary" aria-label="Retour aux évènements">
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
               <ChevronLeft size={24} className="text-primary-foreground" />
