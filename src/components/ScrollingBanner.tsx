@@ -34,18 +34,20 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
 
   return (
     <div 
-      className={`w-full overflow-hidden bg-background pt-4 transition-all duration-300 ${
+      className={`w-full overflow-hidden bg-background transition-all duration-300 ${
+        isMobile ? "pt-2" : "pt-4"
+      } ${
         isMobile && !isVisible ? "h-0 pt-0 opacity-0" : ""
       } ${className}`}
     >
-      <div className="flex gap-6 animate-scroll-left">
+      <div className={`flex animate-scroll-left ${isMobile ? "gap-12" : "gap-6"}`}>
         {/* Repeat the image multiple times to ensure seamless loop */}
         {[...Array(6)].map((_, i) => (
           <img
             key={i}
             src={bannerLogo}
             alt=""
-            className={`flex-shrink-0 ${isMobile ? "scale-[2] origin-left" : ""}`}
+            className={`flex-shrink-0 ${isMobile ? "h-[160px] w-auto" : "h-auto"}`}
           />
         ))}
       </div>
