@@ -287,25 +287,39 @@ const ConcertDetail = () => {
 
             {/* Description */}
             {event.description && (
-              <p className="text-primary text-sm leading-relaxed mb-6 whitespace-pre-line">
-                {event.description}
+              <p className="text-primary text-sm md:text-[22px] leading-relaxed mb-6 whitespace-pre-line">
+                {event.description.split(/(https?:\/\/[^\s]+)/g).map((part, index) => 
+                  part.match(/^https?:\/\//) ? (
+                    <a 
+                      key={index} 
+                      href={part} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-accent underline hover:opacity-80"
+                    >
+                      {part}
+                    </a>
+                  ) : (
+                    part
+                  )
+                )}
               </p>
             )}
 
             {/* Venue */}
-            <div className="flex items-center text-primary text-sm gap-2 mb-2">
-              <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
+            <div className="flex items-center text-primary text-sm md:text-[22px] gap-2 mb-2">
+              <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0 md:w-5 md:h-5" />
               <span>{event.location || "Lieu non spécifié"}</span>
             </div>
 
             {/* Date and price */}
-            <div className="flex items-center gap-4 text-primary text-sm">
+            <div className="flex items-center gap-4 text-primary text-sm md:text-[22px]">
               <div className="flex items-center gap-2">
-                <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0 md:w-5 md:h-5" />
                 <span>{formatDate(event.date)}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0 md:w-5 md:h-5" />
                 <span>{event.price || "Prix non spécifié"}</span>
               </div>
             </div>
@@ -314,7 +328,7 @@ const ConcertDetail = () => {
             {styleArray.length > 0 && (
               <div className="mt-6 flex flex-wrap gap-2">
                 {styleArray.map((s) => (
-                  <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
+                  <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs md:text-sm font-medium flex items-center">
                     {getStyleLabel(s)}
                   </span>
                 ))}
@@ -324,7 +338,7 @@ const ConcertDetail = () => {
             {/* Venue tag in light purple */}
             {event.venue && (
               <div className="mt-3">
-                <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium inline-flex items-center">
+                <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs md:text-sm font-medium inline-flex items-center">
                   {getVenueLabel(event.venue)}
                 </span>
               </div>
