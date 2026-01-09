@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Heart, Lock } from "lucide-react";
+import { Heart, Lock, HelpCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
@@ -74,6 +74,13 @@ const Header = () => {
   return (
     <>
       <header className="gap-4 pt-2 pr-[10px] flex items-center justify-end py-0">
+        <Link
+          to="/a-propos"
+          className="text-primary w-12 h-12 flex items-center justify-center"
+          aria-label="À propos"
+        >
+          <HelpCircle size={24} strokeWidth={2} />
+        </Link>
         <ThemeToggle />
         <Link
           to="/favoris"
