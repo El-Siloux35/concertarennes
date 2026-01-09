@@ -1,8 +1,15 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "next-themes";
+import { useStatusBarColor } from "@/contexts/StatusBarContext";
 
 const Splash = () => {
   const navigate = useNavigate();
+  const { resolvedTheme } = useTheme();
+
+  // Barre de statut violette pour le splash screen
+  const primaryColor = resolvedTheme === "dark" ? "#8B6DC4" : "#4C1CBE";
+  useStatusBarColor(primaryColor);
 
   useEffect(() => {
     // Check if on mobile device

@@ -15,24 +15,22 @@ import CreateEvent from "./pages/CreateEvent";
 import EditEvent from "./pages/EditEvent";
 import EmailConfirmed from "./pages/EmailConfirmed";
 import About from "./pages/About";
-import useThemeColor from "./hooks/useThemeColor";
+import { StatusBarProvider } from "./contexts/StatusBarContext";
 import SeoManager from "./components/SeoManager";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Dynamically updates status bar color based on system theme
-  useThemeColor();
-  
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <SeoManager />
-            <Routes>
+      <StatusBarProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <SeoManager />
+              <Routes>
               <Route path="/" element={<Splash />} />
               <Route path="/home" element={<Index />} />
               <Route path="/concert/:id" element={<ConcertDetail />} />
@@ -44,11 +42,12 @@ const App = () => {
               <Route path="/email-confirmed" element={<EmailConfirmed />} />
               <Route path="/a-propos" element={<About />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </QueryClientProvider>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </QueryClientProvider>
+      </StatusBarProvider>
     </ThemeProvider>
   );
 };
