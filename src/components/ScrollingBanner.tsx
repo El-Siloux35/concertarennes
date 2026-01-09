@@ -35,9 +35,9 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
   return (
     <div 
       className={`w-full overflow-hidden bg-background transition-all duration-300 ${
-        isMobile ? "pt-2" : "pt-4"
+        isMobile ? "py-1" : "pt-4"
       } ${
-        isMobile && !isVisible ? "h-0 pt-0 opacity-0" : ""
+        isMobile && !isVisible ? "h-0 py-0 opacity-0" : ""
       } ${className}`}
     >
       <div className={`flex animate-scroll-left ${isMobile ? "gap-12" : "gap-6"}`}>
@@ -47,7 +47,7 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
             key={i}
             src={bannerLogo}
             alt=""
-            className={`flex-shrink-0 ${isMobile ? "h-[160px] w-auto" : "h-auto"}`}
+            className={`flex-shrink-0 ${isMobile ? "h-[206px] w-auto" : "h-auto"}`}
           />
         ))}
       </div>
