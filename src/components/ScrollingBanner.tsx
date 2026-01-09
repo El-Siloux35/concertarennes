@@ -38,7 +38,7 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
   return (
     <div 
       className={`w-full bg-background transition-all duration-300 ${
-        isMobile ? "" : "pt-4"
+        !isMobile ? "pt-4" : ""
       } ${
         isMobile && !isVisible ? "!h-0 overflow-hidden opacity-0" : "overflow-hidden"
       } ${className}`}
