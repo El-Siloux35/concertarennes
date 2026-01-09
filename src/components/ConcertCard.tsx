@@ -122,7 +122,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         </h2>
 
         {/* Details */}
-        <div className="space-y-1.5">
+        <div className={isMobile ? "space-y-1.5" : "flex items-center gap-4 mt-auto"}>
           <div className="flex items-center text-primary text-sm gap-[4px]">
             <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
             <span>{concert.venue}</span>
