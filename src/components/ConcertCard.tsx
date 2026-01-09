@@ -84,7 +84,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     >
       {/* Image thumbnail */}
       {concert.imageUrl && (
-        <div className={isMobile ? "w-full h-[120px]" : "w-[160px] flex-shrink-0"}>
+        <div className={isMobile ? "w-full h-[144px]" : "w-[192px] flex-shrink-0"}>
           <img
             src={concert.imageUrl}
             alt={concert.name}
