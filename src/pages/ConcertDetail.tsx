@@ -231,9 +231,9 @@ const ConcertDetail = () => {
         <div className="h-20"></div>
 
         {/* Two-column layout on desktop, single column on mobile */}
-        <div className="md:flex md:gap-6 px-4">
-          {/* Left column - Image (400px on desktop) */}
-          <div className="md:w-[400px] md:flex-shrink-0 mb-4 md:mb-0">
+        <div className="md:flex md:gap-8 px-4">
+          {/* Left column - Image (376px on desktop) */}
+          <div className="md:w-[376px] md:flex-shrink-0 mb-4 md:mb-0">
             <div 
               className="w-full overflow-hidden bg-muted"
               style={{ minHeight: event.image_url ? "auto" : "300px" }}
@@ -248,6 +248,27 @@ const ConcertDetail = () => {
                 <div className="w-full h-[300px] flex items-center justify-center">
                   <span className="text-primary/50">Pas d'image</span>
                 </div>
+              )}
+            </div>
+
+            {/* Action buttons under image - desktop only */}
+            <div className="hidden md:flex flex-col gap-3 mt-4">
+              <Button
+                onClick={handleShare}
+                className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2"
+              >
+                <Share2 size={20} strokeWidth={2} />
+                Partager l'évènement
+              </Button>
+
+              {event.contact && (
+                <Button
+                  onClick={handleContactSignal}
+                  variant="secondary"
+                  className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-base"
+                >
+                  Obtenir plus d'infos
+                </Button>
               )}
             </div>
           </div>
@@ -325,8 +346,8 @@ const ConcertDetail = () => {
           </div>
         </div>
 
-        {/* Floating action buttons */}
-        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto flex flex-col gap-3">
+        {/* Floating action buttons - mobile only */}
+        <div className="md:hidden fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto flex flex-col gap-3">
           <Button
             onClick={handleShare}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2"
