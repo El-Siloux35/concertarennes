@@ -410,7 +410,7 @@ const Compte = () => {
       </div>
 
       {/* Modals */}
-      <ConfirmModal open={showLogoutModal} onOpenChange={setShowLogoutModal} title="Se déconnecter" description="Êtes-vous sûr de vouloir vous déconnecter\u00A0?" confirmText="Se déconnecter" cancelText="Annuler" onConfirm={handleLogout} />
+      <ConfirmModal open={showLogoutModal} onOpenChange={setShowLogoutModal} title="Se déconnecter" description="Est-tu sûre de vouloir quitter ce monde de fou ?" confirmText="Se déconnecter" cancelText="Annuler" onConfirm={handleLogout} />
 
       <ConfirmModal open={showDeleteAccountModal} onOpenChange={setShowDeleteAccountModal} title="Supprimer le compte" description="Cette action est irréversible. Toutes vos données seront supprimées définitivement." confirmText="Supprimer mon compte" cancelText="Annuler" onConfirm={handleDeleteAccount} variant="destructive" />
 
