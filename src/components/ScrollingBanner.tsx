@@ -45,7 +45,7 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
             key={i}
             src={bannerLogo}
             alt=""
-            className={`flex-shrink-0 ${isMobile ? "h-[206px]" : "h-auto"}`}
+            className={`flex-shrink-0 ${isMobile ? "scale-[2] origin-left" : ""}`}
           />
         ))}
       </div>
