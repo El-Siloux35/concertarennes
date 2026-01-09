@@ -32,13 +32,17 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isMobile, lastScrollY]);
 
+  // Original SVG is 103px tall, doubled = 206px
+  const mobileHeight = 206;
+
   return (
     <div 
-      className={`w-full overflow-hidden bg-background transition-all duration-300 ${
-        isMobile ? "py-1" : "pt-4"
+      className={`w-full bg-background transition-all duration-300 ${
+        isMobile ? "" : "pt-4"
       } ${
-        isMobile && !isVisible ? "h-0 py-0 opacity-0" : ""
+        isMobile && !isVisible ? "!h-0 overflow-hidden opacity-0" : "overflow-hidden"
       } ${className}`}
+      style={isMobile && isVisible ? { height: mobileHeight } : undefined}
     >
       <div className={`flex animate-scroll-left ${isMobile ? "gap-12" : "gap-6"}`}>
         {/* Repeat the image multiple times to ensure seamless loop */}
@@ -47,7 +51,8 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
             key={i}
             src={bannerLogo}
             alt=""
-            className={`flex-shrink-0 ${isMobile ? "h-[206px] w-auto" : "h-auto"}`}
+            style={isMobile ? { height: mobileHeight, width: 'auto' } : undefined}
+            className="flex-shrink-0"
           />
         ))}
       </div>
