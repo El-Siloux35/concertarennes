@@ -27,15 +27,15 @@ const ConfirmModal = ({
   const isMobile = useIsMobile();
 
   const buttons = (
-    <div className="flex flex-col gap-3 mt-6">
+    <div className={`flex flex-col gap-3 ${isMobile ? "mt-8" : "mt-6"}`}>
       <Button
         onClick={() => {
           onConfirm();
           onOpenChange(false);
         }}
         className={`w-full rounded-full h-14 font-medium ${
-          variant === "destructive" 
-            ? "bg-destructive text-destructive-foreground" 
+          variant === "destructive"
+            ? "bg-destructive text-destructive-foreground"
             : "bg-primary text-primary-foreground"
         }`}
       >
@@ -55,12 +55,12 @@ const ConfirmModal = ({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange}>
-        <DrawerContent className="p-6">
-          <DrawerHeader className="text-center p-0">
+        <DrawerContent className="pt-2 px-6 pb-12">
+          <DrawerHeader className="text-center p-0 mt-8">
             <DrawerTitle className="text-primary text-xl font-semibold text-center">
               {title}
             </DrawerTitle>
-            <DrawerDescription className="text-primary/70 text-center mt-2">
+            <DrawerDescription className="text-primary/70 text-center mt-8">
               {description}
             </DrawerDescription>
           </DrawerHeader>
