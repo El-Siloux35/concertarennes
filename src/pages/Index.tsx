@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
 import Header from "../components/Header";
 import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
@@ -20,6 +20,29 @@ const Index = () => {
     style: string | null;
     venue: string | null;
   }[]>([]);
+
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+
+    const update = () => {
+      setHeaderHeight(el.getBoundingClientRect().height);
+    };
+
+    update();
+
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener("resize", update);
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -123,9 +146,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background border-muted">
-      <div className="max-w-[900px] mx-auto">
+      <div className="max-w-[900px] mx-auto" style={{ paddingTop: headerHeight }}>
         {/* Fixed header section */}
-        <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+        <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50 flex flex-col">
           <ScrollingBanner />
           <div className="bg-background py-[12px] pb-[8px]">
             <div className="max-w-[900px] mx-auto px-4">
@@ -141,9 +164,6 @@ const Index = () => {
             </div>
           </div>
         </div>
-
-        {/* Spacer for fixed header + banner */}
-        <div className="h-56"></div>
 
         <main className="flex flex-col gap-4">
           <ConcertList 
