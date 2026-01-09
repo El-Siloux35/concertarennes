@@ -10,7 +10,7 @@ const EmailConfirmed = () => {
     // Rediriger automatiquement après 3 secondes
     const timer = setTimeout(() => {
       navigate("/home");
-    }, 3000);
+    }, 10000);
 
     return () => clearTimeout(timer);
   }, [navigate]);
@@ -73,7 +73,7 @@ const EmailConfirmed = () => {
 
         {/* Auto-redirect notice */}
         <p className="text-xs text-muted-foreground">
-          Redirection automatique dans 3 secondes...
+          Redirection automatique dans 10 secondes...
         </p>
       </div>
     </div>
