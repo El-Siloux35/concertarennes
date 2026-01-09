@@ -91,7 +91,7 @@
   }
 
   html {
-    background-color: hsl(0 0% 100%);
+    background-color: hsl(var(--background));
   }
 
   body {
