@@ -1,11 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Heart, Lock, HelpCircle, SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useUser } from "@/contexts/UserContext";
 
 // Truncate name to max 12 chars with ellipsis
 const truncateName = (name: string, maxLength: number = 12): string => {
@@ -17,40 +16,10 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useIsMobile();
+  const { user, profile } = useUser();
 
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [profile, setProfile] = useState<{ pseudo: string | null; avatar_url: string | null } | null>(null);
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);
-
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-      }
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const fetchProfile = async (userId: string) => {
-    const { data } = await supabase
-      .from("profiles")
-      .select("pseudo, avatar_url")
-      .eq("id", userId)
-      .maybeSingle();
-    setProfile(data);
-  };
 
   useEffect(() => {
     const updateFavoritesCount = () => {

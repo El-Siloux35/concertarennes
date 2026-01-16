@@ -142,6 +142,8 @@ const Compte = () => {
       ...prev,
       avatar_url: publicUrl
     } : null);
+    // Notify other components that profile has been updated
+    window.dispatchEvent(new Event('profileUpdated'));
     toast({
       title: "Succès",
       description: "Photo de profil mise à jour"
@@ -178,6 +180,8 @@ const Compte = () => {
       pseudo: newPseudo.trim()
     } : null);
     setIsEditingPseudo(false);
+    // Notify other components that profile has been updated
+    window.dispatchEvent(new Event('profileUpdated'));
     toast({
       title: "Succès",
       description: "Pseudo mis à jour"
