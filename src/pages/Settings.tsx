@@ -9,13 +9,34 @@ const Settings = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [themeChoice, setThemeChoice] = useState<"light" | "dark" | "system">("light");
 
   useEffect(() => {
     setMounted(true);
+    // Check saved theme choice
+    const savedChoice = localStorage.getItem("theme-choice") || "light";
+    setThemeChoice(savedChoice as "light" | "dark" | "system");
     // Check if notifications are enabled
     const savedNotifications = localStorage.getItem("notifications-enabled");
     setNotificationsEnabled(savedNotifications === "true");
   }, []);
+
+  const handleThemeChange = (choice: "light" | "dark" | "system") => {
+    setThemeChoice(choice);
+    localStorage.setItem("theme-choice", choice);
+
+    if (choice === "system") {
+      // Apply based on system preference, but store actual theme for next-themes
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const actualTheme = prefersDark ? "dark" : "light";
+      setTheme(actualTheme);
+      // Store "system" separately so our init script knows to check system preference
+      localStorage.setItem("theme", "system");
+    } else {
+      setTheme(choice);
+      localStorage.setItem("theme", choice);
+    }
+  };
 
   const handleNotificationToggle = async () => {
     if (!notificationsEnabled) {
@@ -64,9 +85,9 @@ const Settings = () => {
             </h2>
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => setTheme("light")}
+                onClick={() => handleThemeChange("light")}
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-colors ${
-                  theme === "light"
+                  themeChoice === "light"
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
                 }`}
@@ -78,9 +99,9 @@ const Settings = () => {
               </button>
 
               <button
-                onClick={() => setTheme("dark")}
+                onClick={() => handleThemeChange("dark")}
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-colors ${
-                  theme === "dark"
+                  themeChoice === "dark"
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
                 }`}
@@ -92,9 +113,9 @@ const Settings = () => {
               </button>
 
               <button
-                onClick={() => setTheme("system")}
+                onClick={() => handleThemeChange("system")}
                 className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-colors ${
-                  theme === "system"
+                  themeChoice === "system"
                     ? "border-primary bg-primary/10"
                     : "border-border hover:border-primary/50"
                 }`}

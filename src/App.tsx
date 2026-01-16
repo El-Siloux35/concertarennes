@@ -35,7 +35,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="theme">
       <StatusBarProvider>
         <UserProvider>
           <QueryClientProvider client={queryClient}>

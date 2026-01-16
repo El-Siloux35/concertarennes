@@ -20,10 +20,12 @@ const Splash = () => {
       document.documentElement.style.removeProperty('background-color');
 
       // S'assure que la classe dark correspond au thème choisi par l'utilisateur
-      // light=light, dark=dark, system=système, null=light (défaut de l'app)
-      const theme = localStorage.getItem('theme');
+      const choice = localStorage.getItem('theme-choice') || localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = theme === 'dark' || (theme === 'system' && prefersDark);
+      const shouldBeDark = choice === 'dark' || (choice === 'system' && prefersDark);
+
+      // Synchronise pour next-themes
+      localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
 
       if (shouldBeDark) {
         document.documentElement.classList.add('dark');
