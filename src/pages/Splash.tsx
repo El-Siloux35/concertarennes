@@ -14,14 +14,17 @@ const Splash = () => {
   useEffect(() => {
     // Check if on mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-    
+
     if (!isMobile) {
-      // Skip splash screen on web
+      // Retire le style splash et navigue
+      document.documentElement.classList.remove('splash-active');
       navigate("/home", { replace: true });
       return;
     }
 
     const timer = setTimeout(() => {
+      // Retire le style splash avant de naviguer
+      document.documentElement.classList.remove('splash-active');
       navigate("/home");
     }, 2500);
 
@@ -29,7 +32,7 @@ const Splash = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primary" />
+    <div className="fixed inset-0 flex items-center justify-center bg-primary" />
   );
 };
 

@@ -7,6 +7,31 @@
     <meta name="description" content="Découvrez les concerts à Rennes. Trouvez les événements musicaux près de chez vous." />
     <!-- Theme color pour la barre de statut - violet pour le splash initial -->
     <meta name="theme-color" content="#4C1CBE" />
+    <!-- Script pour appliquer le thème sauvegardé AVANT le rendu React -->
+    <script>
+      (function() {
+        var theme = localStorage.getItem('theme');
+        // Vérifie si dark mode est sauvegardé ou si système préfère dark
+        var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        // Couleurs violet pour le splash screen
+        var splashColor = isDark ? '#8B6DC4' : '#4C1CBE';
+
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        }
+        // Met à jour le theme-color pour Android
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', splashColor);
+
+        // Ajoute une classe pour identifier le splash (sera retirée par React)
+        document.documentElement.classList.add('splash-active');
+
+        // Style haute priorité pour le splash - override le CSS Tailwind
+        var style = document.createElement('style');
+        style.id = 'splash-style';
+        style.textContent = 'html.splash-active, html.splash-active body { background-color: ' + splashColor + ' !important; }';
+        document.head.appendChild(style);
+      })();
+    </script>
 
     <!-- PWA Meta Tags -->
     <meta name="mobile-web-app-capable" content="yes" />
@@ -14,9 +39,13 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Concerts" />
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.png" />
+
     <!-- PWA Icons -->
-    <link rel="icon" type="image/png" href="/pwa-192x192.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,7 +59,7 @@
     
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body style="background-color: #4C1CBE;">
+  <body style="background-color: #4C1CBE;" id="body">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

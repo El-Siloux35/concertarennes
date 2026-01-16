@@ -7,6 +7,9 @@ interface StatusBarContextType {
 
 const StatusBarContext = createContext<StatusBarContextType | null>(null);
 
+// Couleur initiale violette (doit correspondre à index.html)
+const INITIAL_COLOR = "#4C1CBE";
+
 function updateMetaTags(color: string) {
   const metaTags = document.querySelectorAll('meta[name="theme-color"]');
   metaTags.forEach((tag) => {
@@ -17,15 +20,34 @@ function updateMetaTags(color: string) {
 export function StatusBarProvider({ children }: { children: ReactNode }) {
   const { resolvedTheme } = useTheme();
   const [customColor, setCustomColor] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  // Couleur par défaut selon le thème
-  const defaultColor = resolvedTheme === "dark" ? "#0d1117" : "#ffffff";
+  // Marque le composant comme monté après l'hydratation
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Couleur par défaut selon le thème (ou violette si pas encore hydraté)
+  const getDefaultColor = useCallback(() => {
+    // Avant l'hydratation, garder la couleur initiale violette
+    if (!mounted || !resolvedTheme) {
+      return INITIAL_COLOR;
+    }
+    // Après l'hydratation, utiliser la couleur du thème
+    return resolvedTheme === "dark" ? "#0d1117" : "#ffffff";
+  }, [mounted, resolvedTheme]);
 
   // Met à jour la meta tag quand la couleur change
   useEffect(() => {
-    const color = customColor || defaultColor;
-    updateMetaTags(color);
-  }, [customColor, defaultColor]);
+    // Ne met à jour que si le composant est monté et le thème résolu
+    // OU si une couleur custom est définie
+    if (customColor) {
+      updateMetaTags(customColor);
+    } else if (mounted && resolvedTheme) {
+      updateMetaTags(getDefaultColor());
+    }
+    // Si pas monté et pas de customColor, on garde la couleur du HTML (violette)
+  }, [customColor, mounted, resolvedTheme, getDefaultColor]);
 
   const setStatusBarColor = useCallback((color: string | null) => {
     setCustomColor(color);
