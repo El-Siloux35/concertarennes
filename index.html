@@ -11,8 +11,9 @@
     <script>
       (function() {
         var theme = localStorage.getItem('theme');
-        // Vérifie si dark mode est sauvegardé ou si système préfère dark
-        var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Vérifie si dark mode: explicitement dark, ou système avec préférence dark
+        var isDark = theme === 'dark' || ((theme === 'system' || !theme) && prefersDark);
         // Couleur violette fixe pour le splash screen
         var splashColor = '#4C1CBE';
 
