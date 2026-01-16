@@ -37,7 +37,7 @@ const Splash = () => {
     >
       <img
         src="/splash-animation.gif"
-        alt="Concerts à Rennes"
+        alt="L'agenda du 35"
         className="scale-[2]"
       />
     </div>

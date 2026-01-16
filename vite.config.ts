@@ -17,9 +17,9 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
       manifest: {
-        name: "Concerts à Rennes",
-        short_name: "Concerts",
-        description: "Découvrez les concerts à Rennes",
+        name: "L'agenda du 35",
+        short_name: "Agenda 35",
+        description: "L'agenda des musiques alternatives à Rennes et aux alentours",
         theme_color: "#4C1CBE",
         background_color: "#4C1CBE",
         display: "standalone",
