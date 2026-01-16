@@ -1,15 +1,14 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTheme } from "next-themes";
 import { useStatusBarColor } from "@/contexts/StatusBarContext";
+
+const SPLASH_COLOR = "#4C1CBE";
 
 const Splash = () => {
   const navigate = useNavigate();
-  const { resolvedTheme } = useTheme();
 
   // Barre de statut violette pour le splash screen
-  const primaryColor = resolvedTheme === "dark" ? "#8B6DC4" : "#4C1CBE";
-  useStatusBarColor(primaryColor);
+  useStatusBarColor(SPLASH_COLOR);
 
   useEffect(() => {
     // Check if on mobile device
@@ -32,11 +31,14 @@ const Splash = () => {
   }, [navigate]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-primary">
+    <div
+      className="fixed inset-0 flex items-center justify-center"
+      style={{ backgroundColor: SPLASH_COLOR }}
+    >
       <img
-        src="/pwa-512x512.png"
+        src="/splash-animation.gif"
         alt="Concerts à Rennes"
-        className="w-32 h-32"
+        className="scale-[2]"
       />
     </div>
   );
