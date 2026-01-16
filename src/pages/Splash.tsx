@@ -32,7 +32,13 @@ const Splash = () => {
   }, [navigate]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-primary" />
+    <div className="fixed inset-0 flex items-center justify-center bg-primary">
+      <img
+        src="/pwa-512x512.png"
+        alt="Concerts à Rennes"
+        className="w-32 h-32"
+      />
+    </div>
   );
 };
 
