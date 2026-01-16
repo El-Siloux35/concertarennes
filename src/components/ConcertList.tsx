@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 import { supabase } from "@/integrations/supabase/client";
+import { useScroll } from "@/contexts/ScrollContext";
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -16,9 +17,17 @@ interface ConcertListProps {
 
 const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { saveScrollPosition } = useScroll();
   const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const handleNavigateToConcert = (concertId: string) => {
+    // Sauvegarde la position avant de naviguer
+    saveScrollPosition(location.pathname);
+    navigate(`/concert/${concertId}`);
+  };
 
   useEffect(() => {
     const fetchConcerts = async () => {
@@ -142,7 +151,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         <ConcertCard
           key={concert.id}
           concert={concert}
-          onNavigate={() => navigate(`/concert/${concert.id}`)}
+          onNavigate={() => handleNavigateToConcert(concert.id)}
         />
       ))}
 
@@ -157,6 +166,23 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
           className="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-2"
         >
           En savoir plus
+          <ArrowRight size={16} />
+        </Link>
+      </div>
+
+      {/* PWA Install Card */}
+      <div className="bg-accent rounded-2xl p-6 text-accent-foreground">
+        <h3 className="font-semibold text-lg mb-1">
+          Comment ajouter l'agenda du 35 à l'écran d'accueil de mon smartphone
+        </h3>
+        <p className="text-sm opacity-90 mb-4">
+          Afficher le site comme une application mobile.
+        </p>
+        <Link
+          to="/a-propos"
+          className="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-2"
+        >
+          Voir le tuto
           <ArrowRight size={16} />
         </Link>
       </div>

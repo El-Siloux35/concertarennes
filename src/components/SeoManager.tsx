@@ -69,6 +69,11 @@ function getSeo(pathname: string) {
         title: "Créer événement | L'agenda du 35",
         description: "Créez un nouvel événement avec titre, date, lieu et infos.",
       };
+    case "/reglages":
+      return {
+        title: "Réglages | L'agenda du 35",
+        description: "Personnalisez l'apparence et les notifications de l'application.",
+      };
     default:
       return {
         title: "Page introuvable | L'agenda du 35",

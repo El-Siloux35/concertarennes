@@ -15,7 +15,9 @@ import CreateEvent from "./pages/CreateEvent";
 import EditEvent from "./pages/EditEvent";
 import EmailConfirmed from "./pages/EmailConfirmed";
 import About from "./pages/About";
+import Settings from "./pages/Settings";
 import { StatusBarProvider } from "./contexts/StatusBarContext";
+import { ScrollProvider } from "./contexts/ScrollContext";
 import SeoManager from "./components/SeoManager";
 
 const queryClient = new QueryClient();
@@ -29,21 +31,24 @@ const App = () => {
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <SeoManager />
-              <Routes>
-              <Route path="/" element={<Splash />} />
-              <Route path="/home" element={<Index />} />
-              <Route path="/concert/:id" element={<ConcertDetail />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/favoris" element={<Favorites />} />
-              <Route path="/compte" element={<Compte />} />
-              <Route path="/creer-evenement" element={<CreateEvent />} />
-              <Route path="/modifier-evenement/:id" element={<EditEvent />} />
-              <Route path="/email-confirmed" element={<EmailConfirmed />} />
-              <Route path="/a-propos" element={<About />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <ScrollProvider>
+                <SeoManager />
+                <Routes>
+                  <Route path="/" element={<Splash />} />
+                  <Route path="/home" element={<Index />} />
+                  <Route path="/concert/:id" element={<ConcertDetail />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/favoris" element={<Favorites />} />
+                  <Route path="/compte" element={<Compte />} />
+                  <Route path="/creer-evenement" element={<CreateEvent />} />
+                  <Route path="/modifier-evenement/:id" element={<EditEvent />} />
+                  <Route path="/email-confirmed" element={<EmailConfirmed />} />
+                  <Route path="/a-propos" element={<About />} />
+                  <Route path="/reglages" element={<Settings />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </ScrollProvider>
             </BrowserRouter>
           </TooltipProvider>
         </QueryClientProvider>

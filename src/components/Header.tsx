@@ -1,10 +1,9 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Heart, Lock, HelpCircle } from "lucide-react";
+import { Heart, Lock, HelpCircle, SlidersHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import ThemeToggle from "./ThemeToggle";
 import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -81,7 +80,13 @@ const Header = () => {
         >
           <HelpCircle size={24} strokeWidth={2} />
         </Link>
-        <ThemeToggle />
+        <Link
+          to="/reglages"
+          className="text-primary w-12 h-12 flex items-center justify-center"
+          aria-label="Réglages"
+        >
+          <SlidersHorizontal size={24} strokeWidth={2} />
+        </Link>
         <Link
           to="/favoris"
           className="text-primary relative w-12 h-12 flex items-center justify-center"
