@@ -12,25 +12,26 @@
       (function() {
         var theme = localStorage.getItem('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Vérifie si dark mode: explicitement dark, ou système avec préférence dark
+        // Respecte le choix utilisateur: light=light, dark=dark, system/null=système
         var isDark = theme === 'dark' || ((theme === 'system' || !theme) && prefersDark);
         // Couleur violette fixe pour le splash screen
         var splashColor = '#4C1CBE';
 
+        // Applique la classe dark seulement si nécessaire (pour le CSS après le splash)
         if (isDark) {
           document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
         }
-        // Met à jour le theme-color pour Android
+
+        // Met à jour le theme-color pour la barre de statut
         document.querySelector('meta[name="theme-color"]').setAttribute('content', splashColor);
 
-        // Ajoute une classe pour identifier le splash (sera retirée par React)
-        document.documentElement.classList.add('splash-active');
+        // Force le fond violet pour le splash avec style inline (priorité max)
+        document.documentElement.style.setProperty('background-color', splashColor, 'important');
 
-        // Style haute priorité pour le splash - override le CSS Tailwind
-        var style = document.createElement('style');
-        style.id = 'splash-style';
-        style.textContent = 'html.splash-active, html.splash-active body { background-color: ' + splashColor + ' !important; }';
-        document.head.appendChild(style);
+        // Marque le splash comme actif
+        document.documentElement.classList.add('splash-active');
       })();
     </script>
 

@@ -16,11 +16,8 @@ const Splash = () => {
 
     const cleanupSplash = () => {
       document.documentElement.classList.remove('splash-active');
-      // Retire aussi le style injecté
-      const splashStyle = document.getElementById('splash-style');
-      if (splashStyle) {
-        splashStyle.remove();
-      }
+      // Retire le style inline pour laisser le CSS du thème prendre le relais
+      document.documentElement.style.removeProperty('background-color');
     };
 
     if (!isMobile) {
