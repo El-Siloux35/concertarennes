@@ -11,6 +11,7 @@ import { StatusBarProvider } from "./contexts/StatusBarContext";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { UserProvider } from "./contexts/UserContext";
 import SeoManager from "./components/SeoManager";
+import SafeAreaBackground from "./components/SafeAreaBackground";
 
 // Lazy load pages for better performance
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
@@ -36,6 +37,7 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="theme">
+      <SafeAreaBackground />
       <StatusBarProvider>
         <UserProvider>
           <QueryClientProvider client={queryClient}>

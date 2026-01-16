@@ -51,7 +51,7 @@ const Splash = () => {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center"
-      style={{ backgroundColor: SPLASH_COLOR }}
+      style={{ backgroundColor: SPLASH_COLOR, zIndex: 10000 }}
     >
       <img
         src="/splash-animation.gif"
