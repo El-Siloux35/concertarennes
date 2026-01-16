@@ -18,6 +18,17 @@ const Splash = () => {
       document.documentElement.classList.remove('splash-active');
       // Retire le style inline pour laisser le CSS du thème prendre le relais
       document.documentElement.style.removeProperty('background-color');
+
+      // S'assure que la classe dark correspond au thème choisi par l'utilisateur
+      const theme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const shouldBeDark = theme === 'dark' || ((theme === 'system' || !theme) && prefersDark);
+
+      if (shouldBeDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     };
 
     if (!isMobile) {
