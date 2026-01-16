@@ -12,12 +12,12 @@
       (function() {
         var theme = localStorage.getItem('theme');
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Respecte le choix utilisateur: light=light, dark=dark, system/null=système
-        var isDark = theme === 'dark' || ((theme === 'system' || !theme) && prefersDark);
+        // light=light, dark=dark, system=système, null=light (défaut de l'app)
+        var isDark = theme === 'dark' || (theme === 'system' && prefersDark);
         // Couleur violette fixe pour le splash screen
         var splashColor = '#4C1CBE';
 
-        // Applique la classe dark seulement si nécessaire (pour le CSS après le splash)
+        // Applique la classe dark seulement si explicitement dark ou system+prefersDark
         if (isDark) {
           document.documentElement.classList.add('dark');
         } else {
