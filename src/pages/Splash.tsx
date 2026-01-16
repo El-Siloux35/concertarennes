@@ -14,16 +14,23 @@ const Splash = () => {
     // Check if on mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-    if (!isMobile) {
-      // Retire le style splash et navigue
+    const cleanupSplash = () => {
       document.documentElement.classList.remove('splash-active');
+      // Retire aussi le style injecté
+      const splashStyle = document.getElementById('splash-style');
+      if (splashStyle) {
+        splashStyle.remove();
+      }
+    };
+
+    if (!isMobile) {
+      cleanupSplash();
       navigate("/home", { replace: true });
       return;
     }
 
     const timer = setTimeout(() => {
-      // Retire le style splash avant de naviguer
-      document.documentElement.classList.remove('splash-active');
+      cleanupSplash();
       navigate("/home");
     }, 2500);
 
