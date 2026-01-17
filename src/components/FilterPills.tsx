@@ -178,14 +178,16 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           </span>
         </button>
       ))}
-      {periodFilter !== "all" && (
-        <button
-          onClick={handleClearPeriod}
-          className="text-left px-3 py-3 rounded-lg text-sm transition-colors text-primary/60 hover:text-primary hover:bg-primary/5 mt-2 border-t border-primary/10 pt-4"
-        >
-          Effacer le filtre
-        </button>
-      )}
+      <button
+        onClick={handleClearPeriod}
+        className={`text-left px-3 py-3 rounded-lg text-sm transition-colors mt-2 border-t border-primary/10 pt-4 ${
+          periodFilter !== "all"
+            ? "text-primary/60 hover:text-primary hover:bg-primary/5"
+            : "invisible"
+        }`}
+      >
+        Effacer le filtre
+      </button>
     </div>
   );
 
@@ -224,14 +226,16 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           </button>
         );
       })}
-      {styleFilters.length > 0 && (
-        <button
-          onClick={handleClearStyles}
-          className="text-left px-3 py-3 rounded-lg text-sm transition-colors text-primary/60 hover:text-primary hover:bg-primary/5 mt-2 border-t border-primary/10 pt-4"
-        >
-          Effacer le filtre
-        </button>
-      )}
+      <button
+        onClick={handleClearStyles}
+        className={`text-left px-3 py-3 rounded-lg text-sm transition-colors mt-2 border-t border-primary/10 pt-4 ${
+          styleFilters.length > 0
+            ? "text-primary/60 hover:text-primary hover:bg-primary/5"
+            : "invisible"
+        }`}
+      >
+        Effacer le filtre
+      </button>
     </div>
   );
 
@@ -270,20 +274,22 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           </button>
         );
       })}
-      {venueFilters.length > 0 && (
-        <button
-          onClick={handleClearVenues}
-          className="text-left px-3 py-3 rounded-lg text-sm transition-colors text-primary/60 hover:text-primary hover:bg-primary/5 mt-2 border-t border-primary/10 pt-4"
-        >
-          Effacer le filtre
-        </button>
-      )}
+      <button
+        onClick={handleClearVenues}
+        className={`text-left px-3 py-3 rounded-lg text-sm transition-colors mt-2 border-t border-primary/10 pt-4 ${
+          venueFilters.length > 0
+            ? "text-primary/60 hover:text-primary hover:bg-primary/5"
+            : "invisible"
+        }`}
+      >
+        Effacer le filtre
+      </button>
     </div>
   );
 
   return (
-    <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-50">
-      <div className="flex gap-2 px-4 w-max touch-manipulation">
+    <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-[100]" style={{ transform: 'translateZ(0)' }}>
+      <div className="flex gap-2 px-4 w-max" style={{ touchAction: 'manipulation' }}>
         {/* Tout button */}
         <button
           onClick={handleAllClick}

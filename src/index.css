@@ -110,34 +110,17 @@
 }
 
 @layer utilities {
-  /* Page transition animations */
+  /* Simple fade-in for pages - instant and clean */
   .page-slide-in {
-    animation: slideInFromRight 0.3s ease-out forwards;
+    animation: fadeIn 0.15s ease-out forwards;
   }
 
-  .page-slide-out {
-    animation: slideOutToRight 0.3s ease-out forwards;
-  }
-
-  @keyframes slideInFromRight {
+  @keyframes fadeIn {
     from {
-      transform: translateX(100%);
-      opacity: 0;
+      opacity: 0.5;
     }
     to {
-      transform: translateX(0);
       opacity: 1;
-    }
-  }
-
-  @keyframes slideOutToRight {
-    from {
-      transform: translateX(0);
-      opacity: 1;
-    }
-    to {
-      transform: translateX(100%);
-      opacity: 0;
     }
   }
 

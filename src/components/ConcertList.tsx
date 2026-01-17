@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ConcertCard, { Concert } from "./ConcertCard";
@@ -17,15 +17,94 @@ interface ConcertListProps {
 
 // Cache concerts to prevent flash on return
 let cachedConcerts: Concert[] | null = null;
+let cachedFilteredConcerts: Concert[] | null = null;
+
+// Helper function to filter concerts
+const filterConcerts = (
+  concerts: Concert[],
+  periodFilter: PeriodFilter,
+  styleFilters: StyleFilter[],
+  venueFilters: string[]
+): Concert[] => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const endOfWeek = new Date(today);
+  endOfWeek.setDate(today.getDate() + 7);
+
+  let filtered = concerts;
+
+  // Filter by period
+  if (periodFilter === "past") {
+    filtered = filtered.filter((concert) => {
+      const eventDate = new Date(concert.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate < today;
+    });
+  } else {
+    filtered = filtered.filter((concert) => {
+      const eventDate = new Date(concert.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= today;
+    });
+
+    if (periodFilter === "today") {
+      filtered = filtered.filter((concert) => {
+        const eventDate = new Date(concert.date);
+        eventDate.setHours(0, 0, 0, 0);
+        return eventDate.getTime() === today.getTime();
+      });
+    } else if (periodFilter === "week") {
+      filtered = filtered.filter((concert) => {
+        const eventDate = new Date(concert.date);
+        return eventDate >= today && eventDate <= endOfWeek;
+      });
+    } else if (periodFilter === "weekend") {
+      filtered = filtered.filter((concert) => {
+        const eventDate = new Date(concert.date);
+        const day = eventDate.getDay();
+        return eventDate >= today && (day === 0 || day === 5 || day === 6);
+      });
+    }
+  }
+
+  // Filter by styles
+  if (styleFilters.length > 0 && !styleFilters.includes("all")) {
+    filtered = filtered.filter((concert) => {
+      const concertStyles = concert.style?.split(",").map(s => s.trim()) || [];
+      return styleFilters.some(sf => concertStyles.includes(sf));
+    });
+  }
+
+  // Filter by venue type
+  if (venueFilters.length > 0) {
+    filtered = filtered.filter((concert) => {
+      return concert.venueType && venueFilters.includes(concert.venueType);
+    });
+  }
+
+  // Sort by date
+  if (periodFilter === "past") {
+    filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  } else {
+    filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }
+
+  return filtered;
+};
 
 const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { saveScrollPosition } = useScroll();
   const [allConcerts, setAllConcerts] = useState<Concert[]>(cachedConcerts || []);
-  const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
+  // Initialize with cached filtered concerts if available
+  const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>(() => {
+    if (cachedConcerts) {
+      return filterConcerts(cachedConcerts, periodFilter, styleFilters, venueFilters);
+    }
+    return cachedFilteredConcerts || [];
+  });
   const [loading, setLoading] = useState(!cachedConcerts);
-  const isInitialMount = useRef(true);
 
   const handleNavigateToConcert = (concertId: string) => {
     // Sauvegarde la position avant de naviguer
@@ -63,84 +142,12 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
       setLoading(false);
     };
 
-    // If we have cached data and it's not the initial mount, don't show loading
-    if (cachedConcerts && !isInitialMount.current) {
-      setLoading(false);
-    }
-    isInitialMount.current = false;
-
     fetchConcerts();
   }, []);
 
   useEffect(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const endOfWeek = new Date(today);
-    endOfWeek.setDate(today.getDate() + 7);
-
-    let filtered = allConcerts;
-
-    // Filter by period
-    if (periodFilter === "past") {
-      filtered = filtered.filter((concert) => {
-        const eventDate = new Date(concert.date);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate < today;
-      });
-    } else {
-      // First, filter to only future events for non-past filters
-      filtered = filtered.filter((concert) => {
-        const eventDate = new Date(concert.date);
-        eventDate.setHours(0, 0, 0, 0);
-        return eventDate >= today;
-      });
-
-      if (periodFilter === "today") {
-        filtered = filtered.filter((concert) => {
-          const eventDate = new Date(concert.date);
-          eventDate.setHours(0, 0, 0, 0);
-          return eventDate.getTime() === today.getTime();
-        });
-      } else if (periodFilter === "week") {
-        filtered = filtered.filter((concert) => {
-          const eventDate = new Date(concert.date);
-          return eventDate >= today && eventDate <= endOfWeek;
-        });
-      } else if (periodFilter === "weekend") {
-        filtered = filtered.filter((concert) => {
-          const eventDate = new Date(concert.date);
-          const day = eventDate.getDay();
-          // Include Friday (5), Saturday (6), and Sunday (0)
-          return eventDate >= today && (day === 0 || day === 5 || day === 6);
-        });
-      }
-    }
-
-    // Filter by styles (multi-select)
-    if (styleFilters.length > 0 && !styleFilters.includes("all")) {
-      filtered = filtered.filter((concert) => {
-        const concertStyles = concert.style?.split(",").map(s => s.trim()) || [];
-        // Check if any of the concert's styles match any of the selected filters
-        return styleFilters.some(sf => concertStyles.includes(sf));
-      });
-    }
-
-    // Filter by venue type
-    if (venueFilters.length > 0) {
-      filtered = filtered.filter((concert) => {
-        return concert.venueType && venueFilters.includes(concert.venueType);
-      });
-    }
-
-    // Sort by date
-    if (periodFilter === "past") {
-      // Past events: most recent first
-      filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    } else {
-      // Future events: soonest first
-      filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    }
-
+    const filtered = filterConcerts(allConcerts, periodFilter, styleFilters, venueFilters);
+    cachedFilteredConcerts = filtered;
     setFilteredConcerts(filtered);
   }, [periodFilter, styleFilters, venueFilters, allConcerts]);
 

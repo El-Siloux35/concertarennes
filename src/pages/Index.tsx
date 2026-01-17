@@ -148,7 +148,7 @@ const Index = () => {
     <div className="min-h-screen bg-background border-muted">
       <div className="max-w-[900px] mx-auto" style={{ paddingTop: headerHeight }}>
         {/* Fixed header section */}
-        <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+        <div ref={headerRef} className="fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform" style={{ paddingTop: 'env(safe-area-inset-top)', transform: 'translateZ(0)' }}>
           <ScrollingBanner />
           <div className="bg-background py-[12px] pb-[8px]">
             <div className="max-w-[900px] mx-auto px-4">
