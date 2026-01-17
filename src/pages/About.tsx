@@ -6,7 +6,7 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background page-slide-in">
+    <div className="min-h-screen bg-background">
       <div className="max-w-[1000px] mx-auto">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">

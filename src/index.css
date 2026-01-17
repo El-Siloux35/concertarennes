@@ -110,20 +110,6 @@
 }
 
 @layer utilities {
-  /* Simple fade-in for pages - instant and clean */
-  .page-slide-in {
-    animation: fadeIn 0.15s ease-out forwards;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0.5;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
   /* Concert card styling - solid border as per Figma */
   .concert-card {
     @apply bg-card border-2 border-primary rounded-2xl p-4;
