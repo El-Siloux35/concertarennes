@@ -92,31 +92,31 @@ const Index = () => {
       return eventDate >= today && (day === 0 || day === 5 || day === 6);
     }).length;
 
-    // Count by style
-    const concertCount = events.filter((event) => {
+    // Count by style (only future events)
+    const concertCount = futureEvents.filter((event) => {
       const styles = event.style?.split(",").map(s => s.trim()) || [];
       return styles.includes("concert");
     }).length;
 
-    const projectionCount = events.filter((event) => {
+    const projectionCount = futureEvents.filter((event) => {
       const styles = event.style?.split(",").map(s => s.trim()) || [];
       return styles.includes("projection");
     }).length;
 
-    const expositionCount = events.filter((event) => {
+    const expositionCount = futureEvents.filter((event) => {
       const styles = event.style?.split(",").map(s => s.trim()) || [];
       return styles.includes("exposition");
     }).length;
 
-    const autresStyleCount = events.filter((event) => {
+    const autresStyleCount = futureEvents.filter((event) => {
       const styles = event.style?.split(",").map(s => s.trim()) || [];
       return styles.includes("autres");
     }).length;
 
-    // Count by venue type
-    const barsCount = events.filter((event) => event.venue === "bars").length;
-    const ombresCount = events.filter((event) => event.venue === "ombres-electriques").length;
-    const autresVenueCount = events.filter((event) => event.venue === "autres").length;
+    // Count by venue type (only future events)
+    const barsCount = futureEvents.filter((event) => event.venue === "bars").length;
+    const ombresCount = futureEvents.filter((event) => event.venue === "ombres-electriques").length;
+    const autresVenueCount = futureEvents.filter((event) => event.venue === "autres").length;
 
     return {
       all: futureEvents.length,
@@ -148,7 +148,7 @@ const Index = () => {
     <div className="min-h-screen bg-background border-muted">
       <div className="max-w-[900px] mx-auto" style={{ paddingTop: headerHeight }}>
         {/* Fixed header section */}
-        <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+        <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50 flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
           <ScrollingBanner />
           <div className="bg-background py-[12px] pb-[8px]">
             <div className="max-w-[900px] mx-auto px-4">

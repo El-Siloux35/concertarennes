@@ -194,7 +194,7 @@ const ConcertDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-32 page-slide-in">
       <div className="max-w-[1000px] mx-auto">
         {/* Header with back and favorite buttons - fixed */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
@@ -255,7 +255,7 @@ const ConcertDetail = () => {
             <div className="hidden md:flex flex-col gap-3 mt-4">
               <Button
                 onClick={handleShare}
-                className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2"
+                className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
               >
                 <Share2 size={20} strokeWidth={2} />
                 Partager l'évènement
@@ -265,7 +265,7 @@ const ConcertDetail = () => {
                 <Button
                   onClick={handleContactSignal}
                   variant="secondary"
-                  className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-base"
+                  className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px]"
                 >
                   Obtenir plus d'infos
                 </Button>
@@ -364,7 +364,7 @@ const ConcertDetail = () => {
         <div className="md:hidden fixed bottom-6 left-4 right-4 max-w-[1000px] mx-auto flex flex-col gap-3">
           <Button
             onClick={handleShare}
-            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-base gap-2"
+            className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
           >
             <Share2 size={20} strokeWidth={2} />
             Partager l'évènement
@@ -374,7 +374,7 @@ const ConcertDetail = () => {
             <Button
               onClick={handleContactSignal}
               variant="secondary"
-              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-base"
+              className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px]"
             >
               Obtenir plus d'infos
             </Button>

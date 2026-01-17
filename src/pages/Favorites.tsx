@@ -136,24 +136,26 @@ const Favorites = () => {
   const filteredEvents = activeTab === "upcoming" ? upcomingEvents : pastEvents;
 
   return (
-    <div className="min-h-screen bg-background pb-8">
+    <div className="min-h-screen bg-background pb-8 page-slide-in">
       <div className="max-w-[900px] mx-auto">
-        {/* Header */}
-        <header className="py-4 px-4 flex justify-start">
-          <button
-            onClick={() => navigate("/home")}
-            className="flex items-center gap-2 text-primary"
-            aria-label="Retour aux évènements"
-          >
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <ChevronLeft size={24} className="text-primary-foreground" />
-            </div>
-            <span className="font-medium">Retour</span>
-          </button>
-        </header>
+        {/* Fixed Header */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+          <div className="max-w-[900px] mx-auto p-4 flex justify-between items-center">
+            <button
+              onClick={() => navigate("/home")}
+              className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              aria-label="Retour"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+          </div>
+        </div>
+
+        {/* Spacer for fixed header */}
+        <div className="h-20"></div>
 
         {/* Page Title */}
-        <h1 className="text-xl font-bold text-primary text-center mb-4 mt-8">Mes favoris</h1>
+        <h1 className="text-xl font-bold text-primary text-center mb-4">Mes favoris</h1>
 
         {/* Filter Tabs */}
         <div className="px-4 mb-4">

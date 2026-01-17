@@ -208,15 +208,15 @@ const Auth = () => {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 top-16 z-50 bg-background rounded-t-[20px] shadow-2xl animate-slide-up flex flex-col">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
       {/* Close button */}
       <header className="px-4 pt-4 flex justify-start shrink-0">
         <button
           onClick={() => (from ? navigate(from) : navigate(-1))}
-          className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+          className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
           aria-label="Fermer"
         >
-          <X size={18} strokeWidth={2} />
+          <X size={24} strokeWidth={2} />
         </button>
       </header>
 

@@ -7,15 +7,43 @@ import { useEffect, useState } from "react";
  */
 const SafeAreaBackground = () => {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const [bgColor, setBgColor] = useState<string>("#4C1CBE"); // Violet initial pour le splash
 
+  // Fonction pour calculer la couleur selon le thème
+  const getThemeColor = () => {
+    // Utilise la classe dark du DOM comme source de vérité
+    const isDark = document.documentElement.classList.contains("dark");
+    return isDark ? "#0d1117" : "#ffffff";
+  };
+
+  // Met à jour la couleur quand le thème change
   useEffect(() => {
-    setMounted(true);
+    // Si splash actif, garder le violet
+    if (document.documentElement.classList.contains("splash-active")) {
+      setBgColor("#4C1CBE");
+      return;
+    }
+
+    // Sinon, utiliser la couleur du thème
+    setBgColor(getThemeColor());
+  }, [resolvedTheme]);
+
+  // Observer les changements de classe sur le document pour détecter la fin du splash
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      // Si splash n'est plus actif, mettre à jour la couleur
+      if (!document.documentElement.classList.contains("splash-active")) {
+        setBgColor(getThemeColor());
+      }
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
   }, []);
-
-  if (!mounted) return null;
-
-  const bgColor = resolvedTheme === "dark" ? "#0d1117" : "#ffffff";
 
   return (
     <div

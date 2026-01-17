@@ -16,8 +16,6 @@ const Splash = () => {
 
     const cleanupSplash = () => {
       document.documentElement.classList.remove('splash-active');
-      // Retire le style inline pour laisser le CSS du thème prendre le relais
-      document.documentElement.style.removeProperty('background-color');
 
       // S'assure que la classe dark correspond au thème choisi par l'utilisateur
       const choice = localStorage.getItem('theme-choice') || localStorage.getItem('theme');
@@ -32,6 +30,26 @@ const Splash = () => {
       } else {
         document.documentElement.classList.remove('dark');
       }
+
+      // Couleur de la barre de statut selon le thème
+      const themeColor = shouldBeDark ? '#0d1117' : '#ffffff';
+
+      // Met à jour la meta tag theme-color
+      const metaTag = document.querySelector('meta[name="theme-color"]');
+      if (metaTag) {
+        metaTag.setAttribute('content', themeColor);
+      }
+
+      // Retire le style inline pour laisser le CSS du thème prendre le relais
+      document.documentElement.style.removeProperty('background-color');
+      document.documentElement.style.backgroundColor = themeColor;
+
+      // Nettoie aussi le body
+      document.body.style.removeProperty('background-color');
+      document.body.style.backgroundColor = themeColor;
+
+      // Marque l'app comme chargée pour éviter le splash au retour
+      sessionStorage.setItem('app-loaded', 'true');
     };
 
     if (!isMobile) {

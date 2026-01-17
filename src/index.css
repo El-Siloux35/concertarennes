@@ -104,10 +104,43 @@
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 }
 
 @layer utilities {
+  /* Page transition animations */
+  .page-slide-in {
+    animation: slideInFromRight 0.3s ease-out forwards;
+  }
+
+  .page-slide-out {
+    animation: slideOutToRight 0.3s ease-out forwards;
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideOutToRight {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+
   /* Concert card styling - solid border as per Figma */
   .concert-card {
     @apply bg-card border-2 border-primary rounded-2xl p-4;

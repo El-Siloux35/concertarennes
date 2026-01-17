@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ConcertCard, { Concert } from "./ConcertCard";
@@ -15,13 +15,17 @@ interface ConcertListProps {
   venueFilters: string[];
 }
 
+// Cache concerts to prevent flash on return
+let cachedConcerts: Concert[] | null = null;
+
 const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { saveScrollPosition } = useScroll();
-  const [allConcerts, setAllConcerts] = useState<Concert[]>([]);
+  const [allConcerts, setAllConcerts] = useState<Concert[]>(cachedConcerts || []);
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!cachedConcerts);
+  const isInitialMount = useRef(true);
 
   const handleNavigateToConcert = (concertId: string) => {
     // Sauvegarde la position avant de naviguer
@@ -54,9 +58,16 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         style: event.style,
       }));
 
+      cachedConcerts = mappedConcerts;
       setAllConcerts(mappedConcerts);
       setLoading(false);
     };
+
+    // If we have cached data and it's not the initial mount, don't show loading
+    if (cachedConcerts && !isInitialMount.current) {
+      setLoading(false);
+    }
+    isInitialMount.current = false;
 
     fetchConcerts();
   }, []);
@@ -155,6 +166,13 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         />
       ))}
 
+      {/* Empty End Card */}
+      <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center">
+        <p className="text-primary/50 text-sm">
+          C'est tout pour le moment !
+        </p>
+      </div>
+
       {/* Zamigo Promo Card */}
       <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
         <h3 className="font-semibold text-lg mb-1">Zamigo</h3>
@@ -185,13 +203,6 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
           Voir le tuto
           <ArrowRight size={16} />
         </Link>
-      </div>
-
-      {/* Empty End Card */}
-      <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center">
-        <p className="text-primary/50 text-sm">
-          C'est tout pour le moment !
-        </p>
       </div>
     </div>
   );

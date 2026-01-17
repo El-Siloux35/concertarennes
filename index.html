@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" style="background-color: #4C1CBE;">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
@@ -17,8 +17,11 @@
         // Détermine si on doit appliquer le dark mode
         var isDark = choice === 'dark' || (choice === 'system' && prefersDark);
 
-        // Couleur violette fixe pour le splash screen
+        // Couleurs
         var splashColor = '#4C1CBE';
+        var lightColor = '#ffffff';
+        var darkColor = '#0d1117';
+        var themeColor = isDark ? darkColor : lightColor;
 
         // Applique la classe dark si nécessaire
         if (isDark) {
@@ -30,14 +33,40 @@
         // Synchronise le thème pour next-themes (toujours light ou dark, jamais system)
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
 
-        // Met à jour le theme-color pour la barre de statut
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', splashColor);
+        // Vérifie si c'est un chargement initial (splash) ou un retour sur l'app
+        var isInitialLoad = !sessionStorage.getItem('app-loaded');
 
-        // Force le fond violet pour le splash avec style inline (priorité max)
-        document.documentElement.style.setProperty('background-color', splashColor, 'important');
+        // Fonction pour appliquer la couleur partout
+        function applyColor(color, isImportant) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
+          if (isImportant) {
+            document.documentElement.style.setProperty('background-color', color, 'important');
+          } else {
+            document.documentElement.style.setProperty('background-color', color);
+          }
+          // Aussi appliquer au body dès qu'il est disponible
+          if (document.body) {
+            document.body.style.backgroundColor = color;
+          } else {
+            // Si body pas encore prêt, observer le DOM
+            var observer = new MutationObserver(function(mutations, obs) {
+              if (document.body) {
+                document.body.style.backgroundColor = color;
+                obs.disconnect();
+              }
+            });
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+          }
+        }
 
-        // Marque le splash comme actif
-        document.documentElement.classList.add('splash-active');
+        if (isInitialLoad) {
+          // Premier chargement: splash screen violet
+          applyColor(splashColor, true);
+          document.documentElement.classList.add('splash-active');
+        } else {
+          // Retour sur l'app: utiliser la couleur du thème immédiatement
+          applyColor(themeColor, false);
+        }
       })();
     </script>
 
@@ -67,7 +96,7 @@
     
     <meta name="twitter:card" content="summary_large_image" />
   </head>
-  <body style="background-color: #4C1CBE;" id="body">
+  <body id="body">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

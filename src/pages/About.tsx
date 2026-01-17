@@ -6,21 +6,26 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background page-slide-in">
       <div className="max-w-[1000px] mx-auto">
-        {/* Header */}
-        <div className="p-4 flex items-center">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Retour"
-          >
-            <ChevronLeft size={24} strokeWidth={2} />
-          </button>
+        {/* Fixed Header */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+          <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              aria-label="Retour"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+          </div>
         </div>
 
+        {/* Spacer for fixed header */}
+        <div className="h-20"></div>
+
         {/* Content */}
-        <div className="px-4 py-8">
+        <div className="px-4 py-4">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-2">
             L'agenda du 35
           </h1>

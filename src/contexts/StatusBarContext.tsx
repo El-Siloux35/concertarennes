@@ -27,26 +27,28 @@ export function StatusBarProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Couleur par défaut selon le thème (ou violette si pas encore hydraté)
+  // Couleur par défaut selon le thème
   const getDefaultColor = useCallback(() => {
-    // Avant l'hydratation, garder la couleur initiale violette
-    if (!mounted || !resolvedTheme) {
-      return INITIAL_COLOR;
+    // Toujours utiliser la classe dark du DOM pour déterminer le thème
+    if (typeof document !== "undefined") {
+      const isDark = document.documentElement.classList.contains("dark");
+      return isDark ? "#0d1117" : "#ffffff";
     }
-    // Après l'hydratation, utiliser la couleur du thème
-    return resolvedTheme === "dark" ? "#0d1117" : "#ffffff";
-  }, [mounted, resolvedTheme]);
+    // Fallback sur resolvedTheme si disponible
+    if (resolvedTheme) {
+      return resolvedTheme === "dark" ? "#0d1117" : "#ffffff";
+    }
+    return "#ffffff"; // Défaut: clair
+  }, [resolvedTheme]);
 
   // Met à jour la meta tag quand la couleur change
   useEffect(() => {
-    // Ne met à jour que si le composant est monté et le thème résolu
-    // OU si une couleur custom est définie
     if (customColor) {
       updateMetaTags(customColor);
-    } else if (mounted && resolvedTheme) {
+    } else {
+      // Toujours mettre à jour avec la couleur par défaut
       updateMetaTags(getDefaultColor());
     }
-    // Si pas monté et pas de customColor, on garde la couleur du HTML (violette)
   }, [customColor, mounted, resolvedTheme, getDefaultColor]);
 
   const setStatusBarColor = useCallback((color: string | null) => {

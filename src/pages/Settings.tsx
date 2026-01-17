@@ -4,6 +4,19 @@ import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
 
+// Fonction pour mettre à jour la couleur de la barre de statut et du fond
+function updateStatusBarColor(isDark: boolean) {
+  const color = isDark ? "#0d1117" : "#ffffff";
+  // Met à jour la meta tag theme-color
+  const metaTag = document.querySelector('meta[name="theme-color"]');
+  if (metaTag) {
+    metaTag.setAttribute("content", color);
+  }
+  // Met à jour aussi le background du document pour iOS PWA
+  document.documentElement.style.backgroundColor = color;
+  document.body.style.backgroundColor = color;
+}
+
 const Settings = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
@@ -25,17 +38,23 @@ const Settings = () => {
     setThemeChoice(choice);
     localStorage.setItem("theme-choice", choice);
 
+    let isDark: boolean;
     if (choice === "system") {
       // Apply based on system preference, but store actual theme for next-themes
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      isDark = prefersDark;
       const actualTheme = prefersDark ? "dark" : "light";
       setTheme(actualTheme);
       // Store "system" separately so our init script knows to check system preference
       localStorage.setItem("theme", "system");
     } else {
+      isDark = choice === "dark";
       setTheme(choice);
       localStorage.setItem("theme", choice);
     }
+
+    // Met à jour immédiatement la couleur de la barre de statut
+    updateStatusBarColor(isDark);
   };
 
   const handleNotificationToggle = async () => {
@@ -59,21 +78,26 @@ const Settings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background page-slide-in">
       <div className="max-w-[1000px] mx-auto">
-        {/* Header */}
-        <div className="p-4 flex items-center">
-          <button
-            onClick={() => navigate(-1)}
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-            aria-label="Retour"
-          >
-            <ChevronLeft size={24} strokeWidth={2} />
-          </button>
+        {/* Fixed Header */}
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+          <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              aria-label="Retour"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+          </div>
         </div>
 
+        {/* Spacer for fixed header */}
+        <div className="h-20"></div>
+
         {/* Content */}
-        <div className="px-4 py-8">
+        <div className="px-4 py-4">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">
             Réglages
           </h1>
