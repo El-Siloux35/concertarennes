@@ -1,61 +1,23 @@
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import bannerLogo from "@/assets/banner-logo.svg";
 import musicNote from "@/assets/music-note.gif";
 
 interface ScrollingBannerProps {
   className?: string;
+  onHeightChange?: (height: number) => void;
 }
 
+// Export banner height so parent can use it
+export const BANNER_HEIGHT = 103; // Height of the banner content + padding
+
 const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
-  const [isVisible, setIsVisible] = useState(true);
-  const lastScrollY = useRef(0);
-  const scrollUpDistance = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-
-      // Ignore if at bottom (bounce effect)
-      if (currentScrollY >= maxScroll - 5) {
-        lastScrollY.current = currentScrollY;
-        return;
-      }
-
-      if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - hide immediately
-        if (currentScrollY > 50) {
-          setIsVisible(false);
-        }
-        scrollUpDistance.current = 0;
-      } else if (currentScrollY < lastScrollY.current) {
-        // Scrolling up - accumulate distance
-        scrollUpDistance.current += lastScrollY.current - currentScrollY;
-
-        // Only show after scrolling up at least 80px
-        if (scrollUpDistance.current > 80) {
-          setIsVisible(true);
-        }
-      }
-
-      lastScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Calculate banner height for transform
-  const bannerHeight = 120; // Approximate height including padding
+  const bannerRef = useRef<HTMLDivElement>(null);
 
   return (
     <div
-      className={`w-full bg-background overflow-hidden transition-transform duration-300 ease-out ${className}`}
-      style={{
-        transform: isVisible ? 'translateY(0)' : `translateY(-${bannerHeight}px)`,
-        marginBottom: isVisible ? '0' : `-${bannerHeight}px`,
-        paddingTop: '16px',
-      }}
+      ref={bannerRef}
+      className={`w-full bg-background overflow-hidden ${className}`}
+      style={{ paddingTop: '16px' }}
     >
       <div className="flex animate-scroll-left gap-6 items-center">
         {/* Repeat the images multiple times to ensure seamless loop */}

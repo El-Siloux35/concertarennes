@@ -4,7 +4,7 @@ import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
 import Footer from "../components/Footer";
-import ScrollingBanner from "../components/ScrollingBanner";
+import ScrollingBanner, { BANNER_HEIGHT } from "../components/ScrollingBanner";
 import { supabase } from "@/integrations/supabase/client";
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
@@ -23,6 +23,44 @@ const Index = () => {
 
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
+  const [bannerVisible, setBannerVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const scrollUpDistance = useRef(0);
+
+  // Handle scroll to show/hide banner
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+      // Ignore if at bottom (bounce effect)
+      if (currentScrollY >= maxScroll - 5) {
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      if (currentScrollY > lastScrollY.current) {
+        // Scrolling down - hide banner
+        if (currentScrollY > 50) {
+          setBannerVisible(false);
+        }
+        scrollUpDistance.current = 0;
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up - accumulate distance
+        scrollUpDistance.current += lastScrollY.current - currentScrollY;
+
+        // Only show after scrolling up at least 80px
+        if (scrollUpDistance.current > 80) {
+          setBannerVisible(true);
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useLayoutEffect(() => {
     const el = headerRef.current;
@@ -42,7 +80,7 @@ const Index = () => {
       ro.disconnect();
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [bannerVisible]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -144,11 +182,21 @@ const Index = () => {
     setVenueFilters(newVenueFilters);
   };
 
+  // Calculate effective padding based on banner visibility
+  const effectivePadding = bannerVisible ? headerHeight : headerHeight - BANNER_HEIGHT;
+
   return (
     <div className="min-h-screen bg-background border-muted">
-      <div className="max-w-[900px] mx-auto" style={{ paddingTop: headerHeight }}>
+      <div className="max-w-[900px] mx-auto transition-[padding] duration-300" style={{ paddingTop: effectivePadding }}>
         {/* Fixed header section */}
-        <div ref={headerRef} className="fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform" style={{ paddingTop: 'env(safe-area-inset-top)', transform: 'translateZ(0)' }}>
+        <div
+          ref={headerRef}
+          className="fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform transition-transform duration-300 ease-out"
+          style={{
+            paddingTop: 'env(safe-area-inset-top)',
+            transform: bannerVisible ? 'translateY(0)' : `translateY(-${BANNER_HEIGHT}px)`,
+          }}
+        >
           <ScrollingBanner />
           <div className="bg-background py-[12px] pb-[8px]">
             <div className="max-w-[900px] mx-auto px-4">
