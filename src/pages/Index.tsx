@@ -23,8 +23,14 @@ const Index = () => {
 
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
-  const [bannerVisible, setBannerVisible] = useState(true);
-  const lastScrollY = useRef(0);
+  // Initialize banner visibility based on current scroll position
+  const [bannerVisible, setBannerVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.scrollY <= 50;
+    }
+    return true;
+  });
+  const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
   // Handle scroll to show/hide banner
@@ -130,24 +136,24 @@ const Index = () => {
       return eventDate >= today && (day === 0 || day === 5 || day === 6);
     }).length;
 
-    // Count by style (only future events)
+    // Count by style (only future events) - case insensitive
     const concertCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
       return styles.includes("concert");
     }).length;
 
     const projectionCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
       return styles.includes("projection");
     }).length;
 
     const expositionCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
       return styles.includes("exposition");
     }).length;
 
     const autresStyleCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim()) || [];
+      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
       return styles.includes("autres");
     }).length;
 

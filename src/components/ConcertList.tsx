@@ -67,11 +67,11 @@ const filterConcerts = (
     }
   }
 
-  // Filter by styles
+  // Filter by styles - case insensitive
   if (styleFilters.length > 0 && !styleFilters.includes("all")) {
     filtered = filtered.filter((concert) => {
-      const concertStyles = concert.style?.split(",").map(s => s.trim()) || [];
-      return styleFilters.some(sf => concertStyles.includes(sf));
+      const concertStyles = concert.style?.split(",").map(s => s.trim().toLowerCase()) || [];
+      return styleFilters.some(sf => concertStyles.includes(sf.toLowerCase()));
     });
   }
 
@@ -180,19 +180,12 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         </p>
       </div>
 
-      {/* Zamigo Promo Card */}
+      {/* Promo Card */}
       <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
-        <h3 className="font-semibold text-lg mb-1">Zamigo</h3>
-        <p className="text-sm opacity-90 mb-4">
+        <h3 className="font-semibold text-lg mb-1">L'agenda du 35</h3>
+        <p className="text-sm opacity-90">
           L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
         </p>
-        <Link
-          to="/a-propos"
-          className="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-2"
-        >
-          En savoir plus
-          <ArrowRight size={16} />
-        </Link>
       </div>
 
       {/* PWA Install Card */}
