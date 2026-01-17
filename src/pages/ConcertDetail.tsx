@@ -212,7 +212,7 @@ const ConcertDetail = () => {
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">
             <button
-              onClick={() => navigate(fromPage === "favorites" ? "/favoris" : "/home")}
+              onClick={() => navigate(-1)}
               className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
