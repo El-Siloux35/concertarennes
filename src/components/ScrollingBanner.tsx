@@ -45,13 +45,16 @@ const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Calculate banner height for transform
+  const bannerHeight = 120; // Approximate height including padding
+
   return (
     <div
-      className={`w-full bg-background overflow-hidden transition-all duration-200 ${className}`}
+      className={`w-full bg-background overflow-hidden transition-transform duration-300 ease-out ${className}`}
       style={{
-        maxHeight: isVisible ? '200px' : '0',
-        paddingTop: isVisible ? '16px' : '0',
-        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : `translateY(-${bannerHeight}px)`,
+        marginBottom: isVisible ? '0' : `-${bannerHeight}px`,
+        paddingTop: '16px',
       }}
     >
       <div className="flex animate-scroll-left gap-6 items-center">
