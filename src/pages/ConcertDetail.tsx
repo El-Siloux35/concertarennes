@@ -23,6 +23,9 @@ interface Event {
   style: string | null;
 }
 
+// Cache events to prevent flash on navigation
+const eventCache: Record<string, Event> = {};
+
 const ConcertDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -30,8 +33,9 @@ const ConcertDetail = () => {
   const fromPage = searchParams.get("from");
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [event, setEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Initialize with cached event if available
+  const [event, setEvent] = useState<Event | null>(id ? eventCache[id] || null : null);
+  const [loading, setLoading] = useState(!id || !eventCache[id]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { isAdmin } = useIsAdmin();
@@ -39,6 +43,12 @@ const ConcertDetail = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       if (!id) return;
+
+      // If we have cached data, don't show loading
+      if (eventCache[id]) {
+        setEvent(eventCache[id]);
+        setLoading(false);
+      }
 
       const { data, error } = await supabase
         .from("events")
@@ -52,6 +62,8 @@ const ConcertDetail = () => {
         return;
       }
 
+      // Cache the event
+      eventCache[id] = data;
       setEvent(data);
       setLoading(false);
     };
@@ -194,7 +206,7 @@ const ConcertDetail = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background">
       <div className="max-w-[1000px] mx-auto">
         {/* Header with back and favorite buttons - fixed */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
@@ -360,8 +372,8 @@ const ConcertDetail = () => {
           </div>
         </div>
 
-        {/* Floating action buttons - mobile only */}
-        <div className="md:hidden fixed bottom-6 left-4 right-4 max-w-[1000px] mx-auto flex flex-col gap-3">
+        {/* Action buttons - mobile only, in flow before footer */}
+        <div className="md:hidden flex flex-col gap-3 px-4 mt-8 mb-8">
           <Button
             onClick={handleShare}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
