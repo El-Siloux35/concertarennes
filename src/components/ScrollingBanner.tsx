@@ -8,7 +8,7 @@ interface ScrollingBannerProps {
 }
 
 // Export banner height so parent can use it
-export const BANNER_HEIGHT = 103; // Height of the banner content + padding
+export const BANNER_HEIGHT = 123; // Height of the banner content + padding + 20px extra
 
 const ScrollingBanner = ({ className = "" }: ScrollingBannerProps) => {
   const bannerRef = useRef<HTMLDivElement>(null);
