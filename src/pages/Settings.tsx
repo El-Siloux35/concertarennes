@@ -1,8 +1,10 @@
-import { ChevronLeft, Sun, Moon, Monitor } from "lucide-react";
+import { ChevronLeft, Sun, Moon, Monitor, Bell, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { useToast } from "@/hooks/use-toast";
 
 // Fonction pour mettre à jour la couleur de la barre de statut et du fond
 function updateStatusBarColor(isDark: boolean) {
@@ -19,20 +21,36 @@ function updateStatusBarColor(isDark: boolean) {
 
 const Settings = () => {
   const navigate = useNavigate();
-  const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
+  const { setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
   const [themeChoice, setThemeChoice] = useState<"light" | "dark" | "system">("light");
+
+  const {
+    isSupported,
+    isSubscribed,
+    isLoading: isPushLoading,
+    error: pushError,
+    subscribe,
+    unsubscribe,
+  } = usePushNotifications();
 
   useEffect(() => {
     setMounted(true);
     // Check saved theme choice
     const savedChoice = localStorage.getItem("theme-choice") || "light";
     setThemeChoice(savedChoice as "light" | "dark" | "system");
-    // Check if notifications are enabled
-    const savedNotifications = localStorage.getItem("notifications-enabled");
-    setNotificationsEnabled(savedNotifications === "true");
   }, []);
+
+  useEffect(() => {
+    if (pushError) {
+      toast({
+        title: "Erreur",
+        description: pushError,
+        variant: "destructive",
+      });
+    }
+  }, [pushError, toast]);
 
   const handleThemeChange = (choice: "light" | "dark" | "system") => {
     setThemeChoice(choice);
@@ -58,18 +76,22 @@ const Settings = () => {
   };
 
   const handleNotificationToggle = async () => {
-    if (!notificationsEnabled) {
-      // Request notification permission
-      if ("Notification" in window) {
-        const permission = await Notification.requestPermission();
-        if (permission === "granted") {
-          setNotificationsEnabled(true);
-          localStorage.setItem("notifications-enabled", "true");
-        }
+    if (isSubscribed) {
+      const success = await unsubscribe();
+      if (success) {
+        toast({
+          title: "Notifications désactivées",
+          description: "Vous ne recevrez plus de notifications.",
+        });
       }
     } else {
-      setNotificationsEnabled(false);
-      localStorage.setItem("notifications-enabled", "false");
+      const success = await subscribe();
+      if (success) {
+        toast({
+          title: "Notifications activées",
+          description: "Vous recevrez des notifications pour les nouveaux événements.",
+        });
+      }
     }
   };
 
@@ -157,22 +179,46 @@ const Settings = () => {
             <h2 className="text-lg font-semibold text-card-foreground mb-4">
               Notifications
             </h2>
-            <div className="flex items-center justify-between">
-              <span className="text-primary">Activer les notifications</span>
-              <button
-                onClick={handleNotificationToggle}
-                className={`relative w-14 h-8 rounded-full transition-colors border-2 border-primary ${
-                  notificationsEnabled ? "bg-primary" : "bg-transparent"
-                }`}
-                aria-label={notificationsEnabled ? "Désactiver les notifications" : "Activer les notifications"}
-              >
-                <span
-                  className={`absolute top-1 w-5 h-5 rounded-full bg-accent transition-transform ${
-                    notificationsEnabled ? "translate-x-7" : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
+
+            {!isSupported ? (
+              <p className="text-primary/60 text-sm">
+                Les notifications push ne sont pas supportées sur ce navigateur.
+              </p>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+                    <Bell size={20} className="text-primary" />
+                  </div>
+                  <div>
+                    <span className="text-primary font-medium">Nouveaux événements</span>
+                    <p className="text-primary/60 text-xs">
+                      Recevez une notification lors de l'ajout d'un événement
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleNotificationToggle}
+                  disabled={isPushLoading}
+                  className={`relative w-14 h-8 rounded-full transition-colors duration-200 border-2 border-primary ${
+                    isSubscribed ? "bg-primary" : "bg-transparent"
+                  } ${isPushLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+                  aria-label={isSubscribed ? "Désactiver les notifications" : "Activer les notifications"}
+                >
+                  {isPushLoading ? (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <Loader2 size={16} className="animate-spin text-primary" />
+                    </span>
+                  ) : (
+                    <span
+                      className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-accent transition-all duration-200 ${
+                        isSubscribed ? "left-[calc(100%-1.5rem)]" : "left-1"
+                      }`}
+                    />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

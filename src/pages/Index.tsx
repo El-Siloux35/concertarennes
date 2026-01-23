@@ -30,12 +30,19 @@ const Index = () => {
     }
     return true;
   });
+  // Track if transitions should be enabled (disabled on initial mount to prevent animation on return)
+  const [transitionsEnabled, setTransitionsEnabled] = useState(false);
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
   // Handle scroll to show/hide banner
   useEffect(() => {
     const handleScroll = () => {
+      // Enable transitions after first scroll interaction
+      if (!transitionsEnabled) {
+        setTransitionsEnabled(true);
+      }
+
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
@@ -66,7 +73,7 @@ const Index = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [transitionsEnabled]);
 
   useLayoutEffect(() => {
     const el = headerRef.current;
@@ -193,11 +200,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background border-muted">
-      <div className="max-w-[900px] mx-auto transition-[padding] duration-300" style={{ paddingTop: effectivePadding }}>
+      <div className={`max-w-[900px] mx-auto ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
         {/* Fixed header section */}
         <div
           ref={headerRef}
-          className="fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform transition-transform duration-300 ease-out"
+          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
             transform: bannerVisible ? 'translateY(0)' : `translateY(-${BANNER_HEIGHT}px)`,

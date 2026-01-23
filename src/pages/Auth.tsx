@@ -324,17 +324,22 @@ const Auth = () => {
             </Button>
 
             {mode === "login" && (
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  setMode("signup");
-                  setPassword("");
-                }}
-                className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px] hover:bg-secondary"
-              >
-                Créer un compte
-              </Button>
+              <>
+                <p className="text-primary/70 text-[13px] text-center">
+                  Pas encore de compte ?
+                </p>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => {
+                    setMode("signup");
+                    setPassword("");
+                  }}
+                  className="w-full h-14 rounded-full bg-secondary text-secondary-foreground font-medium text-[14px] hover:bg-secondary"
+                >
+                  Créer un compte
+                </Button>
+              </>
             )}
 
             {mode === "signup" && (

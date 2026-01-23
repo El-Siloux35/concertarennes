@@ -11,6 +11,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format, parseISO } from "date-fns";
 import { fr } from "date-fns/locale";
 import { resizeImage } from "@/lib/imageUtils";
+import { notifyNewEvent } from "@/lib/pushNotifications";
 import StyleSelector from "@/components/StyleSelector";
 import VenueSelector from "@/components/VenueSelector";
 
@@ -277,6 +278,13 @@ const EditEvent = () => {
         });
         navigate("/compte");
       } else if (publish) {
+        // Send push notifications when publishing a draft
+        if (id) {
+          notifyNewEvent({
+            eventId: id,
+            eventTitle: name.trim(),
+          });
+        }
         toast({
           title: "Succès",
           description: "Évènement publié !",

@@ -343,7 +343,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-[300]" align="start">
               <PeriodContent />
             </PopoverContent>
           </Popover>
@@ -387,7 +387,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-[300]" align="start">
               <StyleContent />
             </PopoverContent>
           </Popover>
@@ -431,7 +431,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-[300]" align="start">
               <VenueContent />
             </PopoverContent>
           </Popover>

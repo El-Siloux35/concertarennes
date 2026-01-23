@@ -11,6 +11,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { resizeImage } from "@/lib/imageUtils";
+import { notifyNewEvent } from "@/lib/pushNotifications";
 import StyleSelector from "@/components/StyleSelector";
 import VenueSelector from "@/components/VenueSelector";
 
@@ -172,6 +173,14 @@ const CreateEvent = () => {
 
       if (!insertedData) {
         throw new Error("La création a échoué - aucune donnée retournée");
+      }
+
+      // Send push notifications for published events (not drafts)
+      if (!isDraft && insertedData.id) {
+        notifyNewEvent({
+          eventId: insertedData.id,
+          eventTitle: name.trim(),
+        });
       }
 
       toast({
