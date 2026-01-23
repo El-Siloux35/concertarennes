@@ -211,8 +211,8 @@ const Settings = () => {
                     </span>
                   ) : (
                     <span
-                      className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full bg-accent transition-all duration-200 ${
-                        isSubscribed ? "left-[calc(100%-1.5rem)]" : "left-1"
+                      className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full transition-all duration-200 ${
+                        isSubscribed ? "left-[calc(100%-1.5rem)] bg-accent" : "left-1 bg-primary/50"
                       }`}
                     />
                   )}
