@@ -1,0 +1,23 @@
+[
+  {
+    "id": "c339acf8-510a-477d-9fac-64d2ca24479d",
+    "pseudo": "El-Siloux35-2026",
+    "avatar_url": "https://pfghllfusjlodgxumbir.supabase.co/storage/v1/object/public/avatars/c339acf8-510a-477d-9fac-64d2ca24479d/1767740074840.jpeg",
+    "created_at": "2026-01-04T00:47:06.460681+00:00",
+    "updated_at": "2026-01-07T20:51:29.635343+00:00"
+  },
+  {
+    "id": "d96f2c2d-05c8-4a8f-ac56-201276b30458",
+    "pseudo": "Meghy",
+    "avatar_url": null,
+    "created_at": "2026-01-17T11:45:06.915498+00:00",
+    "updated_at": "2026-01-17T11:45:06.915498+00:00"
+  },
+  {
+    "id": "abe3e3ce-897d-4a85-9496-1316f0521ea1",
+    "pseudo": "Robin",
+    "avatar_url": null,
+    "created_at": "2026-01-18T16:37:23.2318+00:00",
+    "updated_at": "2026-01-18T16:37:23.2318+00:00"
+  }
+]

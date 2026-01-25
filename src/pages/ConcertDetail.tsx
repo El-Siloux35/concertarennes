@@ -21,6 +21,7 @@ interface Event {
   contact: string | null;
   user_id: string;
   style: string | null;
+  profiles?: { pseudo: string | null } | null;
 }
 
 // Cache events to prevent flash on navigation
@@ -52,7 +53,7 @@ const ConcertDetail = () => {
 
       const { data, error } = await supabase
         .from("events")
-        .select("*")
+        .select("*, profiles:user_id(pseudo)")
         .eq("id", id)
         .single();
 
@@ -288,8 +289,13 @@ const ConcertDetail = () => {
           {/* Right column - Content */}
           <div className="md:flex-1">
             {/* Organizer badge */}
-            <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
-              {event.organizer || "Organisateur"}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1">
+                {event.organizer || "Organisateur"}
+              </div>
+              {event.profiles?.pseudo && (
+                <span className="text-xs text-primary/60">par {event.profiles.pseudo}</span>
+              )}
             </div>
 
             {/* Concert title */}

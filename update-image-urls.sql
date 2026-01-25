@@ -1,0 +1,15 @@
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767491834425.JPG' WHERE id = 'ef0ded50-0844-4779-9c6c-5c83d8f23665';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767496376333.jpeg' WHERE id = '3511bae3-7011-41f2-9a01-48a4f9a6cc9d';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767492862697.jpeg' WHERE id = '86393f50-6f5e-4a78-80f4-8817eda8c2ca';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767539053702.jpg' WHERE id = 'cad1377a-200e-4c82-aa30-1b3f3d2259a6';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767496814052.jpg' WHERE id = 'aa3f91cd-abac-4641-abdb-dab10c0baeba';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1768040868184.jpg' WHERE id = '0985ce02-ca23-4008-b3c9-9c90783fd9b7';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767967914076.jpg' WHERE id = 'cc7aa2e6-1856-4c4d-ace1-39432f5af78c';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767967768192.jpg' WHERE id = 'e5286a9a-05a3-43d7-be21-9c72949e8319';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1769202845137.jpg' WHERE id = '8773a2e2-f8db-4c80-acf4-f80bca8e811d';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767967552272.jpg' WHERE id = '4f1a6d65-0e68-44d8-a240-96d7aa82c028';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1768650753575.jpg' WHERE id = 'b1197717-f9b2-49a2-a0d9-1256c48aca1b';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1769183634320.jpg' WHERE id = '8be338fe-620f-40c0-b8d8-d6d9d9f17b8a';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1769183927963.jpg' WHERE id = 'cf67c7e8-83a6-4044-b95f-2ff0aec4bfca';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767818970586.jpg' WHERE id = 'a05f8799-2e8f-4e3b-8089-11fed9ac463f';
+UPDATE events SET image_url = 'https://pfvfssqlcfodwbsbiciu.supabase.co/storage/v1/object/public/event-images/events/migrated/1767740373335.jpg' WHERE id = '3aa830fa-03fb-43be-a45c-f1ed7ada4884';

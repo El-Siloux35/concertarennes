@@ -27,11 +27,15 @@ export function StatusBarProvider({ children }: { children: ReactNode }) {
     setMounted(true);
   }, []);
 
-  // Couleur par défaut selon le thème
+  // Couleur par défaut selon le thème choisi par l'utilisateur
   const getDefaultColor = useCallback(() => {
-    // Toujours utiliser la classe dark du DOM pour déterminer le thème
-    if (typeof document !== "undefined") {
-      const isDark = document.documentElement.classList.contains("dark");
+    if (typeof document !== "undefined" && typeof localStorage !== "undefined") {
+      // Utiliser le choix explicite de l'utilisateur
+      const choice = localStorage.getItem("theme-choice") || localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      // Seulement dark si explicitement choisi ou si système ET préférence dark
+      const isDark = choice === "dark" || (choice === "system" && prefersDark);
       return isDark ? "#0d1117" : "#ffffff";
     }
     // Fallback sur resolvedTheme si disponible

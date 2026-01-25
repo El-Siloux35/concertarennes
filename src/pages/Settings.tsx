@@ -185,22 +185,22 @@ const Settings = () => {
                 Les notifications push ne sont pas supportées sur ce navigateur.
               </p>
             ) : (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
                     <Bell size={20} className="text-primary" />
                   </div>
-                  <div>
-                    <span className="text-primary font-medium">Nouveaux événements</span>
+                  <div className="min-w-0">
+                    <span className="text-primary font-medium block truncate">Nouveaux événements</span>
                     <p className="text-primary/60 text-xs">
-                      Recevez une notification lors de l'ajout d'un événement
+                      Notification lors d'un nouvel événement
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={handleNotificationToggle}
                   disabled={isPushLoading}
-                  className={`relative w-14 h-8 rounded-full transition-colors duration-200 border-2 border-primary ${
+                  className={`relative w-14 h-8 rounded-full transition-colors duration-200 border-2 border-primary flex-shrink-0 ${
                     isSubscribed ? "bg-primary" : "bg-transparent"
                   } ${isPushLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                   aria-label={isSubscribed ? "Désactiver les notifications" : "Activer les notifications"}

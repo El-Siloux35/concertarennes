@@ -303,6 +303,8 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { eventTitle, eventLocation, eventDate, eventPrice, eventImage, organizerName, eventId } = body;
 
+    console.log("📩 Received data:", JSON.stringify({ eventTitle, eventLocation, eventDate, eventPrice, eventImage, organizerName, eventId }));
+
     // Create admin client
     const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
 
@@ -359,6 +361,8 @@ Deno.serve(async (req) => {
       eventId,
       tag: `event-${eventId || 'new'}`,
     };
+
+    console.log("📤 Notification payload:", JSON.stringify(payload));
 
     // Send notifications to all subscribers
     const results = await Promise.allSettled(

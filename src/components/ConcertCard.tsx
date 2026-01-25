@@ -12,6 +12,7 @@ export interface Concert {
   price: string;
   imageUrl?: string | null;
   style?: string | null;
+  creatorName?: string | null;
 }
 
 interface ConcertCardProps {
@@ -112,8 +113,13 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         </button>
 
         {/* Organizer badge - square corners */}
-        <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3 self-start">
-          {concert.organizer}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1">
+            {concert.organizer}
+          </div>
+          {concert.creatorName && (
+            <span className="text-xs text-primary/60">par {concert.creatorName}</span>
+          )}
         </div>
 
         {/* Concert name */}
