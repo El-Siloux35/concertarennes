@@ -9,6 +9,7 @@ interface NotificationPayload {
   title: string;
   body: string;
   url?: string;
+  image?: string;
   eventId?: string;
   tag?: string;
 }
@@ -300,7 +301,7 @@ Deno.serve(async (req) => {
 
     // Parse request body
     const body = await req.json();
-    const { title, eventTitle, eventId } = body;
+    const { eventTitle, eventLocation, eventDate, eventPrice, eventImage, organizerName, eventId } = body;
 
     // Create admin client
     const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey);
@@ -335,10 +336,26 @@ Deno.serve(async (req) => {
     console.log(`Sending notifications to ${subscriptions.length} subscribers`);
 
     // Prepare notification payload
+    // Title: "OrganizerName a ajouté un nouvel évènement"
+    // Body: "EventTitle\nLieu - Date - Prix"
+    const notificationTitle = organizerName
+      ? `${organizerName} a ajouté un nouvel évènement 🎶`
+      : "Nouvel évènement ajouté ! 🎶";
+
+    let notificationBody = eventTitle || "Un nouvel événement a été ajouté !";
+    const details: string[] = [];
+    if (eventLocation) details.push(eventLocation);
+    if (eventDate) details.push(eventDate);
+    if (eventPrice) details.push(eventPrice);
+    if (details.length > 0) {
+      notificationBody = `${eventTitle}\n${details.join(" - ")}`;
+    }
+
     const payload: NotificationPayload = {
-      title: title || "Nouvel événement",
-      body: eventTitle || "Un nouvel événement a été ajouté !",
-      url: eventId ? `/event/${eventId}` : "/home",
+      title: notificationTitle,
+      body: notificationBody,
+      url: eventId ? `/concert/${eventId}` : "/home",
+      image: eventImage || undefined,
       eventId,
       tag: `event-${eventId || 'new'}`,
     };

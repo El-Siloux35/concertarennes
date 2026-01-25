@@ -180,6 +180,11 @@ const CreateEvent = () => {
         notifyNewEvent({
           eventId: insertedData.id,
           eventTitle: name.trim(),
+          eventLocation: location.trim() || undefined,
+          eventDate: date ? format(date, "d MMMM yyyy", { locale: fr }) : undefined,
+          eventPrice: price.trim() || undefined,
+          eventImage: imageUrl || undefined,
+          organizerName: organizer.trim() || undefined,
         });
       }
 

@@ -102,6 +102,7 @@ interface PushData {
   title?: string;
   body?: string;
   url?: string;
+  image?: string;
   eventId?: string;
   tag?: string;
 }
@@ -119,6 +120,7 @@ self.addEventListener('push', (event: PushEvent) => {
       body: data.body || 'Nouvel événement disponible !',
       icon: '/pwa-192x192.png',
       badge: '/pwa-192x192.png',
+      image: data.image || undefined,
       vibrate: [100, 50, 100],
       data: {
         url: data.url || '/home',
