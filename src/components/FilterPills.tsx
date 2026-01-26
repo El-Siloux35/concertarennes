@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import {
   Popover,
@@ -46,21 +46,45 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
   const [venueOpen, setVenueOpen] = useState(false);
   const isMobile = useIsMobile();
 
+  // Save scroll position before drawer opens
+  const savedScrollY = useRef(0);
+
+  // Restore scroll position after drawer state changes
+  useEffect(() => {
+    const anyOpen = periodOpen || styleOpen || venueOpen;
+    if (anyOpen && savedScrollY.current > 0) {
+      // Restore scroll position immediately and after a small delay
+      window.scrollTo(0, savedScrollY.current);
+      requestAnimationFrame(() => {
+        window.scrollTo(0, savedScrollY.current);
+      });
+    }
+  }, [periodOpen, styleOpen, venueOpen]);
+
   // Notify parent when any drawer opens/closes
   const handlePeriodOpenChange = (open: boolean) => {
+    if (open) savedScrollY.current = window.scrollY;
     setPeriodOpen(open);
-    // Use the new value for period, current values for others
     onDrawerOpenChange?.(open || styleOpen || venueOpen);
+    if (open) {
+      requestAnimationFrame(() => window.scrollTo(0, savedScrollY.current));
+    }
   };
   const handleStyleOpenChange = (open: boolean) => {
+    if (open) savedScrollY.current = window.scrollY;
     setStyleOpen(open);
-    // Use the new value for style, current values for others
     onDrawerOpenChange?.(periodOpen || open || venueOpen);
+    if (open) {
+      requestAnimationFrame(() => window.scrollTo(0, savedScrollY.current));
+    }
   };
   const handleVenueOpenChange = (open: boolean) => {
+    if (open) savedScrollY.current = window.scrollY;
     setVenueOpen(open);
-    // Use the new value for venue, current values for others
     onDrawerOpenChange?.(periodOpen || styleOpen || open);
+    if (open) {
+      requestAnimationFrame(() => window.scrollTo(0, savedScrollY.current));
+    }
   };
 
   const handlePeriodChange = (filter: PeriodFilter) => {
