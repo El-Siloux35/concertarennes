@@ -307,7 +307,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
 
         {/* Période - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={periodOpen} onOpenChange={setPeriodOpen}>
+          <Drawer open={periodOpen} onOpenChange={setPeriodOpen} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
@@ -351,7 +351,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
 
         {/* Style - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={styleOpen} onOpenChange={setStyleOpen}>
+          <Drawer open={styleOpen} onOpenChange={setStyleOpen} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
@@ -395,7 +395,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
 
         {/* Lieux - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={venueOpen} onOpenChange={setVenueOpen}>
+          <Drawer open={venueOpen} onOpenChange={setVenueOpen} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${

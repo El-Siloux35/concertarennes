@@ -129,9 +129,9 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
 
         {/* Details */}
         <div className={isMobile ? "flex items-center gap-3 text-primary text-sm" : "flex items-center gap-4 mt-auto text-primary text-sm"}>
-          <div className="flex items-center gap-[4px] min-w-0 flex-1">
+          <div className="flex items-center gap-[4px] min-w-0">
             <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
-            <span className="truncate">{concert.venue}</span>
+            <span className="truncate max-w-[140px]">{concert.venue}</span>
           </div>
           <div className="flex items-center gap-[4px] flex-shrink-0">
             <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
