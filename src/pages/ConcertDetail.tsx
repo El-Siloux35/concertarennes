@@ -258,7 +258,7 @@ const ConcertDetail = () => {
         <div className="h-20"></div>
 
         {/* Two-column layout on desktop, single column on mobile */}
-        <div className="md:flex md:gap-8 px-4">
+        <div className="md:flex md:gap-8 px-4 pt-4">
           {/* Left column - Image (376px on desktop) */}
           <div className="md:w-[376px] md:flex-shrink-0 mb-4 md:mb-0">
             <div 
@@ -338,14 +338,12 @@ const ConcertDetail = () => {
               </p>
             )}
 
-            {/* Venue */}
-            <div className="flex items-center text-primary text-sm gap-2 mb-4">
-              <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
-              <span>{event.location || "Lieu non spécifié"}</span>
-            </div>
-
-            {/* Date and price */}
-            <div className="flex items-center gap-4 text-primary text-sm mb-4">
+            {/* Venue, Date and Price - aligned */}
+            <div className="flex flex-wrap items-center gap-4 text-primary text-sm mb-4">
+              <div className="flex items-center gap-2">
+                <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <span>{event.location || "Lieu non spécifié"}</span>
+              </div>
               <div className="flex items-center gap-2">
                 <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
                 <span>{formatDate(event.date)}</span>
@@ -356,23 +354,19 @@ const ConcertDetail = () => {
               </div>
             </div>
 
-            {/* Style tags */}
-            {styleArray.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
+            {/* Style and Venue tags - aligned */}
+            {(styleArray.length > 0 || event.venue) && (
+              <div className="flex flex-wrap gap-2">
                 {styleArray.map((s) => (
                   <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
                     {getStyleLabel(s)}
                   </span>
                 ))}
-              </div>
-            )}
-
-            {/* Venue tag in light purple */}
-            {event.venue && (
-              <div className="mt-4">
-                <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium inline-flex items-center">
-                  {getVenueLabel(event.venue)}
-                </span>
+                {event.venue && (
+                  <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
+                    {getVenueLabel(event.venue)}
+                  </span>
+                )}
               </div>
             )}
 

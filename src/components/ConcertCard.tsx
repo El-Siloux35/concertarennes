@@ -44,8 +44,14 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
     window.dispatchEvent(new Event("favoritesUpdated"));
   };
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string, short: boolean = false) => {
     const date = new Date(dateString);
+    if (short) {
+      return date.toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+      });
+    }
     return date.toLocaleDateString("fr-FR", {
       day: "2-digit",
       month: "2-digit",
@@ -122,25 +128,18 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         </h2>
 
         {/* Details */}
-        <div className={isMobile ? "space-y-1.5" : "flex items-center gap-4 mt-auto"}>
-          <div className="flex items-center text-primary text-sm gap-[4px]">
+        <div className={isMobile ? "flex items-center gap-3 text-primary text-sm" : "flex items-center gap-4 mt-auto text-primary text-sm"}>
+          <div className="flex items-center gap-[4px] min-w-0">
             <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
-            <span>{concert.venue}</span>
+            <span className="truncate max-w-[100px]">{concert.venue}</span>
           </div>
-
-          <div className="flex items-center gap-4 text-primary text-sm">
-            <div className="flex items-center gap-[4px]">
-              <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
-              <span>{formatDate(concert.date)}</span>
-            </div>
-            <div className="flex items-center gap-[4px]">
-              <CircleDollarSign
-                size={14}
-                strokeWidth={1.5}
-                className="flex-shrink-0"
-              />
-              <span>{concert.price}</span>
-            </div>
+          <div className="flex items-center gap-[4px] flex-shrink-0">
+            <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
+            <span>{formatDate(concert.date, isMobile)}</span>
+          </div>
+          <div className="flex items-center gap-[4px] min-w-0">
+            <CircleDollarSign size={14} strokeWidth={1.5} className="flex-shrink-0" />
+            <span className="truncate max-w-[60px]">{concert.price}</span>
           </div>
         </div>
 
