@@ -314,18 +314,18 @@ const ConcertDetail = () => {
 
             {/* Creator name */}
             {event.profiles?.pseudo && (
-              <p className="text-sm text-primary/60 mb-3">Ajouté par {event.profiles.pseudo}</p>
+              <p className="text-sm text-primary/60 mb-6">Ajouté par {event.profiles.pseudo}</p>
             )}
 
             {/* Description */}
             {event.description && (
-              <p className="text-primary text-sm leading-relaxed mb-6 whitespace-pre-line">
-                {event.description.split(/(https?:\/\/[^\s]+)/g).map((part, index) => 
+              <p className="text-primary text-sm leading-relaxed mb-8 whitespace-pre-line">
+                {event.description.split(/(https?:\/\/[^\s]+)/g).map((part, index) =>
                   part.match(/^https?:\/\//) ? (
-                    <a 
-                      key={index} 
-                      href={part} 
-                      target="_blank" 
+                    <a
+                      key={index}
+                      href={part}
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="text-accent underline hover:opacity-80"
                     >
@@ -339,13 +339,13 @@ const ConcertDetail = () => {
             )}
 
             {/* Venue */}
-            <div className="flex items-center text-primary text-sm gap-2 mb-2">
+            <div className="flex items-center text-primary text-sm gap-2 mb-4">
               <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
               <span>{event.location || "Lieu non spécifié"}</span>
             </div>
 
             {/* Date and price */}
-            <div className="flex items-center gap-4 text-primary text-sm">
+            <div className="flex items-center gap-4 text-primary text-sm mb-4">
               <div className="flex items-center gap-2">
                 <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
                 <span>{formatDate(event.date)}</span>
@@ -358,7 +358,7 @@ const ConcertDetail = () => {
 
             {/* Style tags */}
             {styleArray.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {styleArray.map((s) => (
                   <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
                     {getStyleLabel(s)}
@@ -369,7 +369,7 @@ const ConcertDetail = () => {
 
             {/* Venue tag in light purple */}
             {event.venue && (
-              <div className="mt-3">
+              <div className="mt-4">
                 <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium inline-flex items-center">
                   {getVenueLabel(event.venue)}
                 </span>
