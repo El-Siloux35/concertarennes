@@ -63,9 +63,23 @@ const ConcertDetail = () => {
         return;
       }
 
+      // Fetch creator profile if user_id exists
+      let eventWithProfile = { ...data, profiles: null as { pseudo: string | null } | null };
+      if (data.user_id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("pseudo")
+          .eq("id", data.user_id)
+          .single();
+
+        if (profile) {
+          eventWithProfile.profiles = profile;
+        }
+      }
+
       // Cache the event
-      eventCache[id] = data;
-      setEvent(data);
+      eventCache[id] = eventWithProfile;
+      setEvent(eventWithProfile);
       setLoading(false);
     };
 
