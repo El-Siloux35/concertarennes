@@ -92,8 +92,19 @@
 
   html {
     background-color: hsl(var(--background)) !important;
-    /* Prevent purple showing on overscroll */
-    overscroll-behavior: none;
+  }
+
+  /* Extended background for iOS overscroll bounce */
+  html::before {
+    content: '';
+    position: fixed;
+    top: -100vh;
+    left: 0;
+    right: 0;
+    height: 300vh;
+    background-color: hsl(var(--background));
+    z-index: -9999;
+    pointer-events: none;
   }
 
   body {
@@ -107,7 +118,6 @@
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: none;
   }
 
   /* Ensure root element also has correct background for iOS overscroll */

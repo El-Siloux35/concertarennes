@@ -264,7 +264,7 @@ const Favorites = () => {
           )}
         </div>
 
-        <div className="px-4">
+        <div className="px-4 mt-auto">
           <Footer />
         </div>
       </div>
