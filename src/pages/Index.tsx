@@ -231,8 +231,8 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background border-muted">
-      <div className={`max-w-[900px] mx-auto ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
+    <div className="min-h-screen bg-background border-muted flex flex-col">
+      <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
         {/* Fixed header section */}
         <div
           ref={headerRef}
@@ -258,10 +258,10 @@ const Index = () => {
           </div>
         </div>
 
-        <main className="flex flex-col gap-4 pt-4">
-          <ConcertList 
-            periodFilter={periodFilter} 
-            styleFilters={styleFilters} 
+        <main className="flex flex-col gap-4 pt-4 flex-1">
+          <ConcertList
+            periodFilter={periodFilter}
+            styleFilters={styleFilters}
             venueFilters={venueFilters}
           />
         </main>

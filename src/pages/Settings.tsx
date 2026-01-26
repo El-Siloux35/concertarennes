@@ -100,8 +100,8 @@ const Settings = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-[1000px] mx-auto">
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="max-w-[1000px] mx-auto flex-1 flex flex-col w-full">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">

@@ -247,8 +247,8 @@ const Compte = () => {
         <div className="text-primary">Chargement...</div>
       </div>;
   }
-  return <div className="min-h-screen bg-background pb-24 -mt-[env(safe-area-inset-top)]">
-      <div className="max-w-[900px] mx-auto">
+  return <div className="min-h-screen bg-background flex flex-col -mt-[env(safe-area-inset-top)]">
+      <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full">
         {/* Header with close button */}
         <header className="pt-4 pl-4 pb-4">
           <button onClick={handleClose} className="w-10 h-10 rounded-full bg-primary flex items-center justify-center" aria-label="Fermer">
