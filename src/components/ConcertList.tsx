@@ -125,25 +125,6 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         return;
       }
 
-      // Get unique user_ids to fetch profiles
-      const userIds = [...new Set((data || []).map((e: any) => e.user_id).filter(Boolean))];
-
-      // Fetch profiles for these users
-      let profilesMap: Record<string, string> = {};
-      if (userIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("id, pseudo")
-          .in("id", userIds);
-
-        if (profiles) {
-          profilesMap = profiles.reduce((acc: Record<string, string>, p: any) => {
-            if (p.pseudo) acc[p.id] = p.pseudo;
-            return acc;
-          }, {});
-        }
-      }
-
       const mappedConcerts: Concert[] = (data || []).map((event: any) => ({
         id: event.id,
         organizer: event.organizer || "Organisateur",
@@ -154,7 +135,6 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         price: event.price || "Prix non spécifié",
         imageUrl: event.image_url,
         style: event.style,
-        creatorName: event.user_id ? profilesMap[event.user_id] || null : null,
       }));
 
       cachedConcerts = mappedConcerts;

@@ -303,19 +303,19 @@ const ConcertDetail = () => {
           {/* Right column - Content */}
           <div className="md:flex-1">
             {/* Organizer badge */}
-            <div className="flex items-center gap-2 mb-3">
-              <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1">
-                {event.organizer || "Organisateur"}
-              </div>
-              {event.profiles?.pseudo && (
-                <span className="text-xs text-primary/60">par {event.profiles.pseudo}</span>
-              )}
+            <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
+              {event.organizer || "Organisateur"}
             </div>
 
             {/* Concert title */}
-            <h1 className="text-xl md:text-[28px] font-semibold text-primary leading-tight mb-3">
+            <h1 className="text-xl md:text-[28px] font-semibold text-primary leading-tight mb-1">
               {event.title}
             </h1>
+
+            {/* Creator name */}
+            {event.profiles?.pseudo && (
+              <p className="text-sm text-primary/60 mb-3">Ajouté par {event.profiles.pseudo}</p>
+            )}
 
             {/* Description */}
             {event.description && (
