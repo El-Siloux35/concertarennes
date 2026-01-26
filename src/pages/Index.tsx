@@ -104,7 +104,7 @@ const Index = () => {
       ro.disconnect();
       window.removeEventListener("resize", update);
     };
-  }, [bannerVisible]);
+  }, []);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -207,21 +207,23 @@ const Index = () => {
   };
 
   // Calculate effective padding based on banner and header visibility
+  // headerHeight now only measures the filters container
   const getEffectivePadding = () => {
+    const filtersHeight = headerHeight;
     if (bannerVisible && headerVisible) {
-      return headerHeight;
+      return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
     } else if (!bannerVisible && !headerVisible && isMobile) {
-      // On mobile, hide both banner and header
-      return headerHeight - BANNER_HEIGHT - HEADER_SECTION_HEIGHT;
+      // On mobile, hide both banner and header, but filters stay visible
+      return filtersHeight;
     } else if (!bannerVisible) {
-      return headerHeight - BANNER_HEIGHT;
+      return HEADER_SECTION_HEIGHT + filtersHeight;
     }
-    return headerHeight;
+    return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
   };
   const effectivePadding = getEffectivePadding();
 
-  // Calculate transform based on visibility
-  const getTransform = () => {
+  // Calculate transform for banner+header (hides on scroll)
+  const getBannerHeaderTransform = () => {
     if (!bannerVisible && !headerVisible && isMobile) {
       return `translateY(-${BANNER_HEIGHT + HEADER_SECTION_HEIGHT}px)`;
     } else if (!bannerVisible) {
@@ -230,16 +232,26 @@ const Index = () => {
     return 'translateY(0)';
   };
 
+  // Calculate top position for filters (stays visible)
+  const getFiltersTop = () => {
+    const safeAreaTop = 0; // env(safe-area-inset-top) handled in CSS
+    if (!bannerVisible && !headerVisible && isMobile) {
+      return safeAreaTop;
+    } else if (!bannerVisible) {
+      return safeAreaTop + HEADER_SECTION_HEIGHT;
+    }
+    return safeAreaTop + BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
+  };
+
   return (
     <div className="min-h-screen bg-background border-muted flex flex-col">
       <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
-        {/* Fixed header section */}
+        {/* Fixed banner and header (hides on scroll) */}
         <div
-          ref={headerRef}
           className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
-            transform: getTransform(),
+            transform: getBannerHeaderTransform(),
           }}
         >
           <ScrollingBanner />
@@ -248,13 +260,21 @@ const Index = () => {
               <Header />
             </div>
           </div>
-          <div className="bg-background pt-3 pb-3">
-            <div className="max-w-[900px] mx-auto">
-              <FilterPills 
-                onFilterChange={handleFilterChange} 
-                counts={counts} 
-              />
-            </div>
+        </div>
+
+        {/* Fixed filters (always visible) */}
+        <div
+          ref={headerRef}
+          className={`fixed left-0 right-0 z-[99] bg-background pt-3 pb-3 ${transitionsEnabled ? 'transition-[top] duration-300 ease-out' : ''}`}
+          style={{
+            top: `calc(env(safe-area-inset-top) + ${getFiltersTop()}px)`,
+          }}
+        >
+          <div className="max-w-[900px] mx-auto">
+            <FilterPills
+              onFilterChange={handleFilterChange}
+              counts={counts}
+            />
           </div>
         </div>
 
