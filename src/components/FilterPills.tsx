@@ -20,6 +20,7 @@ type VenueFilter = "bars" | "ombres-electriques" | "autres";
 
 interface FilterPillsProps {
   onFilterChange: (periodFilter: PeriodFilter, styleFilters: StyleFilter[], venueFilters: string[]) => void;
+  onDrawerOpenChange?: (isOpen: boolean) => void;
   counts: {
     all: number;
     today: number;
@@ -36,7 +37,7 @@ interface FilterPillsProps {
   };
 }
 
-const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
+const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPillsProps) => {
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
   const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
   const [venueFilters, setVenueFilters] = useState<VenueFilter[]>([]);
@@ -44,6 +45,20 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
   const [styleOpen, setStyleOpen] = useState(false);
   const [venueOpen, setVenueOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  // Notify parent when any drawer opens/closes
+  const handlePeriodOpenChange = (open: boolean) => {
+    setPeriodOpen(open);
+    onDrawerOpenChange?.(open || styleOpen || venueOpen);
+  };
+  const handleStyleOpenChange = (open: boolean) => {
+    setStyleOpen(open);
+    onDrawerOpenChange?.(periodOpen || open || venueOpen);
+  };
+  const handleVenueOpenChange = (open: boolean) => {
+    setVenueOpen(open);
+    onDrawerOpenChange?.(periodOpen || styleOpen || open);
+  };
 
   const handlePeriodChange = (filter: PeriodFilter) => {
     setPeriodFilter(filter);
@@ -307,7 +322,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
 
         {/* Période - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={periodOpen} onOpenChange={setPeriodOpen} shouldScaleBackground={false}>
+          <Drawer open={periodOpen} onOpenChange={handlePeriodOpenChange} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
@@ -351,7 +366,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
 
         {/* Style - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={styleOpen} onOpenChange={setStyleOpen} shouldScaleBackground={false}>
+          <Drawer open={styleOpen} onOpenChange={handleStyleOpenChange} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
@@ -395,7 +410,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
 
         {/* Lieux - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={venueOpen} onOpenChange={setVenueOpen} shouldScaleBackground={false}>
+          <Drawer open={venueOpen} onOpenChange={handleVenueOpenChange} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${

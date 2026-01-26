@@ -39,12 +39,17 @@ const Index = () => {
   const [headerVisible, setHeaderVisible] = useState(true);
   // Track if transitions should be enabled (disabled on initial mount to prevent animation on return)
   const [transitionsEnabled, setTransitionsEnabled] = useState(false);
+  // Track if a filter drawer is open (to pause scroll handling)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
   // Handle scroll to show/hide banner and header (on mobile)
   useEffect(() => {
     const handleScroll = () => {
+      // Skip scroll handling when a drawer is open
+      if (isDrawerOpen) return;
+
       // Enable transitions after first scroll interaction
       if (!transitionsEnabled) {
         setTransitionsEnabled(true);
@@ -84,7 +89,7 @@ const Index = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [transitionsEnabled, isMobile]);
+  }, [transitionsEnabled, isMobile, isDrawerOpen]);
 
   useLayoutEffect(() => {
     const el = headerRef.current;
@@ -273,6 +278,7 @@ const Index = () => {
           <div className="max-w-[900px] mx-auto">
             <FilterPills
               onFilterChange={handleFilterChange}
+              onDrawerOpenChange={setIsDrawerOpen}
               counts={counts}
             />
           </div>
