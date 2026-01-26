@@ -116,7 +116,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     const fetchConcerts = async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*, profiles(pseudo)")
+        .select("*")
         .eq("is_draft", false);
 
       if (error) {
@@ -135,7 +135,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         price: event.price || "Prix non spécifié",
         imageUrl: event.image_url,
         style: event.style,
-        creatorName: event.profiles?.pseudo || null,
+        creatorName: null,
       }));
 
       cachedConcerts = mappedConcerts;
