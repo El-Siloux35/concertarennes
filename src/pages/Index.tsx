@@ -213,8 +213,13 @@ const Index = () => {
 
   // Calculate effective padding based on banner and header visibility
   // headerHeight now only measures the filters container
+  // When drawer is open, use current padding to prevent layout shift
   const getEffectivePadding = () => {
     const filtersHeight = headerHeight;
+    // When drawer is open on mobile with header hidden, keep the reduced padding
+    if (isDrawerOpen && !headerVisible && isMobile) {
+      return filtersHeight;
+    }
     if (bannerVisible && headerVisible) {
       return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
     } else if (!bannerVisible && !headerVisible && isMobile) {
@@ -228,8 +233,9 @@ const Index = () => {
   const effectivePadding = getEffectivePadding();
 
   // Calculate transform for banner+header (hides on scroll)
+  // Keep hidden state when drawer is open to prevent jump
   const getBannerHeaderTransform = () => {
-    if (!bannerVisible && !headerVisible && isMobile) {
+    if ((!bannerVisible && !headerVisible && isMobile) || (isDrawerOpen && !headerVisible && isMobile)) {
       return `translateY(-${BANNER_HEIGHT + HEADER_SECTION_HEIGHT}px)`;
     } else if (!bannerVisible) {
       return `translateY(-${BANNER_HEIGHT}px)`;
@@ -238,9 +244,10 @@ const Index = () => {
   };
 
   // Calculate top position for filters (stays visible)
+  // Keep position stable when drawer is open
   const getFiltersTop = () => {
     const safeAreaTop = 0; // env(safe-area-inset-top) handled in CSS
-    if (!bannerVisible && !headerVisible && isMobile) {
+    if ((!bannerVisible && !headerVisible && isMobile) || (isDrawerOpen && !headerVisible && isMobile)) {
       return safeAreaTop;
     } else if (!bannerVisible) {
       return safeAreaTop + HEADER_SECTION_HEIGHT;
@@ -250,7 +257,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background border-muted flex flex-col">
-      <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
+      <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled && !isDrawerOpen ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
         {/* Fixed banner and header (hides on scroll) */}
         <div
           className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''} ${!headerVisible && isMobile ? 'pointer-events-none' : ''}`}
