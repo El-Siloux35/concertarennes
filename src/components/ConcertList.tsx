@@ -116,7 +116,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     const fetchConcerts = async () => {
       const { data, error } = await supabase
         .from("events")
-        .select("*, profiles:user_id(pseudo)")
+        .select("*, profiles(pseudo)")
         .eq("is_draft", false);
 
       if (error) {

@@ -53,7 +53,7 @@ const ConcertDetail = () => {
 
       const { data, error } = await supabase
         .from("events")
-        .select("*, profiles:user_id(pseudo)")
+        .select("*, profiles(pseudo)")
         .eq("id", id)
         .single();
 

@@ -79,7 +79,7 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
   return (
     <article
       onClick={onNavigate}
-      className={`bg-card border-2 rounded-2xl animate-fade-in relative cursor-pointer border-muted overflow-hidden ${
+      className={`bg-card border-2 rounded-2xl relative cursor-pointer border-muted overflow-hidden ${
         isMobile ? "flex flex-col" : "flex h-[194px]"
       }`}
     >

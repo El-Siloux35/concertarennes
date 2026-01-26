@@ -30,10 +30,10 @@ const FloatingAddButton = () => {
       <div className="max-w-[900px] mx-auto px-4 flex justify-end pointer-events-none md:max-w-none md:mx-0 md:px-0">
         <Link
           to="/creer-evenement"
-          className="bg-accent text-accent-foreground rounded-full w-20 h-20 flex items-center justify-center pointer-events-auto"
+          className="bg-accent text-accent-foreground rounded-full w-14 h-14 md:w-20 md:h-20 flex items-center justify-center pointer-events-auto"
           aria-label="Ajouter un concert"
         >
-          <Plus size={32} strokeWidth={2.5} />
+          <Plus size={24} strokeWidth={2.5} className="md:w-8 md:h-8" />
         </Link>
       </div>
     </div>
