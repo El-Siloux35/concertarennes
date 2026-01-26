@@ -129,17 +129,17 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
 
         {/* Details */}
         <div className={isMobile ? "flex items-center gap-3 text-primary text-sm" : "flex items-center gap-4 mt-auto text-primary text-sm"}>
-          <div className="flex items-center gap-[4px] min-w-0">
+          <div className="flex items-center gap-[4px] min-w-0 flex-1">
             <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
-            <span className="truncate max-w-[100px]">{concert.venue}</span>
+            <span className="truncate">{concert.venue}</span>
           </div>
           <div className="flex items-center gap-[4px] flex-shrink-0">
             <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
             <span>{formatDate(concert.date, isMobile)}</span>
           </div>
-          <div className="flex items-center gap-[4px] min-w-0">
+          <div className="flex items-center gap-[4px] flex-shrink-0">
             <CircleDollarSign size={14} strokeWidth={1.5} className="flex-shrink-0" />
-            <span className="truncate max-w-[60px]">{concert.price}</span>
+            <span>{concert.price}</span>
           </div>
         </div>
 
