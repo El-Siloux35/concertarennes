@@ -40,13 +40,13 @@ const Splash = () => {
         metaTag.setAttribute('content', themeColor);
       }
 
-      // Retire le style inline pour laisser le CSS du thème prendre le relais
+      // Retire les styles inline et force la couleur du thème
       document.documentElement.style.removeProperty('background-color');
-      document.documentElement.style.backgroundColor = themeColor;
-
-      // Nettoie aussi le body
       document.body.style.removeProperty('background-color');
-      document.body.style.backgroundColor = themeColor;
+
+      // Force le background avec !important pour overrider le splash
+      document.documentElement.style.setProperty('background-color', themeColor, 'important');
+      document.body.style.setProperty('background-color', themeColor, 'important');
 
       // Marque l'app comme chargée pour éviter le splash au retour
       sessionStorage.setItem('app-loaded', 'true');

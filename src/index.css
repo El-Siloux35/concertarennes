@@ -92,6 +92,8 @@
 
   html {
     background-color: hsl(var(--background)) !important;
+    /* Prevent purple showing on overscroll */
+    overscroll-behavior: none;
   }
 
   body {
@@ -105,7 +107,14 @@
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    overscroll-behavior: none;
+  }
+
+  /* Ensure root element also has correct background for iOS overscroll */
+  #root {
+    background-color: hsl(var(--background));
+    min-height: 100vh;
+    min-height: 100dvh;
   }
 }
 
