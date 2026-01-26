@@ -112,9 +112,9 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         </button>
 
         {/* Organizer badge - square corners */}
-        <div className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
+        <span className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3 self-start">
           {concert.organizer}
-        </div>
+        </span>
 
         {/* Concert name */}
         <h2 className="font-semibold text-lg text-primary leading-tight mb-4">
