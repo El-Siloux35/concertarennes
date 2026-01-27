@@ -5,13 +5,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
@@ -322,28 +315,32 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
 
         {/* Période - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={periodOpen} onOpenChange={handlePeriodOpenChange} shouldScaleBackground={false}>
-            <DrawerTrigger asChild>
-              <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
-                  periodFilter !== "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
-                }`}
-              >
-                {getPeriodLabel()}
-                <ChevronDown size={16} className="ml-1" />
-              </button>
-            </DrawerTrigger>
-            <DrawerContent className="bg-background border-t-2 border-primary">
-              <DrawerHeader>
-                <DrawerTitle className="text-primary">Période</DrawerTitle>
-              </DrawerHeader>
-              <div className="px-4 pb-8">
-                <PeriodContent />
+          <>
+            <button
+              onClick={() => handlePeriodOpenChange(true)}
+              className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                periodFilter !== "all"
+                  ? "bg-primary text-primary-foreground"
+                  : "border-2 border-primary text-primary bg-transparent"
+              }`}
+            >
+              {getPeriodLabel()}
+              <ChevronDown size={16} className="ml-1" />
+            </button>
+            {periodOpen && (
+              <div className="fixed inset-0 z-[200]">
+                <div
+                  className="absolute inset-0 bg-black/80"
+                  onClick={() => handlePeriodOpenChange(false)}
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-background border-t-2 border-primary rounded-t-[10px] p-4 pb-8">
+                  <div className="mx-auto mb-4 h-2 w-[100px] rounded-full bg-muted" />
+                  <h3 className="text-lg font-semibold text-primary text-center mb-4">Période</h3>
+                  <PeriodContent />
+                </div>
               </div>
-            </DrawerContent>
-          </Drawer>
+            )}
+          </>
         ) : (
           <Popover open={periodOpen} onOpenChange={setPeriodOpen}>
             <PopoverTrigger asChild>
@@ -366,28 +363,32 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
 
         {/* Style - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={styleOpen} onOpenChange={handleStyleOpenChange} shouldScaleBackground={false}>
-            <DrawerTrigger asChild>
-              <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
-                  styleFilters.length > 0
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
-                }`}
-              >
-                {getStyleLabel()}
-                <ChevronDown size={16} className="ml-1" />
-              </button>
-            </DrawerTrigger>
-            <DrawerContent className="bg-background border-t-2 border-primary">
-              <DrawerHeader>
-                <DrawerTitle className="text-primary">Style</DrawerTitle>
-              </DrawerHeader>
-              <div className="px-4 pb-8">
-                <StyleContent />
+          <>
+            <button
+              onClick={() => handleStyleOpenChange(true)}
+              className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                styleFilters.length > 0
+                  ? "bg-primary text-primary-foreground"
+                  : "border-2 border-primary text-primary bg-transparent"
+              }`}
+            >
+              {getStyleLabel()}
+              <ChevronDown size={16} className="ml-1" />
+            </button>
+            {styleOpen && (
+              <div className="fixed inset-0 z-[200]">
+                <div
+                  className="absolute inset-0 bg-black/80"
+                  onClick={() => handleStyleOpenChange(false)}
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-background border-t-2 border-primary rounded-t-[10px] p-4 pb-8">
+                  <div className="mx-auto mb-4 h-2 w-[100px] rounded-full bg-muted" />
+                  <h3 className="text-lg font-semibold text-primary text-center mb-4">Style</h3>
+                  <StyleContent />
+                </div>
               </div>
-            </DrawerContent>
-          </Drawer>
+            )}
+          </>
         ) : (
           <Popover open={styleOpen} onOpenChange={setStyleOpen}>
             <PopoverTrigger asChild>
@@ -410,28 +411,32 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
 
         {/* Lieux - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={venueOpen} onOpenChange={handleVenueOpenChange} shouldScaleBackground={false}>
-            <DrawerTrigger asChild>
-              <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
-                  venueFilters.length > 0
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
-                }`}
-              >
-                {getVenueLabel()}
-                <ChevronDown size={16} className="ml-1" />
-              </button>
-            </DrawerTrigger>
-            <DrawerContent className="bg-background border-t-2 border-primary">
-              <DrawerHeader>
-                <DrawerTitle className="text-primary">Lieux</DrawerTitle>
-              </DrawerHeader>
-              <div className="px-4 pb-8">
-                <VenueContent />
+          <>
+            <button
+              onClick={() => handleVenueOpenChange(true)}
+              className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                venueFilters.length > 0
+                  ? "bg-primary text-primary-foreground"
+                  : "border-2 border-primary text-primary bg-transparent"
+              }`}
+            >
+              {getVenueLabel()}
+              <ChevronDown size={16} className="ml-1" />
+            </button>
+            {venueOpen && (
+              <div className="fixed inset-0 z-[200]">
+                <div
+                  className="absolute inset-0 bg-black/80"
+                  onClick={() => handleVenueOpenChange(false)}
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-background border-t-2 border-primary rounded-t-[10px] p-4 pb-8">
+                  <div className="mx-auto mb-4 h-2 w-[100px] rounded-full bg-muted" />
+                  <h3 className="text-lg font-semibold text-primary text-center mb-4">Lieux</h3>
+                  <VenueContent />
+                </div>
               </div>
-            </DrawerContent>
-          </Drawer>
+            )}
+          </>
         ) : (
           <Popover open={venueOpen} onOpenChange={setVenueOpen}>
             <PopoverTrigger asChild>
