@@ -228,7 +228,7 @@ const Index = () => {
       <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled && !isDrawerOpen ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
         {/* Fixed header - all in one container for smooth animation */}
         <div
-          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
+          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''} ${isDrawerOpen ? 'pointer-events-none' : ''}`}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
             transform: getHeaderTransform(),
