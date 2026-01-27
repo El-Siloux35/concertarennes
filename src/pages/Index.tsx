@@ -26,17 +26,15 @@ const Index = () => {
   }[]>([]);
 
   const isMobile = useIsMobile();
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const [headerHeight, setHeaderHeight] = useState(0);
-  // Initialize banner visibility based on current scroll position
-  const [bannerVisible, setBannerVisible] = useState(() => {
+  const filtersRef = useRef<HTMLDivElement | null>(null);
+  const [filtersHeight, setFiltersHeight] = useState(60); // Default height
+  // Initialize header visibility based on current scroll position (no animation on mount)
+  const [headerVisible, setHeaderVisible] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.scrollY <= 50;
     }
     return true;
   });
-  // Track header visibility separately for mobile
-  const [headerVisible, setHeaderVisible] = useState(true);
   // Track if transitions should be enabled (disabled on initial mount to prevent animation on return)
   const [transitionsEnabled, setTransitionsEnabled] = useState(false);
   // Track if a filter drawer is open (to pause scroll handling)
@@ -44,7 +42,7 @@ const Index = () => {
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
-  // Handle scroll to show/hide banner and header (on mobile)
+  // Handle scroll to show/hide header (on mobile only)
   useEffect(() => {
     const handleScroll = () => {
       // Skip scroll handling when a drawer is open
@@ -64,23 +62,21 @@ const Index = () => {
         return;
       }
 
-      if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - hide banner and header (on mobile)
-        if (currentScrollY > 50) {
-          setBannerVisible(false);
-          if (isMobile) {
+      if (isMobile) {
+        if (currentScrollY > lastScrollY.current) {
+          // Scrolling down - hide header
+          if (currentScrollY > 50) {
             setHeaderVisible(false);
           }
-        }
-        scrollUpDistance.current = 0;
-      } else if (currentScrollY < lastScrollY.current) {
-        // Scrolling up - accumulate distance
-        scrollUpDistance.current += lastScrollY.current - currentScrollY;
+          scrollUpDistance.current = 0;
+        } else if (currentScrollY < lastScrollY.current) {
+          // Scrolling up - accumulate distance
+          scrollUpDistance.current += lastScrollY.current - currentScrollY;
 
-        // Only show after scrolling up at least 80px
-        if (scrollUpDistance.current > 80) {
-          setBannerVisible(true);
-          setHeaderVisible(true);
+          // Only show after scrolling up at least 80px
+          if (scrollUpDistance.current > 80) {
+            setHeaderVisible(true);
+          }
         }
       }
 
@@ -92,11 +88,11 @@ const Index = () => {
   }, [transitionsEnabled, isMobile, isDrawerOpen]);
 
   useLayoutEffect(() => {
-    const el = headerRef.current;
+    const el = filtersRef.current;
     if (!el) return;
 
     const update = () => {
-      setHeaderHeight(el.getBoundingClientRect().height);
+      setFiltersHeight(el.getBoundingClientRect().height);
     };
 
     update();
@@ -211,83 +207,51 @@ const Index = () => {
     setVenueFilters(newVenueFilters);
   };
 
-  // Calculate effective padding based on banner and header visibility
-  // headerHeight now only measures the filters container
-  // When drawer is open, use current padding to prevent layout shift
-  const getEffectivePadding = () => {
-    const filtersHeight = headerHeight;
-    // When drawer is open on mobile with header hidden, keep the reduced padding
-    if (isDrawerOpen && !headerVisible && isMobile) {
-      return filtersHeight;
-    }
-    if (bannerVisible && headerVisible) {
-      return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
-    } else if (!bannerVisible && !headerVisible && isMobile) {
-      // On mobile, hide both banner and header, but filters stay visible
-      return filtersHeight;
-    } else if (!bannerVisible) {
-      return HEADER_SECTION_HEIGHT + filtersHeight;
-    }
-    return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
-  };
-  const effectivePadding = getEffectivePadding();
+  // On mobile: header hides/shows, on desktop: always visible
+  // Total header height = banner + header section + filters
+  const totalHeaderHeight = BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
+  const hiddenPartHeight = BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
 
-  // Calculate transform for banner+header (hides on scroll)
-  // Keep hidden state when drawer is open to prevent jump
-  const getBannerHeaderTransform = () => {
-    if ((!bannerVisible && !headerVisible && isMobile) || (isDrawerOpen && !headerVisible && isMobile)) {
-      return `translateY(-${BANNER_HEIGHT + HEADER_SECTION_HEIGHT}px)`;
-    } else if (!bannerVisible) {
-      return `translateY(-${BANNER_HEIGHT}px)`;
+  // Calculate effective padding
+  const effectivePadding = (!headerVisible && isMobile) ? filtersHeight : totalHeaderHeight;
+
+  // Calculate transform for entire header (single transform for smooth animation)
+  const getHeaderTransform = () => {
+    if (!headerVisible && isMobile) {
+      return `translateY(-${hiddenPartHeight}px)`;
     }
     return 'translateY(0)';
-  };
-
-  // Calculate top position for filters (stays visible)
-  // Keep position stable when drawer is open
-  const getFiltersTop = () => {
-    const safeAreaTop = 0; // env(safe-area-inset-top) handled in CSS
-    if ((!bannerVisible && !headerVisible && isMobile) || (isDrawerOpen && !headerVisible && isMobile)) {
-      return safeAreaTop;
-    } else if (!bannerVisible) {
-      return safeAreaTop + HEADER_SECTION_HEIGHT;
-    }
-    return safeAreaTop + BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
   };
 
   return (
     <div className="min-h-screen bg-background border-muted flex flex-col">
       <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled && !isDrawerOpen ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
-        {/* Fixed banner and header (hides on scroll) */}
+        {/* Fixed header - all in one container for smooth animation */}
         <div
-          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''} ${!headerVisible && isMobile ? 'pointer-events-none' : ''}`}
+          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
-            transform: getBannerHeaderTransform(),
+            transform: getHeaderTransform(),
           }}
         >
-          <ScrollingBanner />
-          <div className="bg-background py-[12px] pb-[8px]">
-            <div className="max-w-[900px] mx-auto px-4">
-              <Header />
+          {/* Banner + Header (hidden part on mobile scroll) */}
+          <div className={!headerVisible && isMobile ? 'pointer-events-none' : ''}>
+            <ScrollingBanner />
+            <div className="bg-background py-[12px] pb-[8px]">
+              <div className="max-w-[900px] mx-auto px-4">
+                <Header />
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Fixed filters (always visible) */}
-        <div
-          ref={headerRef}
-          className={`fixed left-0 right-0 z-[99] bg-background pt-3 pb-3 ${transitionsEnabled ? 'transition-[top] duration-300 ease-out' : ''}`}
-          style={{
-            top: `calc(env(safe-area-inset-top) + ${getFiltersTop()}px)`,
-          }}
-        >
-          <div className="max-w-[900px] mx-auto">
-            <FilterPills
-              onFilterChange={handleFilterChange}
-              onDrawerOpenChange={setIsDrawerOpen}
-              counts={counts}
-            />
+          {/* Filters (always visible) */}
+          <div ref={filtersRef} className="bg-background pt-3 pb-3">
+            <div className="max-w-[900px] mx-auto">
+              <FilterPills
+                onFilterChange={handleFilterChange}
+                onDrawerOpenChange={setIsDrawerOpen}
+                counts={counts}
+              />
+            </div>
           </div>
         </div>
 

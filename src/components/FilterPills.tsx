@@ -349,7 +349,7 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
 
         {/* Période - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={periodOpen} onOpenChange={handlePeriodOpenChange} shouldScaleBackground={false} modal={false}>
+          <Drawer open={periodOpen} onOpenChange={handlePeriodOpenChange} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
@@ -393,7 +393,7 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
 
         {/* Style - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={styleOpen} onOpenChange={handleStyleOpenChange} shouldScaleBackground={false} modal={false}>
+          <Drawer open={styleOpen} onOpenChange={handleStyleOpenChange} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
@@ -437,7 +437,7 @@ const FilterPills = ({ onFilterChange, onDrawerOpenChange, counts }: FilterPills
 
         {/* Lieux - Drawer on mobile, Popover on desktop */}
         {isMobile ? (
-          <Drawer open={venueOpen} onOpenChange={handleVenueOpenChange} shouldScaleBackground={false} modal={false}>
+          <Drawer open={venueOpen} onOpenChange={handleVenueOpenChange} shouldScaleBackground={false}>
             <DrawerTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
