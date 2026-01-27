@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useLayoutEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import Header from "../components/Header";
 import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
@@ -10,6 +10,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // Header section height (logo + connection icons)
 const HEADER_SECTION_HEIGHT = 68;
+// Filters section height
+const FILTERS_HEIGHT = 70;
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -26,8 +28,6 @@ const Index = () => {
   }[]>([]);
 
   const isMobile = useIsMobile();
-  const headerRef = useRef<HTMLDivElement | null>(null);
-  const [headerHeight, setHeaderHeight] = useState(0);
 
   // Initialize visibility based on current scroll position (no animation on return)
   const [bannerVisible, setBannerVisible] = useState(() => {
@@ -92,26 +92,6 @@ const Index = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [transitionsEnabled, isMobile]);
-
-  useLayoutEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
-
-    const update = () => {
-      setHeaderHeight(el.getBoundingClientRect().height);
-    };
-
-    update();
-
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    window.addEventListener("resize", update);
-
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", update);
-    };
-  }, [bannerVisible]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -213,20 +193,20 @@ const Index = () => {
     setVenueFilters(newVenueFilters);
   };
 
-  // Calculate effective padding based on banner and header visibility
-  const getEffectivePadding = () => {
+  // Calculate the top position for filters (separate from transformed header)
+  const getFiltersTop = () => {
     if (bannerVisible && headerVisible) {
-      return headerHeight;
+      return BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
     } else if (!bannerVisible && !headerVisible && isMobile) {
-      return headerHeight - BANNER_HEIGHT - HEADER_SECTION_HEIGHT;
+      return 0;
     } else if (!bannerVisible) {
-      return headerHeight - BANNER_HEIGHT;
+      return HEADER_SECTION_HEIGHT;
     }
-    return headerHeight;
+    return BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
   };
 
-  // Calculate transform based on visibility
-  const getTransform = () => {
+  // Calculate transform for banner+header only
+  const getHeaderTransform = () => {
     if (!bannerVisible && !headerVisible && isMobile) {
       return `translateY(-${BANNER_HEIGHT + HEADER_SECTION_HEIGHT}px)`;
     } else if (!bannerVisible) {
@@ -235,19 +215,30 @@ const Index = () => {
     return 'translateY(0)';
   };
 
+  // Calculate effective padding for main content
+  const getEffectivePadding = () => {
+    if (bannerVisible && headerVisible) {
+      return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + FILTERS_HEIGHT;
+    } else if (!bannerVisible && !headerVisible && isMobile) {
+      return FILTERS_HEIGHT;
+    } else if (!bannerVisible) {
+      return HEADER_SECTION_HEIGHT + FILTERS_HEIGHT;
+    }
+    return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + FILTERS_HEIGHT;
+  };
+
   return (
     <div className="min-h-screen bg-background border-muted">
       <div
         className={`max-w-[900px] mx-auto ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`}
         style={{ paddingTop: getEffectivePadding() }}
       >
-        {/* Fixed header section */}
+        {/* Fixed header section (banner + logo/connection) - this transforms */}
         <div
-          ref={headerRef}
           className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
-            transform: getTransform(),
+            transform: getHeaderTransform(),
           }}
         >
           <ScrollingBanner />
@@ -256,13 +247,20 @@ const Index = () => {
               <Header />
             </div>
           </div>
-          <div className="bg-background pt-3 pb-3">
-            <div className="max-w-[900px] mx-auto">
-              <FilterPills
-                onFilterChange={handleFilterChange}
-                counts={counts}
-              />
-            </div>
+        </div>
+
+        {/* Fixed filters section - NO transform, separate from header */}
+        <div
+          className={`fixed left-0 right-0 z-[99] bg-background py-3 ${transitionsEnabled ? 'transition-[top] duration-300 ease-out' : ''}`}
+          style={{
+            top: `calc(env(safe-area-inset-top) + ${getFiltersTop()}px)`,
+          }}
+        >
+          <div className="max-w-[900px] mx-auto">
+            <FilterPills
+              onFilterChange={handleFilterChange}
+              counts={counts}
+            />
           </div>
         </div>
 
