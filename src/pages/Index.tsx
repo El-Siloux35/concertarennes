@@ -6,6 +6,10 @@ import FloatingAddButton from "../components/FloatingAddButton";
 import Footer from "../components/Footer";
 import ScrollingBanner, { BANNER_HEIGHT } from "../components/ScrollingBanner";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+// Header section height (logo + connection icons)
+const HEADER_SECTION_HEIGHT = 68;
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -21,21 +25,38 @@ const Index = () => {
     venue: string | null;
   }[]>([]);
 
+  const isMobile = useIsMobile();
   const headerRef = useRef<HTMLDivElement | null>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
-  // Initialize banner visibility based on current scroll position
+
+  // Initialize visibility based on current scroll position (no animation on return)
   const [bannerVisible, setBannerVisible] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.scrollY <= 50;
     }
     return true;
   });
+  const [headerVisible, setHeaderVisible] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.scrollY <= 50;
+    }
+    return true;
+  });
+
+  // Disable transitions on initial mount to prevent animation when returning to page
+  const [transitionsEnabled, setTransitionsEnabled] = useState(false);
+
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
-  // Handle scroll to show/hide banner
+  // Handle scroll to show/hide banner and header
   useEffect(() => {
     const handleScroll = () => {
+      // Enable transitions after first scroll
+      if (!transitionsEnabled) {
+        setTransitionsEnabled(true);
+      }
+
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
@@ -46,9 +67,12 @@ const Index = () => {
       }
 
       if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - hide banner
+        // Scrolling down - hide banner and header (on mobile)
         if (currentScrollY > 50) {
           setBannerVisible(false);
+          if (isMobile) {
+            setHeaderVisible(false);
+          }
         }
         scrollUpDistance.current = 0;
       } else if (currentScrollY < lastScrollY.current) {
@@ -58,6 +82,7 @@ const Index = () => {
         // Only show after scrolling up at least 80px
         if (scrollUpDistance.current > 80) {
           setBannerVisible(true);
+          setHeaderVisible(true);
         }
       }
 
@@ -66,7 +91,7 @@ const Index = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [transitionsEnabled, isMobile]);
 
   useLayoutEffect(() => {
     const el = headerRef.current;
@@ -188,19 +213,41 @@ const Index = () => {
     setVenueFilters(newVenueFilters);
   };
 
-  // Calculate effective padding based on banner visibility
-  const effectivePadding = bannerVisible ? headerHeight : headerHeight - BANNER_HEIGHT;
+  // Calculate effective padding based on banner and header visibility
+  const getEffectivePadding = () => {
+    if (bannerVisible && headerVisible) {
+      return headerHeight;
+    } else if (!bannerVisible && !headerVisible && isMobile) {
+      return headerHeight - BANNER_HEIGHT - HEADER_SECTION_HEIGHT;
+    } else if (!bannerVisible) {
+      return headerHeight - BANNER_HEIGHT;
+    }
+    return headerHeight;
+  };
+
+  // Calculate transform based on visibility
+  const getTransform = () => {
+    if (!bannerVisible && !headerVisible && isMobile) {
+      return `translateY(-${BANNER_HEIGHT + HEADER_SECTION_HEIGHT}px)`;
+    } else if (!bannerVisible) {
+      return `translateY(-${BANNER_HEIGHT}px)`;
+    }
+    return 'translateY(0)';
+  };
 
   return (
     <div className="min-h-screen bg-background border-muted">
-      <div className="max-w-[900px] mx-auto transition-[padding] duration-300" style={{ paddingTop: effectivePadding }}>
+      <div
+        className={`max-w-[900px] mx-auto ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`}
+        style={{ paddingTop: getEffectivePadding() }}
+      >
         {/* Fixed header section */}
         <div
           ref={headerRef}
-          className="fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform transition-transform duration-300 ease-out"
+          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
           style={{
             paddingTop: 'env(safe-area-inset-top)',
-            transform: bannerVisible ? 'translateY(0)' : `translateY(-${BANNER_HEIGHT}px)`,
+            transform: getTransform(),
           }}
         >
           <ScrollingBanner />
