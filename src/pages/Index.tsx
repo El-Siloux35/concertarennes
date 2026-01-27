@@ -193,26 +193,14 @@ const Index = () => {
     setVenueFilters(newVenueFilters);
   };
 
-  // Calculate the top position for filters (separate from transformed header)
-  const getFiltersTop = () => {
-    if (bannerVisible && headerVisible) {
-      return BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
-    } else if (!bannerVisible && !headerVisible && isMobile) {
-      return 0;
-    } else if (!bannerVisible) {
-      return HEADER_SECTION_HEIGHT;
-    }
-    return BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
-  };
-
-  // Calculate transform for banner+header only
-  const getHeaderTransform = () => {
+  // Calculate top position for header (using top instead of transform to not break Drawer)
+  const getHeaderTop = () => {
     if (!bannerVisible && !headerVisible && isMobile) {
-      return `translateY(-${BANNER_HEIGHT + HEADER_SECTION_HEIGHT}px)`;
+      return -(BANNER_HEIGHT + HEADER_SECTION_HEIGHT);
     } else if (!bannerVisible) {
-      return `translateY(-${BANNER_HEIGHT}px)`;
+      return -BANNER_HEIGHT;
     }
-    return 'translateY(0)';
+    return 0;
   };
 
   // Calculate effective padding for main content
@@ -233,12 +221,11 @@ const Index = () => {
         className={`max-w-[900px] mx-auto ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`}
         style={{ paddingTop: getEffectivePadding() }}
       >
-        {/* Fixed header section (banner + logo/connection) - this transforms */}
+        {/* Fixed header section - uses top positioning (not transform) to keep Drawer working */}
         <div
-          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''}`}
+          className={`fixed left-0 right-0 z-[100] flex flex-col ${transitionsEnabled ? 'transition-[top] duration-300 ease-out' : ''}`}
           style={{
-            paddingTop: 'env(safe-area-inset-top)',
-            transform: getHeaderTransform(),
+            top: `calc(env(safe-area-inset-top) + ${getHeaderTop()}px)`,
           }}
         >
           <ScrollingBanner />
@@ -247,20 +234,13 @@ const Index = () => {
               <Header />
             </div>
           </div>
-        </div>
-
-        {/* Fixed filters section - NO transform, separate from header */}
-        <div
-          className={`fixed left-0 right-0 z-[99] bg-background py-3 ${transitionsEnabled ? 'transition-[top] duration-300 ease-out' : ''}`}
-          style={{
-            top: `calc(env(safe-area-inset-top) + ${getFiltersTop()}px)`,
-          }}
-        >
-          <div className="max-w-[900px] mx-auto">
-            <FilterPills
-              onFilterChange={handleFilterChange}
-              counts={counts}
-            />
+          <div className="bg-background py-3">
+            <div className="max-w-[900px] mx-auto">
+              <FilterPills
+                onFilterChange={handleFilterChange}
+                counts={counts}
+              />
+            </div>
           </div>
         </div>
 
