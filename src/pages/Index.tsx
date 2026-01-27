@@ -6,10 +6,6 @@ import FloatingAddButton from "../components/FloatingAddButton";
 import Footer from "../components/Footer";
 import ScrollingBanner, { BANNER_HEIGHT } from "../components/ScrollingBanner";
 import { supabase } from "@/integrations/supabase/client";
-import { useIsMobile } from "@/hooks/use-mobile";
-
-// Header section height (approximate) - banner + header padding
-const HEADER_SECTION_HEIGHT = 68;
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -25,34 +21,21 @@ const Index = () => {
     venue: string | null;
   }[]>([]);
 
-  const isMobile = useIsMobile();
-  const filtersRef = useRef<HTMLDivElement | null>(null);
-  const [filtersHeight, setFiltersHeight] = useState(60); // Default height
-  // Initialize header visibility based on current scroll position (no animation on mount)
-  const [headerVisible, setHeaderVisible] = useState(() => {
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  // Initialize banner visibility based on current scroll position
+  const [bannerVisible, setBannerVisible] = useState(() => {
     if (typeof window !== 'undefined') {
       return window.scrollY <= 50;
     }
     return true;
   });
-  // Track if transitions should be enabled (disabled on initial mount to prevent animation on return)
-  const [transitionsEnabled, setTransitionsEnabled] = useState(false);
-  // Track if a filter drawer is open (to pause scroll handling)
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
-  // Handle scroll to show/hide header (on mobile only)
+  // Handle scroll to show/hide banner
   useEffect(() => {
     const handleScroll = () => {
-      // Skip scroll handling when a drawer is open
-      if (isDrawerOpen) return;
-
-      // Enable transitions after first scroll interaction
-      if (!transitionsEnabled) {
-        setTransitionsEnabled(true);
-      }
-
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
@@ -62,21 +45,19 @@ const Index = () => {
         return;
       }
 
-      if (isMobile) {
-        if (currentScrollY > lastScrollY.current) {
-          // Scrolling down - hide header
-          if (currentScrollY > 50) {
-            setHeaderVisible(false);
-          }
-          scrollUpDistance.current = 0;
-        } else if (currentScrollY < lastScrollY.current) {
-          // Scrolling up - accumulate distance
-          scrollUpDistance.current += lastScrollY.current - currentScrollY;
+      if (currentScrollY > lastScrollY.current) {
+        // Scrolling down - hide banner
+        if (currentScrollY > 50) {
+          setBannerVisible(false);
+        }
+        scrollUpDistance.current = 0;
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up - accumulate distance
+        scrollUpDistance.current += lastScrollY.current - currentScrollY;
 
-          // Only show after scrolling up at least 80px
-          if (scrollUpDistance.current > 80) {
-            setHeaderVisible(true);
-          }
+        // Only show after scrolling up at least 80px
+        if (scrollUpDistance.current > 80) {
+          setBannerVisible(true);
         }
       }
 
@@ -85,14 +66,14 @@ const Index = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [transitionsEnabled, isMobile, isDrawerOpen]);
+  }, []);
 
   useLayoutEffect(() => {
-    const el = filtersRef.current;
+    const el = headerRef.current;
     if (!el) return;
 
     const update = () => {
-      setFiltersHeight(el.getBoundingClientRect().height);
+      setHeaderHeight(el.getBoundingClientRect().height);
     };
 
     update();
@@ -105,7 +86,7 @@ const Index = () => {
       ro.disconnect();
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [bannerVisible]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -123,7 +104,7 @@ const Index = () => {
     today.setHours(0, 0, 0, 0);
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
-    
+
     // Filter only future events for counting periods
     const futureEvents = events.filter((event) => {
       const eventDate = new Date(event.date);
@@ -207,55 +188,38 @@ const Index = () => {
     setVenueFilters(newVenueFilters);
   };
 
-  // On mobile: header hides/shows, on desktop: always visible
-  // Total header height = banner + header section + filters
-  const totalHeaderHeight = BANNER_HEIGHT + HEADER_SECTION_HEIGHT + filtersHeight;
-  const hiddenPartHeight = BANNER_HEIGHT + HEADER_SECTION_HEIGHT;
-
-  // Calculate effective padding
-  const effectivePadding = (!headerVisible && isMobile) ? filtersHeight : totalHeaderHeight;
-
-  // Calculate transform for entire header (single transform for smooth animation)
-  const getHeaderTransform = () => {
-    if (!headerVisible && isMobile) {
-      return `translateY(-${hiddenPartHeight}px)`;
-    }
-    return 'translateY(0)';
-  };
+  // Calculate effective padding based on banner visibility
+  const effectivePadding = bannerVisible ? headerHeight : headerHeight - BANNER_HEIGHT;
 
   return (
-    <div className="min-h-screen bg-background border-muted flex flex-col">
-      <div className={`max-w-[900px] mx-auto flex-1 flex flex-col w-full ${transitionsEnabled && !isDrawerOpen ? 'transition-[padding] duration-300' : ''}`} style={{ paddingTop: effectivePadding }}>
-        {/* Fixed header - all in one container for smooth animation */}
+    <div className="min-h-screen bg-background border-muted">
+      <div className="max-w-[900px] mx-auto transition-[padding] duration-300" style={{ paddingTop: effectivePadding }}>
+        {/* Fixed header section */}
         <div
-          className={`fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform ${transitionsEnabled ? 'transition-transform duration-300 ease-out' : ''} ${isDrawerOpen ? 'pointer-events-none' : ''}`}
+          ref={headerRef}
+          className="fixed top-0 left-0 right-0 z-[100] flex flex-col will-change-transform transition-transform duration-300 ease-out"
           style={{
             paddingTop: 'env(safe-area-inset-top)',
-            transform: getHeaderTransform(),
+            transform: bannerVisible ? 'translateY(0)' : `translateY(-${BANNER_HEIGHT}px)`,
           }}
         >
-          {/* Banner + Header (hidden part on mobile scroll) */}
-          <div className={!headerVisible && isMobile ? 'pointer-events-none' : ''}>
-            <ScrollingBanner />
-            <div className="bg-background py-[12px] pb-[8px]">
-              <div className="max-w-[900px] mx-auto px-4">
-                <Header />
-              </div>
+          <ScrollingBanner />
+          <div className="bg-background py-[12px] pb-[8px]">
+            <div className="max-w-[900px] mx-auto px-4">
+              <Header />
             </div>
           </div>
-          {/* Filters (always visible) */}
-          <div ref={filtersRef} className="bg-background pt-3 pb-3">
+          <div className="bg-background pt-3 pb-3">
             <div className="max-w-[900px] mx-auto">
               <FilterPills
                 onFilterChange={handleFilterChange}
-                onDrawerOpenChange={setIsDrawerOpen}
                 counts={counts}
               />
             </div>
           </div>
         </div>
 
-        <main className="flex flex-col gap-4 pt-4 flex-1">
+        <main className="flex flex-col gap-4 pt-4">
           <ConcertList
             periodFilter={periodFilter}
             styleFilters={styleFilters}
