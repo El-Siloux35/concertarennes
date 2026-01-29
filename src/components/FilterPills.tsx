@@ -155,17 +155,19 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
     onFilterChange(periodFilter, styleFilters, []);
   };
 
-  // Period filter content (shared between drawer and popover)
-  const PeriodContent = () => (
+  // Period filter content - forMobile param disables hover states
+  const PeriodContent = ({ forMobile = false }: { forMobile?: boolean }) => (
     <div className="flex flex-col gap-1">
       {periodOptions.map((option) => (
         <button
           key={option.key}
           onClick={() => handlePeriodChange(option.key)}
-          className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center justify-between ${
+          className={`text-left px-3 py-3 rounded-lg text-sm flex items-center justify-between ${
             periodFilter === option.key
               ? "bg-primary text-primary-foreground"
-              : "text-primary hover:bg-primary/10"
+              : forMobile
+                ? "text-primary"
+                : "text-primary hover:bg-primary/10"
           }`}
         >
           <span>{option.label}</span>
@@ -180,9 +182,11 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
       ))}
       <button
         onClick={handleClearPeriod}
-        className={`text-left px-3 py-3 rounded-lg text-sm transition-colors mt-2 border-t border-primary/10 pt-4 ${
+        className={`text-left px-3 py-3 rounded-lg text-sm mt-2 border-t border-primary/10 pt-4 ${
           periodFilter !== "all"
-            ? "text-primary/60 hover:text-primary hover:bg-primary/5"
+            ? forMobile
+              ? "text-primary/60"
+              : "text-primary/60 hover:text-primary hover:bg-primary/5"
             : "invisible"
         }`}
       >
@@ -191,8 +195,8 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
     </div>
   );
 
-  // Style filter content (shared between drawer and popover)
-  const StyleContent = () => (
+  // Style filter content - forMobile param disables hover states
+  const StyleContent = ({ forMobile = false }: { forMobile?: boolean }) => (
     <div className="flex flex-col gap-1">
       {styleOptions.map((option) => {
         const isSelected = styleFilters.includes(option.key);
@@ -200,10 +204,12 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           <button
             key={option.key}
             onClick={() => handleStyleToggle(option.key)}
-            className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center justify-between ${
+            className={`text-left px-3 py-3 rounded-lg text-sm flex items-center justify-between ${
               isSelected
                 ? "bg-primary text-primary-foreground"
-                : "text-primary hover:bg-primary/10"
+                : forMobile
+                  ? "text-primary"
+                  : "text-primary hover:bg-primary/10"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -228,9 +234,11 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
       })}
       <button
         onClick={handleClearStyles}
-        className={`text-left px-3 py-3 rounded-lg text-sm transition-colors mt-2 border-t border-primary/10 pt-4 ${
+        className={`text-left px-3 py-3 rounded-lg text-sm mt-2 border-t border-primary/10 pt-4 ${
           styleFilters.length > 0
-            ? "text-primary/60 hover:text-primary hover:bg-primary/5"
+            ? forMobile
+              ? "text-primary/60"
+              : "text-primary/60 hover:text-primary hover:bg-primary/5"
             : "invisible"
         }`}
       >
@@ -239,8 +247,8 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
     </div>
   );
 
-  // Venue filter content
-  const VenueContent = () => (
+  // Venue filter content - forMobile param disables hover states
+  const VenueContent = ({ forMobile = false }: { forMobile?: boolean }) => (
     <div className="flex flex-col gap-1">
       {venueOptions.map((option) => {
         const isSelected = venueFilters.includes(option.key);
@@ -248,10 +256,12 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
           <button
             key={option.key}
             onClick={() => handleVenueToggle(option.key)}
-            className={`text-left px-3 py-3 rounded-lg text-sm transition-colors flex items-center justify-between ${
+            className={`text-left px-3 py-3 rounded-lg text-sm flex items-center justify-between ${
               isSelected
                 ? "bg-primary text-primary-foreground"
-                : "text-primary hover:bg-primary/10"
+                : forMobile
+                  ? "text-primary"
+                  : "text-primary hover:bg-primary/10"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -276,9 +286,11 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
       })}
       <button
         onClick={handleClearVenues}
-        className={`text-left px-3 py-3 rounded-lg text-sm transition-colors mt-2 border-t border-primary/10 pt-4 ${
+        className={`text-left px-3 py-3 rounded-lg text-sm mt-2 border-t border-primary/10 pt-4 ${
           venueFilters.length > 0
-            ? "text-primary/60 hover:text-primary hover:bg-primary/5"
+            ? forMobile
+              ? "text-primary/60"
+              : "text-primary/60 hover:text-primary hover:bg-primary/5"
             : "invisible"
         }`}
       >
@@ -325,7 +337,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
                 <DrawerTitle className="text-primary">Période</DrawerTitle>
               </DrawerHeader>
               <div className="px-4 pb-8">
-                <PeriodContent />
+                <PeriodContent forMobile />
               </div>
             </DrawerContent>
           </Drawer>
@@ -344,7 +356,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
-              <PeriodContent />
+              <PeriodContent forMobile={false} />
             </PopoverContent>
           </Popover>
         )}
@@ -369,7 +381,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
                 <DrawerTitle className="text-primary">Style</DrawerTitle>
               </DrawerHeader>
               <div className="px-4 pb-8">
-                <StyleContent />
+                <StyleContent forMobile />
               </div>
             </DrawerContent>
           </Drawer>
@@ -388,7 +400,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
-              <StyleContent />
+              <StyleContent forMobile={false} />
             </PopoverContent>
           </Popover>
         )}
@@ -413,7 +425,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
                 <DrawerTitle className="text-primary">Lieux</DrawerTitle>
               </DrawerHeader>
               <div className="px-4 pb-8">
-                <VenueContent />
+                <VenueContent forMobile />
               </div>
             </DrawerContent>
           </Drawer>
@@ -432,7 +444,7 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
-              <VenueContent />
+              <VenueContent forMobile={false} />
             </PopoverContent>
           </Popover>
         )}
