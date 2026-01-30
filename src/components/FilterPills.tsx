@@ -300,8 +300,8 @@ const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
   );
 
   return (
-    <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative z-[100]" style={{ transform: 'translateZ(0)' }}>
-      <div className="flex gap-2 px-4 w-max" style={{ touchAction: 'manipulation' }}>
+    <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
+      <div className="flex gap-2 px-4 w-max">
         {/* Tout button */}
         <button
           onClick={handleAllClick}
