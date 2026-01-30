@@ -129,34 +129,19 @@
 }
 
 /* Fix iOS PWA drawer touch event issues */
-/* Vaul uses data-scroll-locked attribute when drawer is open */
+/* Don't override vaul's position/top - it uses top:-Xpx to maintain scroll position */
 body[data-scroll-locked] {
   touch-action: none !important;
-  overflow: hidden !important;
-  position: fixed !important;
-  inset: 0 !important;
   -webkit-overflow-scrolling: auto !important;
 }
 
-/* CRITICAL: Disable pointer events on EVERYTHING except drawer when open */
-body[data-scroll-locked] > *:not([data-radix-popper-content-wrapper]) {
-  pointer-events: none !important;
-}
-
+/* CRITICAL: Disable pointer events on #root when drawer is open */
 body[data-scroll-locked] #root {
   pointer-events: none !important;
   touch-action: none !important;
 }
 
-body[data-scroll-locked] .fixed {
-  pointer-events: none !important;
-}
-
-/* Ensure drawer portal and its contents have pointer events enabled */
-[data-radix-popper-content-wrapper] {
-  pointer-events: auto !important;
-}
-
+/* Ensure drawer overlay captures all events */
 [data-vaul-overlay] {
   touch-action: none !important;
   -webkit-touch-callout: none !important;
