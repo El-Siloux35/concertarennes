@@ -132,23 +132,41 @@
 /* Vaul uses data-scroll-locked attribute when drawer is open */
 body[data-scroll-locked] {
   touch-action: none !important;
+  overflow: hidden !important;
+  position: fixed !important;
+  inset: 0 !important;
+  -webkit-overflow-scrolling: auto !important;
 }
 
-/* CRITICAL: Disable pointer events on ALL fixed elements when drawer is open */
-/* This prevents iOS PWA from sending touch events through the drawer to the header */
+/* CRITICAL: Disable pointer events on EVERYTHING except drawer when open */
+body[data-scroll-locked] > *:not([data-radix-popper-content-wrapper]) {
+  pointer-events: none !important;
+}
+
+body[data-scroll-locked] #root {
+  pointer-events: none !important;
+  touch-action: none !important;
+}
+
 body[data-scroll-locked] .fixed {
   pointer-events: none !important;
 }
 
-/* Ensure drawer and overlay have pointer events enabled */
+/* Ensure drawer portal and its contents have pointer events enabled */
+[data-radix-popper-content-wrapper] {
+  pointer-events: auto !important;
+}
+
 [data-vaul-overlay] {
   touch-action: none !important;
   -webkit-touch-callout: none !important;
   pointer-events: auto !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 [data-vaul-drawer] {
   pointer-events: auto !important;
+  touch-action: pan-y !important;
 }
 
 [data-vaul-drawer] * {
