@@ -303,7 +303,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
   );
 
   return (
-    <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
+    <div className="overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative touch-pan-x">
       <div className="flex gap-2 px-4 w-max">
         {/* Tout button */}
         <button

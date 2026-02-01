@@ -85,7 +85,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
   return (
     <article
       onClick={onNavigate}
-      className={`bg-card rounded-2xl relative cursor-pointer overflow-hidden ${
+      className={`bg-card rounded-2xl relative cursor-pointer overflow-hidden active:scale-[0.99] transition-transform ${
         isMobile ? "flex flex-col" : "flex h-[194px]"
       }`}
     >
