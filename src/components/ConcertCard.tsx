@@ -117,7 +117,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
             strokeWidth={isFavorite ? 0 : 2}
             fill={isFavorite ? "currentColor" : "none"}
             stroke={isFavorite ? "none" : "currentColor"}
-            className="-mt-[2px]"
+            className="mt-[2px]"
           />
         </button>
 
