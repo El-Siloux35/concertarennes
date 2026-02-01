@@ -20,15 +20,20 @@ export function StatusBarProvider({ children }: { children: ReactNode }) {
   const { resolvedTheme, theme } = useTheme();
   const [customColor, setCustomColor] = useState<string | null>(null);
 
-  // Une seule source de vérité: customColor (splash) ou resolvedTheme (next-themes)
+  // Choix explicite (light/dark) prioritaire pour la barre de statut, évite que la PWA
+  // suive le système quand l'utilisateur a forcé un thème (ex. light sur télé en dark).
+  const statusBarTheme =
+    theme === "light" || theme === "dark" ? theme : (resolvedTheme ?? "light");
+
   useEffect(() => {
     if (customColor) {
       applyThemeColor(customColor);
     } else {
-      const color = resolvedTheme === "dark" ? THEME_COLORS.dark : THEME_COLORS.light;
+      const color =
+        statusBarTheme === "dark" ? THEME_COLORS.dark : THEME_COLORS.light;
       applyThemeColor(color);
     }
-  }, [customColor, resolvedTheme]);
+  }, [customColor, statusBarTheme]);
 
   // Listener sur changements de préférence système en temps réel (mode "system" uniquement)
   useEffect(() => {

@@ -27,7 +27,8 @@ const DrawerOverlay = React.forwardRef<
   return (
     <DrawerPrimitive.Overlay
       ref={ref}
-      className={cn("fixed inset-0 z-[9999] bg-black/80", className)}
+      data-drawer-overlay="true"
+      className={cn("fixed inset-0 z-[9998] bg-black/80", className)}
       style={{ touchAction: "none", WebkitTapHighlightColor: "transparent" }}
       onTouchStart={handleTouch}
       onTouchMove={handleTouch}
@@ -42,23 +43,17 @@ const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
-  // Block touch events from propagating to content behind
-  const handleTouch = (e: React.TouchEvent) => {
-    e.stopPropagation();
-  };
-
   return (
     <DrawerPortal>
       <DrawerOverlay />
       <DrawerPrimitive.Content
         ref={ref}
+        data-drawer-content="true"
         className={cn(
           "fixed inset-x-0 bottom-0 z-[9999] mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
           className,
         )}
         style={{ touchAction: "pan-y", WebkitTapHighlightColor: "transparent" }}
-        onTouchStart={handleTouch}
-        onTouchMove={handleTouch}
         {...props}
       >
         <div className="mx-auto mt-4 mb-4 h-2 w-[100px] rounded-full bg-muted" />

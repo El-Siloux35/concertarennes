@@ -26,12 +26,14 @@ export function usePWADrawerFix() {
 
       // Check if touch is inside the drawer or overlay
       const target = e.target as HTMLElement;
-      const drawer = document.querySelector('[data-vaul-drawer]');
-      const overlay = document.querySelector('[data-vaul-overlay]');
+      
+      // Use our custom attributes for reliable detection
+      const drawer = document.querySelector('[data-drawer-content="true"]');
+      const overlay = document.querySelector('[data-drawer-overlay="true"]');
 
-      // Check if target is inside drawer
+      // Check if target is inside drawer content (including all buttons and children)
       if (drawer && drawer.contains(target)) {
-        return; // Allow
+        return; // Allow - this includes all interactive elements inside
       }
 
       // Check if target is the overlay itself (to close drawer)
@@ -53,7 +55,7 @@ export function usePWADrawerFix() {
       }
 
       const target = e.target as HTMLElement;
-      const drawer = document.querySelector('[data-vaul-drawer]');
+      const drawer = document.querySelector('[data-drawer-content="true"]');
 
       // Allow scrolling inside drawer
       if (drawer && drawer.contains(target)) {
