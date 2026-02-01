@@ -5,6 +5,9 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
+const SWIPE_CLOSE_THRESHOLD = 55;
+const SWIPE_HANDLE_ZONE_HEIGHT = 56;
+
 const Sheet = SheetPrimitive.Root;
 
 const SheetTrigger = SheetPrimitive.Trigger;
@@ -51,26 +54,69 @@ interface SheetContentProps
   extends React.ComponentPropsWithoutRef<typeof SheetPrimitive.Content>,
     VariantProps<typeof sheetVariants> {
   hideCloseButton?: boolean;
+  /** Callback when user swipes down (mobile, bottom sheet). Call onOpenChange(false) from parent. */
+  onSwipeDown?: () => void;
 }
 
 const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Content>, SheetContentProps>(
-  ({ side = "right", className, children, hideCloseButton, ...props }, ref) => (
-    <SheetPortal>
-      <SheetOverlay />
-      <SheetPrimitive.Content ref={ref} className={cn(sheetVariants({ side }), className)} {...props}>
-        {side === "bottom" && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-1 w-12 h-1 rounded-full bg-muted flex-shrink-0" aria-hidden />
-        )}
-        {children}
-        {!hideCloseButton && (
-          <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
-            <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
-          </SheetPrimitive.Close>
-        )}
-      </SheetPrimitive.Content>
-    </SheetPortal>
-  ),
+  ({ side = "right", className, children, hideCloseButton, onSwipeDown, ...props }, ref) => {
+    const contentRef = React.useRef<HTMLDivElement>(null);
+    const touchStartY = React.useRef(0);
+    const touchStartInHandleZone = React.useRef(false);
+
+    const handleTouchStart = React.useCallback(
+      (e: React.TouchEvent) => {
+        if (side !== "bottom" || !onSwipeDown || !contentRef.current) return;
+        const rect = contentRef.current.getBoundingClientRect();
+        const y = e.touches[0].clientY;
+        touchStartY.current = y;
+        touchStartInHandleZone.current = y - rect.top < SWIPE_HANDLE_ZONE_HEIGHT;
+      },
+      [side, onSwipeDown],
+    );
+
+    const handleTouchMove = React.useCallback(
+      (e: React.TouchEvent) => {
+        if (side !== "bottom" || !onSwipeDown || !touchStartInHandleZone.current) return;
+        const deltaY = e.touches[0].clientY - touchStartY.current;
+        if (deltaY > SWIPE_CLOSE_THRESHOLD) {
+          touchStartInHandleZone.current = false;
+          onSwipeDown();
+        }
+      },
+      [side, onSwipeDown],
+    );
+
+    const mergedRef = (node: HTMLDivElement | null) => {
+      (contentRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    };
+
+    return (
+      <SheetPortal>
+        <SheetOverlay />
+        <SheetPrimitive.Content
+          ref={mergedRef}
+          className={cn(sheetVariants({ side }), className)}
+          onTouchStart={side === "bottom" && onSwipeDown ? handleTouchStart : undefined}
+          onTouchMove={side === "bottom" && onSwipeDown ? handleTouchMove : undefined}
+          {...props}
+        >
+          {side === "bottom" && (
+            <div className="absolute left-1/2 -translate-x-1/2 top-1 w-12 h-1 rounded-full bg-muted flex-shrink-0" aria-hidden />
+          )}
+          {children}
+          {!hideCloseButton && (
+            <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-secondary hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </SheetPrimitive.Close>
+          )}
+        </SheetPrimitive.Content>
+      </SheetPortal>
+    );
+  },
 );
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 

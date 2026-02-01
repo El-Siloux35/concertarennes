@@ -283,7 +283,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
+            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton onSwipeDown={() => setPeriodOpen(false)}>
               <SheetHeader>
                 <SheetTitle className="text-primary">Période</SheetTitle>
               </SheetHeader>
@@ -327,7 +327,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
+            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton onSwipeDown={() => setStyleOpen(false)}>
               <SheetHeader>
                 <SheetTitle className="text-primary">Style</SheetTitle>
               </SheetHeader>
@@ -371,7 +371,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
+            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton onSwipeDown={() => setVenueOpen(false)}>
               <SheetHeader>
                 <SheetTitle className="text-primary">Lieux</SheetTitle>
               </SheetHeader>

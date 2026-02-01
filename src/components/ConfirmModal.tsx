@@ -54,7 +54,7 @@ const ConfirmModal = ({
   // Mobile: Drawer from bottom
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
+      <Drawer open={open} onOpenChange={onOpenChange} dismissible>
         <DrawerContent className="pt-8 px-6 pb-12">
           <DrawerHeader className="text-center p-0 mt-8">
             <DrawerTitle className="text-primary text-xl font-semibold text-center">

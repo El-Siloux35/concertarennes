@@ -200,9 +200,16 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger 
           />
           <div className="min-w-0">
             <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
-            <p className="text-xs opacity-90">
+            <p className="text-xs opacity-90 mb-3">
               L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
             </p>
+            <Link
+              to="/a-propos"
+              className="inline-flex items-center gap-2 text-xs font-medium underline underline-offset-2 py-1 touch-manipulation"
+            >
+              + d'infos
+              <ArrowRight size={14} strokeWidth={1.25} />
+            </Link>
           </div>
         </div>
         {/* Skeleton cards */}
@@ -234,9 +241,16 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger 
         />
         <div className="min-w-0">
           <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
-          <p className="text-xs opacity-90">
+          <p className="text-xs opacity-90 mb-3">
             L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
           </p>
+          <Link
+            to="/a-propos"
+            className="inline-flex items-center gap-2 text-xs font-medium underline underline-offset-2 py-1 touch-manipulation"
+          >
+            + d'infos
+            <ArrowRight size={14} strokeWidth={1.25} />
+          </Link>
         </div>
       </div>
 

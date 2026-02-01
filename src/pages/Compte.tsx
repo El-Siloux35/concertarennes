@@ -335,20 +335,20 @@ const Compte = () => {
                       <div className="flex-1">
                         <h3 className="text-primary font-medium">{event.title}</h3>
                         <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                          <Calendar size={14} strokeWidth={1.25} />
+                          <Calendar size={14} strokeWidth={1.5} />
                           <span>{new Date(event.date).toLocaleDateString("fr-FR")}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
                       <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
-                        <Pencil size={16} strokeWidth={1.25} />
+                        <Pencil size={16} strokeWidth={1.5} />
                       </Button>
                       <Button onClick={() => {
                 setEventToDelete(event.id);
                 setShowDeleteEventModal(true);
               }} variant="outline" className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0" aria-label="Supprimer">
-                        <Trash2 size={16} />
+                        <Trash2 size={16} strokeWidth={1.5} />
                       </Button>
                     </div>
                   </div>)}
@@ -358,7 +358,7 @@ const Compte = () => {
                       <div className="flex-1">
                         <h3 className="text-primary font-medium">{event.title}</h3>
                         <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                          <Calendar size={14} strokeWidth={1.25} />
+                          <Calendar size={14} strokeWidth={1.5} />
                           <span>{new Date(event.date).toLocaleDateString("fr-FR")}</span>
                         </div>
                       </div>
@@ -368,7 +368,7 @@ const Compte = () => {
                 setEventToDelete(event.id);
                 setShowDeleteEventModal(true);
               }} variant="outline" className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0" aria-label="Supprimer">
-                        <Trash2 size={16} />
+                        <Trash2 size={16} strokeWidth={1.5} />
                       </Button>
                     </div>
                   </div>)}
@@ -381,20 +381,20 @@ const Compte = () => {
                           <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded">Brouillon</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                          <Calendar size={14} strokeWidth={1.25} />
+                          <Calendar size={14} strokeWidth={1.5} />
                           <span>{event.date ? new Date(event.date).toLocaleDateString("fr-FR") : "Date non définie"}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
                       <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
-                        <Pencil size={16} strokeWidth={1.25} />
+                        <Pencil size={16} strokeWidth={1.5} />
                       </Button>
                       <Button onClick={() => {
                 setEventToDelete(event.id);
                 setShowDeleteEventModal(true);
               }} variant="outline" className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0" aria-label="Supprimer">
-                        <Trash2 size={16} />
+                        <Trash2 size={16} strokeWidth={1.5} />
                       </Button>
                     </div>
                   </div>)}

@@ -381,7 +381,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
   // Mobile: Drawer from bottom
   if (isMobile) {
     return (
-      <Drawer open={open} onOpenChange={onOpenChange}>
+      <Drawer open={open} onOpenChange={onOpenChange} dismissible>
         <DrawerContent
           className="flex flex-col overflow-hidden"
           style={{
