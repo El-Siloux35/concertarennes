@@ -10,6 +10,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import EventEmptyState from "@/components/EventEmptyState";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import { useIsMobile } from "@/hooks/use-mobile";
 interface Profile {
   id: string;
   pseudo: string | null;
@@ -29,6 +30,7 @@ const Compte = () => {
     toast
   } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
@@ -241,10 +243,14 @@ const Compte = () => {
     });
   };
   const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
+    if (isMobile) {
+      setIsClosing(true);
+      setTimeout(() => {
+        navigate("/home");
+      }, 300);
+    } else {
       navigate("/home");
-    }, 300);
+    }
   };
   const displayName = profile?.pseudo || user?.user_metadata?.pseudo || user?.email?.split("@")[0] || "Utilisateur";
   if (loading) {
@@ -252,7 +258,7 @@ const Compte = () => {
         <div className="text-primary">Chargement...</div>
       </div>;
   }
-  return <div className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${isClosing ? 'animate-slide-out-right' : 'animate-slide-in-right'}`}>
+  return <div className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${isMobile ? (isClosing ? 'animate-slide-out-right' : 'animate-slide-in-right') : ''}`}>
       <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)]">
         {/* Header with close button */}
         <header className="pt-4 pl-4 pb-4">

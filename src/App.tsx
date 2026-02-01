@@ -18,8 +18,7 @@ import { usePWADrawerFix } from "./hooks/use-pwa-drawer-fix";
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Favorites = lazy(() => import("./pages/Favorites"));
-const PushProfileLayout = lazy(() => import("./components/PushProfileLayout"));
-const SlideCreateEventLayout = lazy(() => import("./components/SlideCreateEventLayout"));
+const HomeShellLayout = lazy(() => import("./components/HomeShellLayout"));
 const EditEvent = lazy(() => import("./pages/EditEvent"));
 const EmailConfirmed = lazy(() => import("./pages/EmailConfirmed"));
 const About = lazy(() => import("./pages/About"));
@@ -54,12 +53,12 @@ const App = () => {
                   <Suspense fallback={<PageLoader />}>
                     <Routes>
                       <Route path="/" element={<Splash />} />
-                      <Route path="/home" element={<Index />} />
+                      <Route path="/home" element={<HomeShellLayout />} />
+                      <Route path="/compte" element={<HomeShellLayout />} />
+                      <Route path="/creer-evenement" element={<HomeShellLayout />} />
                       <Route path="/concert/:id" element={<ConcertDetail />} />
                       <Route path="/auth" element={<Auth />} />
                       <Route path="/favoris" element={<Favorites />} />
-                      <Route path="/compte" element={<PushProfileLayout />} />
-                      <Route path="/creer-evenement" element={<SlideCreateEventLayout />} />
                       <Route path="/modifier-evenement/:id" element={<EditEvent />} />
                       <Route path="/email-confirmed" element={<EmailConfirmed />} />
                       <Route path="/a-propos" element={<About />} />

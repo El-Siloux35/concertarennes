@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Send, Save } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,6 +36,7 @@ const CreateEvent = () => {
   const routerLocation = useLocation();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
   const [isClosing, setIsClosing] = useState(false);
 
   const [organizer, setOrganizer] = useState("");
@@ -212,19 +214,23 @@ const CreateEvent = () => {
 
   const fromCompte = (routerLocation.state as { from?: string })?.from === "compte";
   const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
+    if (isMobile) {
+      setIsClosing(true);
+      setTimeout(() => {
+        navigate(fromCompte ? "/compte" : "/home");
+      }, 300);
+    } else {
       navigate(fromCompte ? "/compte" : "/home");
-    }, 300);
+    }
   };
 
   return (
     <div
       className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${
-        isClosing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
+        isMobile ? (isClosing ? "animate-slide-out-bottom" : "animate-slide-in-bottom") : ""
       }`}
     >
-      <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)] pb-40">
+      <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)]">
         {/* Header - same button as profile: w-10 h-10, X, pt-4 pl-4 */}
         <header className="pt-4 pl-4 pb-4">
           <button
@@ -348,8 +354,8 @@ const CreateEvent = () => {
           </div>
         </div>
 
-        {/* Submit buttons - floating */}
-        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto flex flex-col gap-2">
+        {/* Submit buttons */}
+        <div className="mt-8 mb-8 flex flex-col gap-2">
           <Button
             onClick={() => handleSubmit(false)}
             disabled={isSubmitting}
