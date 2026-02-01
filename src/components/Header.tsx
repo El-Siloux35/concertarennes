@@ -48,21 +48,21 @@ const Header = () => {
         <div className="flex items-center gap-1">
           <Link
             to="/a-propos"
-            className="text-primary w-11 h-11 flex items-center justify-center rounded-full bg-card"
+            className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="À propos"
           >
             <HelpCircle size={24} strokeWidth={2} />
           </Link>
           <Link
             to="/reglages"
-            className="text-primary w-11 h-11 flex items-center justify-center rounded-full bg-card"
+            className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="Réglages"
           >
             <SlidersHorizontal size={24} strokeWidth={2} />
           </Link>
           <Link
             to="/favoris"
-            className="text-primary relative w-11 h-11 flex items-center justify-center rounded-full bg-card"
+            className="text-primary relative w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="Mes favoris"
           >
             <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />

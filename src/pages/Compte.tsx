@@ -291,10 +291,10 @@ const Compte = () => {
           {/* Pseudo with edit */}
           {isEditingPseudo ? <div className="flex items-center gap-2 mt-4">
               <Input type="text" value={newPseudo} onChange={e => setNewPseudo(e.target.value)} className="h-10 w-40 rounded-[8px] border-2 border-primary bg-transparent text-primary text-center focus-visible:ring-0 focus-visible:ring-offset-0" autoFocus />
-              <button onClick={handleSavePseudo} className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <button onClick={handleSavePseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center touch-manipulation">
                 <Check size={14} className="text-primary-foreground" />
               </button>
-              <button onClick={handleCancelEditPseudo} className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+              <button onClick={handleCancelEditPseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-muted flex items-center justify-center touch-manipulation">
                 <X size={14} className="text-primary" />
               </button>
             </div> : <div className="flex items-center gap-2 mt-4">

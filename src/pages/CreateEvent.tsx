@@ -243,7 +243,7 @@ const CreateEvent = () => {
         </header>
 
       <div className="max-w-[900px] mx-auto px-6 flex-1">
-        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">Ajouter un évènement</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-primary text-center mt-8 mb-8">Ajouter un évènement</h1>
 
         {/* Image upload */}
         <div className="mt-4">

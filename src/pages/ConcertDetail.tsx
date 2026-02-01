@@ -229,7 +229,7 @@ const ConcertDetail = () => {
           <div className="max-w-[1000px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
-              className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center text-primary-foreground touch-manipulation"
               aria-label="Retour"
             >
               <ChevronLeft size={24} strokeWidth={2} />
@@ -238,7 +238,7 @@ const ConcertDetail = () => {
               {canEdit && (
                 <button
                   onClick={() => navigate(`/modifier-evenement/${id}?from=event`)}
-                  className="w-10 h-10 rounded-full bg-card flex items-center justify-center text-primary"
+                  className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-card flex items-center justify-center text-primary touch-manipulation"
                   aria-label="Modifier"
                 >
                   <Pencil size={24} strokeWidth={2} />
@@ -246,7 +246,7 @@ const ConcertDetail = () => {
               )}
               <button
                 onClick={toggleFavorite}
-                className="w-10 h-10 rounded-full bg-card flex items-center justify-center text-primary"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-card flex items-center justify-center text-primary touch-manipulation"
                 aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
               >
                 <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />

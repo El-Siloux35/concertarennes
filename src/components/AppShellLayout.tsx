@@ -1,10 +1,10 @@
 import { useLocation, Outlet } from "react-router-dom";
-import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from "react";
+import { lazy, Suspense, useLayoutEffect, useRef } from "react";
 import Index from "@/pages/Index";
+import Compte from "@/pages/Compte";
+import CreateEvent from "@/pages/CreateEvent";
 import { useScroll } from "@/contexts/ScrollContext";
 
-const Compte = lazy(() => import("@/pages/Compte"));
-const CreateEvent = lazy(() => import("@/pages/CreateEvent"));
 const Auth = lazy(() => import("@/pages/Auth"));
 const Favorites = lazy(() => import("@/pages/Favorites"));
 const About = lazy(() => import("@/pages/About"));
@@ -39,13 +39,6 @@ const AppShellLayout = () => {
     return () => cancelAnimationFrame(id);
   }, [isOverlayOpen, getScrollPosition]);
 
-  // Preload overlay components
-  useEffect(() => {
-    import("@/pages/Compte");
-    import("@/pages/CreateEvent");
-    import("@/pages/Auth");
-  }, []);
-
   const showCompteOverlay = isCompte || (isCreateEvent && fromCompte);
 
   // Index: hidden when on secondary pages (favoris, reglages, a-propos) but stays mounted
@@ -67,30 +60,9 @@ const AppShellLayout = () => {
         <Index />
       </div>
 
-      {/* Home flow overlays: Compte, CreateEvent */}
-      {showCompteOverlay && (
-        <Suspense
-          fallback={
-            <div className="fixed inset-0 bg-background z-40 flex items-center justify-center">
-              <span className="text-primary">Chargement...</span>
-            </div>
-          }
-        >
-          <Compte />
-        </Suspense>
-      )}
-
-      {isCreateEvent && (
-        <Suspense
-          fallback={
-            <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
-              <span className="text-primary">Chargement...</span>
-            </div>
-          }
-        >
-          <CreateEvent />
-        </Suspense>
-      )}
+      {/* Home flow overlays: Compte, CreateEvent - eager loaded to avoid first-click flash */}
+      {showCompteOverlay && <Compte />}
+      {isCreateEvent && <CreateEvent />}
 
       {/* Auth overlay - slides from right like profile */}
       {isAuth && (

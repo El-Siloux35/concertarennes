@@ -177,6 +177,8 @@ const Index = () => {
       styles: newStyleFilters,
       venues: newVenueFilters,
     }));
+    // Scroll to top to show filtered results
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   // Calculate top position for header (using top instead of transform to not break Drawer)

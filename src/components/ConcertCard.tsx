@@ -104,10 +104,10 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
 
       {/* Content */}
       <div className={`flex-1 ${isMobile ? "p-4" : "pt-4 pb-6 px-4"} flex flex-col`}>
-        {/* Favorite button */}
+        {/* Favorite button - 44px touch target (Apple HIG) */}
         <button
           onClick={toggleFavorite}
-          className="absolute top-2 right-2 w-[32px] h-[32px] flex items-center justify-center rounded-full bg-background text-primary"
+          className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center rounded-full bg-background text-primary touch-manipulation"
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart

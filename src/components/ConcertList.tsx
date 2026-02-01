@@ -112,6 +112,11 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     navigate(`/concert/${concertId}`);
   };
 
+  // Preload ConcertDetail chunk when list is visible - ensures instant navigation on first click
+  useEffect(() => {
+    import("@/pages/ConcertDetail");
+  }, []);
+
   useEffect(() => {
     const fetchConcerts = async () => {
       const { data, error } = await supabase
@@ -198,7 +203,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         </p>
         <Link
           to="/a-propos"
-          className="inline-flex items-center gap-2 text-xs font-medium underline underline-offset-2"
+          className="inline-flex items-center gap-2 text-xs font-medium underline underline-offset-2 py-3 touch-manipulation"
         >
           Voir le tuto
           <ArrowRight size={14} />
