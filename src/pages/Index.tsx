@@ -45,15 +45,36 @@ const Index = () => {
 
   // Disable transitions on initial mount to prevent animation when returning to page
   const [transitionsEnabled, setTransitionsEnabled] = useState(false);
+  const mountTimeRef = useRef(Date.now());
 
   const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
   const scrollUpDistance = useRef(0);
 
+  // Sync visibility with scroll position after mount (without animation)
+  useEffect(() => {
+    const syncVisibility = () => {
+      const scrollY = window.scrollY;
+      if (scrollY > 50) {
+        setBannerVisible(false);
+        if (isMobile) {
+          setHeaderVisible(false);
+        }
+      }
+      lastScrollY.current = scrollY;
+    };
+
+    // Run immediately and after a short delay (for scroll restoration)
+    syncVisibility();
+    const timeout = setTimeout(syncVisibility, 100);
+    return () => clearTimeout(timeout);
+  }, [isMobile]);
+
   // Handle scroll to show/hide banner and header
   useEffect(() => {
     const handleScroll = () => {
-      // Enable transitions after first scroll
-      if (!transitionsEnabled) {
+      // Don't enable transitions for 500ms after mount (allows scroll restoration without animation)
+      const timeSinceMount = Date.now() - mountTimeRef.current;
+      if (!transitionsEnabled && timeSinceMount > 500) {
         setTransitionsEnabled(true);
       }
 
