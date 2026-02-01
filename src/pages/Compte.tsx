@@ -256,7 +256,7 @@ const Compte = () => {
           </button>
         </header>
 
-        <div className="px-4">
+        <div className="px-6">
 
         {/* Avatar */}
         <div className="flex flex-col items-center mt-6">
@@ -307,13 +307,13 @@ const Compte = () => {
         <div>
           {/* Tabs */}
           <div className="flex justify-center gap-2 mb-4 flex-wrap">
-            <button onClick={() => setActiveTab("upcoming")} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "upcoming" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+            <button onClick={() => setActiveTab("upcoming")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "upcoming" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
               À venir ({upcomingEvents.length})
             </button>
-            <button onClick={() => setActiveTab("past")} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "past" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+            <button onClick={() => setActiveTab("past")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "past" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
               Passés ({pastEvents.length})
             </button>
-            <button onClick={() => setActiveTab("drafts")} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "drafts" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+            <button onClick={() => setActiveTab("drafts")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "drafts" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
               Brouillons ({draftEvents.length})
             </button>
           </div>

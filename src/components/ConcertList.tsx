@@ -153,7 +153,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
 
   if (loading) {
     return (
-      <div className="px-4 py-8 text-center text-primary">
+      <div className="px-6 py-8 text-center text-primary">
         Chargement...
       </div>
     );
@@ -164,7 +164,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
   }
 
   return (
-    <div className="flex flex-col gap-4 px-4 pb-32">
+    <div className="flex flex-col gap-4 px-6 pb-32">
       {filteredConcerts.map((concert) => (
         <ConcertCard
           key={concert.id}

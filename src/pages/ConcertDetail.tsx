@@ -259,7 +259,7 @@ const ConcertDetail = () => {
         <div className="h-20"></div>
 
         {/* Two-column layout on desktop, single column on mobile */}
-        <div className="md:flex md:gap-8 px-4 pt-4">
+        <div className="md:flex md:gap-8 px-6 pt-4">
           {/* Left column - Image (376px on desktop) */}
           <div className="md:w-[376px] md:flex-shrink-0 mb-4 md:mb-0">
             <div 
@@ -390,7 +390,7 @@ const ConcertDetail = () => {
         </div>
 
         {/* Action buttons - mobile only, in flow before footer */}
-        <div className="md:hidden flex flex-col gap-3 px-4 mt-8 mb-8">
+        <div className="md:hidden flex flex-col gap-3 px-6 mt-8 mb-8">
           <Button
             onClick={handleShare}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
@@ -410,7 +410,7 @@ const ConcertDetail = () => {
           )}
         </div>
 
-        <div className="px-4 mt-auto">
+        <div className="px-6 mt-auto">
           <Footer />
         </div>
       </div>

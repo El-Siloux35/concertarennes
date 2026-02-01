@@ -304,7 +304,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
 
   return (
     <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative">
-      <div className="flex gap-2 px-4 w-max">
+      <div className="flex gap-2 px-6 w-max">
         {/* Tout button */}
         <button
           onClick={handleAllClick}
@@ -339,7 +339,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
               <DrawerHeader>
                 <DrawerTitle className="text-primary">Période</DrawerTitle>
               </DrawerHeader>
-              <div className="px-4 pb-8">
+              <div className="px-6 pb-8">
                 <PeriodContent forMobile />
               </div>
             </DrawerContent>
@@ -383,7 +383,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
               <DrawerHeader>
                 <DrawerTitle className="text-primary">Style</DrawerTitle>
               </DrawerHeader>
-              <div className="px-4 pb-8">
+              <div className="px-6 pb-8">
                 <StyleContent forMobile />
               </div>
             </DrawerContent>
@@ -427,7 +427,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
               <DrawerHeader>
                 <DrawerTitle className="text-primary">Lieux</DrawerTitle>
               </DrawerHeader>
-              <div className="px-4 pb-8">
+              <div className="px-6 pb-8">
                 <VenueContent forMobile />
               </div>
             </DrawerContent>

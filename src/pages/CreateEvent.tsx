@@ -209,7 +209,7 @@ const CreateEvent = () => {
 
   return (
     <div className="min-h-screen bg-background pb-40">
-      <div className="max-w-[900px] mx-auto px-4">
+      <div className="max-w-[900px] mx-auto px-6">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">
           <button
@@ -257,21 +257,21 @@ const CreateEvent = () => {
             placeholder="Organisateur"
             value={organizer}
             onChange={(e) => setOrganizer(e.target.value)}
-            className="h-14 rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4"
+            className="h-14 rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-6"
           />
 
           <Input
             placeholder="Nom de l'évènement"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-14 rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4"
+            className="h-14 rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-6"
           />
 
           <Textarea
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="min-h-[180px] rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-4 py-4 resize-none"
+            className="min-h-[180px] rounded-2xl border-2 border-primary bg-transparent text-primary placeholder:text-primary/50 px-6 py-4 resize-none"
           />
 
           {/* Style selector - now supports multi-select */}
@@ -303,7 +303,7 @@ const CreateEvent = () => {
 
             <Popover>
               <PopoverTrigger asChild>
-                <button className="h-14 px-4 rounded-2xl border-2 border-primary bg-transparent text-primary flex items-center gap-2 flex-[1.5]">
+                <button className="h-14 px-6 rounded-2xl border-2 border-primary bg-transparent text-primary flex items-center gap-2 flex-[1.5]">
                   <Calendar size={20} strokeWidth={1.5} />
                   <span className="text-sm">
                     {date ? format(date, "dd/MM/yyyy") : "Date"}

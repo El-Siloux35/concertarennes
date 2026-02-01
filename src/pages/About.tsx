@@ -25,7 +25,7 @@ const About = () => {
         <div className="h-20"></div>
 
         {/* Content */}
-        <div className="px-4 py-4">
+        <div className="px-6 py-4">
           <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">
             L'agenda du 35
           </h1>
@@ -63,7 +63,7 @@ const About = () => {
           </div>
         </div>
 
-        <div className="px-4 mt-auto">
+        <div className="px-6 mt-auto">
           <Footer />
         </div>
       </div>

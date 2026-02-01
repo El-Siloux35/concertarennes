@@ -119,7 +119,7 @@ const Settings = () => {
         <div className="h-20"></div>
 
         {/* Content */}
-        <div className="px-4 py-4">
+        <div className="px-6 py-4">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">
             Réglages
           </h1>
@@ -222,7 +222,7 @@ const Settings = () => {
           </div>
         </div>
 
-        <div className="px-4 mt-auto">
+        <div className="px-6 mt-auto">
           <Footer />
         </div>
       </div>

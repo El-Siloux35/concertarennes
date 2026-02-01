@@ -210,7 +210,7 @@ const Auth = () => {
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col">
       {/* Close button */}
-      <header className="px-4 pt-4 flex justify-start shrink-0">
+      <header className="px-6 pt-4 flex justify-start shrink-0">
         <button
           onClick={() => (from ? navigate(from) : navigate(-1))}
           className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"

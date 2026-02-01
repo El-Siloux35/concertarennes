@@ -158,11 +158,11 @@ const Favorites = () => {
         <h1 className="text-xl font-bold text-primary text-center mb-4">Mes favoris</h1>
 
         {/* Filter Tabs */}
-        <div className="px-4 mb-4">
+        <div className="px-6 mb-4">
           <div className="flex justify-center gap-2">
             <button
               onClick={() => setActiveTab("upcoming")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === "upcoming"
                   ? "bg-primary text-primary-foreground"
                   : "border-2 border-primary text-primary bg-transparent"
@@ -172,7 +172,7 @@ const Favorites = () => {
             </button>
             <button
               onClick={() => setActiveTab("past")}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                 activeTab === "past"
                   ? "bg-primary text-primary-foreground"
                   : "border-2 border-primary text-primary bg-transparent"
@@ -184,7 +184,7 @@ const Favorites = () => {
         </div>
 
         {/* Favorites list */}
-        <div className="px-4 space-y-4">
+        <div className="px-6 space-y-4">
           {loading ? (
             <div className="text-center py-12">
               <p className="text-primary/60">Chargement...</p>
@@ -264,7 +264,7 @@ const Favorites = () => {
           )}
         </div>
 
-        <div className="px-4 mt-auto">
+        <div className="px-6 mt-auto">
           <Footer />
         </div>
       </div>

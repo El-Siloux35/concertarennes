@@ -8,10 +8,14 @@ import ScrollingBanner, { BANNER_HEIGHT } from "../components/ScrollingBanner";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-// Header section height (logo + connection icons)
+// Header section height (desktop)
 const HEADER_SECTION_HEIGHT = 68;
+// Header section height mobile (reduced padding)
+const HEADER_SECTION_HEIGHT_MOBILE = 60;
 // Filters section height
 const FILTERS_HEIGHT = 70;
+// Filters section height mobile (reduced padding)
+const FILTERS_HEIGHT_MOBILE = 58;
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -180,9 +184,15 @@ const Index = () => {
 
   // Calculate top position for header (using top instead of transform to not break Drawer)
   const getHeaderTop = () => {
-    if (!bannerVisible && !headerVisible && isMobile) {
-      return -(BANNER_HEIGHT + HEADER_SECTION_HEIGHT);
-    } else if (!bannerVisible) {
+    if (isMobile) {
+      // Mobile: no banner, just header that can hide
+      if (!headerVisible) {
+        return -HEADER_SECTION_HEIGHT_MOBILE;
+      }
+      return 0;
+    }
+    // Desktop: banner can hide
+    if (!bannerVisible) {
       return -BANNER_HEIGHT;
     }
     return 0;
@@ -190,11 +200,15 @@ const Index = () => {
 
   // Calculate effective padding for main content
   const getEffectivePadding = () => {
-    if (bannerVisible && headerVisible) {
-      return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + FILTERS_HEIGHT;
-    } else if (!bannerVisible && !headerVisible && isMobile) {
-      return FILTERS_HEIGHT;
-    } else if (!bannerVisible) {
+    if (isMobile) {
+      // Mobile: no banner
+      if (!headerVisible) {
+        return FILTERS_HEIGHT_MOBILE;
+      }
+      return HEADER_SECTION_HEIGHT_MOBILE + FILTERS_HEIGHT_MOBILE;
+    }
+    // Desktop: with banner
+    if (!bannerVisible) {
       return HEADER_SECTION_HEIGHT + FILTERS_HEIGHT;
     }
     return BANNER_HEIGHT + HEADER_SECTION_HEIGHT + FILTERS_HEIGHT;
@@ -213,13 +227,14 @@ const Index = () => {
             top: `calc(env(safe-area-inset-top) + ${getHeaderTop()}px)`,
           }}
         >
-          <ScrollingBanner />
-          <div className="bg-background py-[12px] pb-[8px]">
-            <div className="max-w-[900px] mx-auto px-4">
+          {/* Banner only on desktop */}
+          {!isMobile && <ScrollingBanner />}
+          <div className={`bg-background ${isMobile ? 'py-[10px]' : 'py-[12px] pb-[8px]'}`}>
+            <div className="max-w-[900px] mx-auto px-6">
               <Header />
             </div>
           </div>
-          <div className="bg-background py-3">
+          <div className={`bg-background ${isMobile ? 'py-[10px]' : 'py-3'}`}>
             <div className="max-w-[900px] mx-auto">
               <FilterPills
                 onFilterChange={handleFilterChange}
