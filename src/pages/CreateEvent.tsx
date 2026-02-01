@@ -254,7 +254,7 @@ const CreateEvent = () => {
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <>

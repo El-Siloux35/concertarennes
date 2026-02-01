@@ -57,12 +57,12 @@ const App = () => {
                         <Route path="/home" element={null} />
                         <Route path="/compte" element={null} />
                         <Route path="/creer-evenement" element={null} />
+                        <Route path="/auth" element={null} />
                         <Route path="/favoris" element={<Favorites />} />
                         <Route path="/a-propos" element={<About />} />
                         <Route path="/reglages" element={<Settings />} />
                       </Route>
                       <Route path="/concert/:id" element={<ConcertDetail />} />
-                      <Route path="/auth" element={<Auth />} />
                       <Route path="/modifier-evenement/:id" element={<EditEvent />} />
                       <Route path="/email-confirmed" element={<EmailConfirmed />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

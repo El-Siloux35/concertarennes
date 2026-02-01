@@ -103,8 +103,8 @@ const Settings = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <div className="max-w-[1000px] mx-auto flex-1 flex flex-col w-full">
         {/* Fixed Header */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
-          <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background pt-[env(safe-area-inset-top)]">
+          <div className="max-w-[1000px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
               className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
@@ -116,13 +116,11 @@ const Settings = () => {
         </div>
 
         {/* Spacer for fixed header */}
-        <div className="h-20"></div>
+        <div className="h-[calc(4rem+env(safe-area-inset-top,0px))]"></div>
 
         {/* Content */}
         <div className="px-6 py-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">
-            Réglages
-          </h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">Réglages</h1>
 
           {/* Theme Selection */}
           <div className="bg-card rounded-2xl p-6 mb-6">
@@ -176,7 +174,8 @@ const Settings = () => {
 
           {/* Notifications */}
           <div className="bg-card rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-card-foreground mb-4">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-card-foreground mb-4">
+              <Bell size={20} className="text-primary shrink-0" />
               Notifications
             </h2>
 
@@ -185,11 +184,8 @@ const Settings = () => {
                 Les notifications push ne sont pas supportées sur ce navigateur.
               </p>
             ) : (
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                    <Bell size={20} className="text-primary" />
-                  </div>
+              <div className="flex items-center justify-between gap-6">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div className="min-w-0">
                     <span className="text-primary font-medium block truncate">Nouveaux événements</span>
                     <p className="text-primary/60 text-xs">

@@ -14,23 +14,22 @@ const IMAGE_SIZES: Record<ImageSize, { width: number; height: number }> = {
 
 export function getOptimizedImageUrl(
   url: string | null | undefined,
-  size: ImageSize = 'card'
+  size: ImageSize = 'card',
+  options?: { resize?: 'cover' | 'contain' }
 ): string | undefined {
   if (!url) return undefined;
 
   // Check if it's a Supabase storage URL
   if (url.includes('supabase.co/storage/v1/object/public/')) {
-    // Convert to render endpoint for image transformation
     const renderUrl = url.replace(
       '/storage/v1/object/public/',
       '/storage/v1/render/image/public/'
     );
-
+    const resize = options?.resize ?? 'cover';
     const { width, height } = IMAGE_SIZES[size];
-    return `${renderUrl}?width=${width}&height=${height}&resize=cover&quality=75`;
+    return `${renderUrl}?width=${width}&height=${height}&resize=${resize}&quality=75`;
   }
 
-  // Return original URL for non-Supabase images
   return url;
 }
 

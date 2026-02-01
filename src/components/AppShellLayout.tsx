@@ -4,6 +4,7 @@ import Index from "@/pages/Index";
 
 const Compte = lazy(() => import("@/pages/Compte"));
 const CreateEvent = lazy(() => import("@/pages/CreateEvent"));
+const Auth = lazy(() => import("@/pages/Auth"));
 const Favorites = lazy(() => import("@/pages/Favorites"));
 const About = lazy(() => import("@/pages/About"));
 const Settings = lazy(() => import("@/pages/Settings"));
@@ -17,14 +18,16 @@ const AppShellLayout = () => {
   const path = location.pathname;
   const isCompte = path === "/compte";
   const isCreateEvent = path === "/creer-evenement";
+  const isAuth = path === "/auth";
   const fromCompte = (location.state as { from?: string })?.from === "compte";
-  const isHomeFlow = ["/home", "/compte", "/creer-evenement"].includes(path);
+  const isHomeFlow = ["/home", "/compte", "/creer-evenement", "/auth"].includes(path);
   const isSecondaryPage = ["/favoris", "/reglages", "/a-propos"].includes(path);
 
   // Preload overlay components
   useEffect(() => {
     import("@/pages/Compte");
     import("@/pages/CreateEvent");
+    import("@/pages/Auth");
   }, []);
 
   const showCompteOverlay = isCompte || (isCreateEvent && fromCompte);
@@ -33,7 +36,7 @@ const AppShellLayout = () => {
   // to keep images in DOM and prevent reload on return
   const indexContainerClass = isSecondaryPage
     ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none invisible"
-    : isCompte || isCreateEvent
+    : isCompte || isCreateEvent || isAuth
     ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none"
     : "min-h-screen";
 
@@ -42,7 +45,7 @@ const AppShellLayout = () => {
       {/* Index stays mounted - never unmounts, images stay loaded */}
       <div
         className={indexContainerClass}
-        aria-hidden={isCompte || isCreateEvent || isSecondaryPage ? "true" : undefined}
+        aria-hidden={isCompte || isCreateEvent || isAuth || isSecondaryPage ? "true" : undefined}
       >
         <Index />
       </div>
@@ -69,6 +72,19 @@ const AppShellLayout = () => {
           }
         >
           <CreateEvent />
+        </Suspense>
+      )}
+
+      {/* Auth overlay - slides from right like profile */}
+      {isAuth && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
+              <span className="text-primary">Chargement...</span>
+            </div>
+          }
+        >
+          <Auth />
         </Suspense>
       )}
 

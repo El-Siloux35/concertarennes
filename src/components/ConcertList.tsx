@@ -191,7 +191,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
       {/* PWA Install Card */}
       <div className="bg-accent rounded-2xl p-6 text-accent-foreground">
         <h3 className="font-semibold text-lg mb-1">
-          Comment ajouter l'agenda du 35 à l'écran d'accueil de mon smartphone
+          Ajouter l'agenda du 35 à l'écran d'accueil de mon smartphone
         </h3>
         <p className="text-sm opacity-90 mb-4">
           Afficher le site comme une application mobile.

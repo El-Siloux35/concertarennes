@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import EmptyState from "@/components/EmptyState";
 
 interface Event {
   id: string;
@@ -155,10 +156,10 @@ const Favorites = () => {
         <div className="h-20"></div>
 
         {/* Page Title */}
-        <h1 className="text-xl font-bold text-primary text-center mb-4">Mes favoris</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-primary text-center mt-8 mb-8">Mes favoris</h1>
 
         {/* Filter Tabs */}
-        <div className="px-6 mb-4">
+        <div className="px-6 mb-6">
           <div className="flex justify-center gap-2">
             <button
               onClick={() => setActiveTab("upcoming")}
@@ -190,14 +191,13 @@ const Favorites = () => {
               <p className="text-primary/60">Chargement...</p>
             </div>
           ) : filteredEvents.length === 0 ? (
-            <div className="text-center py-12">
-              <Heart size={48} className="mx-auto text-primary/30 mb-4" />
-              <p className="text-primary/60">
-                {activeTab === "upcoming"
+            <EmptyState
+              message={
+                activeTab === "upcoming"
                   ? "Aucun évènement à venir dans vos favoris"
-                  : "Aucun évènement passé dans vos favoris"}
-              </p>
-            </div>
+                  : "Aucun évènement passé dans vos favoris"
+              }
+            />
           ) : (
             filteredEvents.map((event) => (
               <article

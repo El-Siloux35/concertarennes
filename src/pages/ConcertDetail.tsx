@@ -225,11 +225,11 @@ const ConcertDetail = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <div className="max-w-[1000px] mx-auto flex-1 flex flex-col w-full">
         {/* Header with back and favorite buttons - fixed */}
-        <div className="fixed top-0 left-0 right-0 z-50 bg-background">
-          <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-background pt-[env(safe-area-inset-top)]">
+          <div className="max-w-[1000px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
-              className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
               <ChevronLeft size={24} strokeWidth={2} />
@@ -238,7 +238,7 @@ const ConcertDetail = () => {
               {canEdit && (
                 <button
                   onClick={() => navigate(`/modifier-evenement/${id}?from=event`)}
-                  className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
+                  className="w-10 h-10 rounded-full bg-card flex items-center justify-center text-primary"
                   aria-label="Modifier"
                 >
                   <Pencil size={24} strokeWidth={2} />
@@ -246,7 +246,7 @@ const ConcertDetail = () => {
               )}
               <button
                 onClick={toggleFavorite}
-                className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-primary"
+                className="w-10 h-10 rounded-full bg-card flex items-center justify-center text-primary"
                 aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
               >
                 <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />
@@ -256,7 +256,7 @@ const ConcertDetail = () => {
         </div>
 
         {/* Spacer for fixed header */}
-        <div className="h-20"></div>
+        <div className="h-[calc(4rem+env(safe-area-inset-top,0px))]"></div>
 
         {/* Two-column layout on desktop, single column on mobile */}
         <div className="md:flex md:gap-8 px-6 pt-4">
@@ -268,7 +268,7 @@ const ConcertDetail = () => {
             >
               {event.image_url ? (
                 <img
-                  src={getOptimizedImageUrl(event.image_url, 'detail')}
+                  src={getOptimizedImageUrl(event.image_url, 'detail', { resize: 'contain' })}
                   alt={event.title}
                   className="w-full h-auto object-contain"
                   loading="lazy"
@@ -310,19 +310,30 @@ const ConcertDetail = () => {
               {event.organizer || "Organisateur"}
             </div>
 
-            {/* Concert title */}
-            <h1 className="text-xl md:text-[28px] font-semibold text-primary leading-tight mb-1">
+            {/* Concert title - bigger */}
+            <h1 className="text-2xl md:text-[32px] font-semibold text-primary leading-tight mb-4">
               {event.title}
             </h1>
 
-            {/* Creator name */}
-            {event.profiles?.pseudo && (
-              <p className="text-sm text-primary/60 mb-6">Ajouté par {event.profiles.pseudo}</p>
-            )}
+            {/* Venue, Date and Price - right after title */}
+            <div className="flex flex-wrap items-center gap-4 text-primary text-sm mb-6">
+              <div className="flex items-center gap-2">
+                <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <span>{event.location || "Lieu non spécifié"}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <span>{formatDate(event.date)}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <span>{event.price || "Prix non spécifié"}</span>
+              </div>
+            </div>
 
             {/* Description */}
             {event.description && (
-              <p className="text-primary text-sm leading-relaxed mb-8 whitespace-pre-line">
+              <p className="text-primary text-sm leading-relaxed mb-6 whitespace-pre-line">
                 {event.description.split(/(https?:\/\/[^\s]+)/g).map((part, index) =>
                   part.match(/^https?:\/\//) ? (
                     <a
@@ -341,27 +352,11 @@ const ConcertDetail = () => {
               </p>
             )}
 
-            {/* Venue, Date and Price - aligned */}
-            <div className="flex flex-wrap items-center gap-4 text-primary text-sm mb-4">
-              <div className="flex items-center gap-2">
-                <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
-                <span>{event.location || "Lieu non spécifié"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
-                <span>{formatDate(event.date)}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
-                <span>{event.price || "Prix non spécifié"}</span>
-              </div>
-            </div>
-
-            {/* Style and Venue tags - aligned */}
+            {/* Style and Venue tags - same color as cards (purple, no orange) */}
             {(styleArray.length > 0 || event.venue) && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 mb-6">
                 {styleArray.map((s) => (
-                  <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
+                  <span key={s} className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
                     {getStyleLabel(s)}
                   </span>
                 ))}
@@ -375,7 +370,7 @@ const ConcertDetail = () => {
 
             {/* Delete button if owner or admin */}
             {canEdit && (
-              <div className="mt-12">
+              <div className="mt-6">
                 <Button
                   onClick={() => setShowDeleteModal(true)}
                   variant="destructive"
@@ -389,8 +384,15 @@ const ConcertDetail = () => {
           </div>
         </div>
 
+        {/* Creator name - at bottom before buttons */}
+        {event.profiles?.pseudo && (
+          <div className="px-6 mt-6 mb-4">
+            <p className="text-sm text-primary/60">Ajouté par {event.profiles.pseudo}</p>
+          </div>
+        )}
+
         {/* Action buttons - mobile only, in flow before footer */}
-        <div className="md:hidden flex flex-col gap-3 px-6 mt-8 mb-8">
+        <div className="md:hidden flex flex-col gap-3 px-6 mt-4 mb-8">
           <Button
             onClick={handleShare}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"

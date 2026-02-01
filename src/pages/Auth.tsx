@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -12,10 +13,12 @@ const Auth = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
 
   const from = (location.state as any)?.from as string | undefined;
 
   const [mode, setMode] = useState<AuthMode>("login");
+  const [isClosing, setIsClosing] = useState(false);
   const [pseudo, setPseudo] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -196,6 +199,17 @@ const Auth = () => {
     }
   };
 
+  const handleClose = () => {
+    if (isMobile) {
+      setIsClosing(true);
+      setTimeout(() => {
+        navigate(from || "/home");
+      }, 300);
+    } else {
+      navigate(from || "/home");
+    }
+  };
+
   const getSubtitle = () => {
     switch (mode) {
       case "login":
@@ -208,20 +222,25 @@ const Auth = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
-      {/* Close button */}
-      <header className="px-6 pt-4 flex justify-start shrink-0">
-        <button
-          onClick={() => (from ? navigate(from) : navigate(-1))}
-          className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
-          aria-label="Fermer"
-        >
-          <X size={24} strokeWidth={2} />
-        </button>
-      </header>
+    <div
+      className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${
+        isMobile ? (isClosing ? "animate-slide-out-right" : "animate-slide-in-right") : ""
+      }`}
+    >
+      <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)]">
+        {/* Close button - same as profile: w-10 h-10, pt-4 pl-4 */}
+        <header className="pt-4 pl-4 pb-4">
+          <button
+            onClick={handleClose}
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+            aria-label="Fermer"
+          >
+            <X size={24} className="text-primary-foreground" />
+          </button>
+        </header>
 
       {/* Content - centered */}
-      <main className="flex-1 flex flex-col justify-center px-8 pb-10 max-w-md mx-auto w-full overflow-y-auto">
+      <main className="flex-1 flex flex-col justify-center px-8 pb-10 max-w-md mx-auto w-full">
         {/* Icon + Title */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
@@ -370,6 +389,7 @@ const Auth = () => {
           </div>
         </form>
       </main>
+      </div>
     </div>
   );
 };

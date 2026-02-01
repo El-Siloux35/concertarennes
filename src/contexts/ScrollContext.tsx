@@ -9,6 +9,8 @@ interface ScrollContextType {
 const ScrollContext = createContext<ScrollContextType | null>(null);
 
 const PAGES_WITH_SCROLL_MEMORY = ["/home", "/favoris", "/reglages", "/a-propos"];
+/** Overlay routes: don't scroll to top, preserve current position */
+const OVERLAY_ROUTES = ["/compte", "/creer-evenement", "/auth"];
 const SAVE_THROTTLE_MS = 100;
 
 export function ScrollProvider({ children }: { children: ReactNode }) {
@@ -52,7 +54,6 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
       if (savedPosition !== undefined && savedPosition > 0) {
         isRestoringRef.current = true;
         const ids: ReturnType<typeof setTimeout>[] = [];
-        // Restore immediately, then after layout settle (layout change can reset scroll)
         const restore = () => window.scrollTo(0, savedPosition);
         ids.push(setTimeout(restore, 50));
         ids.push(setTimeout(restore, 150));
@@ -65,6 +66,18 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
           isRestoringRef.current = false;
         };
       }
+    }
+
+    // Overlay routes: preserve scroll - restore home position to prevent layout reset
+    if (OVERLAY_ROUTES.includes(path)) {
+      const homePosition = scrollPositions.current["/home"];
+      if (homePosition !== undefined && homePosition > 0) {
+        const id = requestAnimationFrame(() => {
+          window.scrollTo(0, homePosition);
+        });
+        return () => cancelAnimationFrame(id);
+      }
+      return;
     }
 
     // Reset scroll for other pages
