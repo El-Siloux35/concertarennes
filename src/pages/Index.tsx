@@ -29,35 +29,30 @@ const Index = () => {
 
   const isMobile = useIsMobile();
 
-  // Always start with header visible - simpler, no flash
+  // Header visibility states
   const [bannerVisible, setBannerVisible] = useState(true);
   const [headerVisible, setHeaderVisible] = useState(true);
-  const [transitionsEnabled, setTransitionsEnabled] = useState(false);
 
+  // Only enable scroll-based hiding after first intentional scroll
+  const isScrollingRef = useRef(false);
   const lastScrollY = useRef(0);
   const scrollUpDistance = useRef(0);
 
-  // Enable transitions only after user starts scrolling (not on page load)
-  useEffect(() => {
-    let hasScrolled = false;
-
-    const enableTransitions = () => {
-      if (!hasScrolled) {
-        hasScrolled = true;
-        // Small delay to ensure we're past initial scroll restoration
-        setTimeout(() => setTransitionsEnabled(true), 50);
-      }
-    };
-
-    window.addEventListener('scroll', enableTransitions, { once: true });
-    return () => window.removeEventListener('scroll', enableTransitions);
-  }, []);
-
   // Handle scroll to show/hide banner and header
   useEffect(() => {
-    const handleScroll = () => {
+    let scrollCount = 0;
 
+    const handleScroll = () => {
       const currentScrollY = window.scrollY;
+
+      // Ignore first few scroll events (browser scroll restoration)
+      scrollCount++;
+      if (scrollCount < 3) {
+        lastScrollY.current = currentScrollY;
+        return;
+      }
+
+      isScrollingRef.current = true;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
 
       // Ignore if at bottom (bounce effect)
@@ -218,12 +213,12 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background border-muted">
       <div
-        className={`max-w-[900px] mx-auto ${transitionsEnabled ? 'transition-[padding] duration-300' : ''}`}
+        className="max-w-[900px] mx-auto transition-[padding] duration-300"
         style={{ paddingTop: getEffectivePadding() }}
       >
-        {/* Fixed header section - uses top positioning (not transform) to keep Drawer working */}
+        {/* Fixed header section */}
         <div
-          className={`fixed left-0 right-0 z-[100] flex flex-col ${transitionsEnabled ? 'transition-[top] duration-300 ease-out' : ''}`}
+          className="fixed left-0 right-0 z-[100] flex flex-col transition-[top] duration-300 ease-out"
           style={{
             top: `calc(env(safe-area-inset-top) + ${getHeaderTop()}px)`,
           }}
