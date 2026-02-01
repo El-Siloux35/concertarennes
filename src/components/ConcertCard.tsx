@@ -1,4 +1,5 @@
-import { MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
+import { MapPin, Calendar, CircleDollarSign } from "lucide-react";
+import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
 import { useState, useEffect, memo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { getOptimizedImageUrl } from "@/lib/image-utils";
@@ -110,14 +111,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
           className="absolute top-2 right-2 w-11 h-11 flex items-center justify-center rounded-full bg-background text-primary touch-manipulation"
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
-          <Heart
-            size={16}
-            strokeWidth={1.75}
-            fill={isFavorite ? "currentColor" : "none"}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mt-[1px] [paint-order:stroke_fill]"
-          />
+          <FavoriteIcon size={16} fill={isFavorite ? "currentColor" : "none"} className="mt-[1px]" />
         </button>
 
         {/* Organizer badge - square corners, height -2px */}

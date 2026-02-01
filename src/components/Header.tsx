@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Heart, Lock, HelpCircle, SlidersHorizontal } from "lucide-react";
+import { Lock, HelpCircle } from "lucide-react";
+import { FilterIcon } from "@/components/icons/FilterIcon";
+import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import AuthDrawer from "./AuthDrawer";
@@ -58,14 +60,14 @@ const Header = () => {
             className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="Réglages"
           >
-            <SlidersHorizontal size={22} strokeWidth={1.75} />
+            <FilterIcon size={22} className="text-primary" />
           </Link>
           <Link
             to="/favoris"
             className="text-primary relative w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="Mes favoris"
           >
-            <Heart size={24} strokeWidth={1.75} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} strokeLinecap="round" strokeLinejoin="round" className="[paint-order:stroke_fill]" />
+            <FavoriteIcon size={24} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
             {favoritesCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {favoritesCount > 9 ? "9+" : favoritesCount}

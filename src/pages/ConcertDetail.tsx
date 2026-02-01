@@ -1,4 +1,6 @@
-import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart, Send, Pencil, Trash2 } from "lucide-react";
+import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Pencil, Trash2 } from "lucide-react";
+import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
+import { SentIcon } from "@/components/icons/SentIcon";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -249,7 +251,7 @@ const ConcertDetail = () => {
                 className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-card flex items-center justify-center text-primary touch-manipulation"
                 aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
               >
-                <Heart size={24} strokeWidth={1.75} fill={isFavorite ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round" className="[paint-order:stroke_fill]" />
+                <FavoriteIcon size={24} fill={isFavorite ? "currentColor" : "none"} />
               </button>
             </div>
           </div>
@@ -287,7 +289,7 @@ const ConcertDetail = () => {
                 onClick={handleShare}
                 className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
               >
-                <Send size={20} strokeWidth={1.75} />
+                <SentIcon size={20} />
                 Partager l'évènement
               </Button>
 
@@ -400,7 +402,7 @@ const ConcertDetail = () => {
             onClick={handleShare}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
           >
-                <Send size={20} strokeWidth={1.75} />
+                <SentIcon size={20} />
                 Partager l'évènement
           </Button>
 

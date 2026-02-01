@@ -1,4 +1,5 @@
-import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
+import { ChevronLeft, MapPin, Calendar, CircleDollarSign } from "lucide-react";
+import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -218,7 +219,7 @@ const Favorites = () => {
                   className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-background/80 text-primary touch-manipulation"
                   aria-label="Retirer des favoris"
                 >
-                  <Heart size={20} strokeWidth={1.75} fill="currentColor" strokeLinecap="round" strokeLinejoin="round" className="[paint-order:stroke_fill]" />
+                  <FavoriteIcon size={20} fill="currentColor" />
                 </button>
 
                 {/* Organizer badge */}

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ChevronLeft, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check, Send, Save } from "lucide-react";
+import { ChevronLeft, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check, Save } from "lucide-react";
+import { SentIcon } from "@/components/icons/SentIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -484,7 +485,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
                 disabled={isSubmitting}
                 className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
               >
-                <Send size={20} strokeWidth={1.75} />
+                <SentIcon size={20} />
                 {isSubmitting ? "Publication..." : "Publier"}
               </Button>
               <Button

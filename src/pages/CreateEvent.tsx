@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Send, Save } from "lucide-react";
+import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Save } from "lucide-react";
+import { SentIcon } from "@/components/icons/SentIcon";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -362,7 +363,7 @@ const CreateEvent = () => {
             disabled={isSubmitting}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
           >
-            <Send size={20} strokeWidth={1.75} />
+            <SentIcon size={20} />
             {isSubmitting ? "Création..." : "Publier l'évènement"}
           </Button>
           <Button
