@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Footer from "@/components/Footer";
+import { getOptimizedImageUrl } from "@/lib/image-utils";
 
 interface Event {
   id: string;
@@ -267,9 +268,11 @@ const ConcertDetail = () => {
             >
               {event.image_url ? (
                 <img
-                  src={event.image_url}
+                  src={getOptimizedImageUrl(event.image_url, 'detail')}
                   alt={event.title}
                   className="w-full h-auto object-cover"
+                  loading="lazy"
+                  decoding="async"
                 />
               ) : (
                 <div className="w-full h-[300px] flex items-center justify-center">
