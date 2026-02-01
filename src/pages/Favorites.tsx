@@ -1,5 +1,6 @@
 import { ChevronLeft, MapPin, Calendar, CircleDollarSign } from "lucide-react";
 import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
+import { RetourIcon } from "@/components/icons/RetourIcon";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
