@@ -104,19 +104,20 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
 
       {/* Content */}
       <div className={`flex-1 ${isMobile ? "p-4" : "pt-4 pb-6 px-4"} flex flex-col`}>
-        {/* Favorite button - 44x44 touch target */}
+        {/* Favorite button */}
         <button
           onClick={toggleFavorite}
-          className={`absolute top-2 right-2 w-[38px] h-[38px] flex items-center justify-center rounded-full ${
+          className={`absolute top-2 right-2 w-[32px] h-[32px] flex items-center justify-center rounded-full ${
             isFavorite ? "bg-primary text-primary-foreground" : "bg-background text-primary"
           }`}
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart
-            size={20}
+            size={16}
             strokeWidth={isFavorite ? 0 : 2}
             fill={isFavorite ? "currentColor" : "none"}
             stroke={isFavorite ? "none" : "currentColor"}
+            className="-mt-[2px]"
           />
         </button>
 
@@ -126,7 +127,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         </span>
 
         {/* Concert name */}
-        <h2 className="font-semibold text-xl text-primary leading-tight mb-4">
+        <h2 className="font-semibold text-xl text-primary leading-tight mb-2">
           {concert.name}
         </h2>
 
@@ -150,12 +151,12 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         {(styleArray.length > 0 || concert.venueType) && (
           <div className="mt-3 flex flex-wrap gap-2">
             {styleArray.map((s) => (
-              <span key={s} className="h-6 px-3 rounded-full bg-accent text-accent-foreground text-xs font-medium flex items-center">
+              <span key={s} className="h-5 px-2 rounded-full bg-accent text-accent-foreground text-[10px] font-medium flex items-center">
                 {getStyleLabel(s)}
               </span>
             ))}
             {concert.venueType && (
-              <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
+              <span className="h-5 px-2 rounded-full bg-concert-purple-light text-primary text-[10px] font-medium flex items-center">
                 {getVenueLabel(concert.venueType)}
               </span>
             )}
