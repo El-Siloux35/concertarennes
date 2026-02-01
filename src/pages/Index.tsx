@@ -80,22 +80,19 @@ const Index = () => {
       }
 
       if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - hide banner and header (on mobile)
-        if (currentScrollY > 50) {
+        // Scrolling down - hide banner only (on desktop)
+        // On mobile, header+filters stay always visible
+        if (currentScrollY > 50 && !isMobile) {
           setBannerVisible(false);
-          if (isMobile) {
-            setHeaderVisible(false);
-          }
         }
         scrollUpDistance.current = 0;
       } else if (currentScrollY < lastScrollY.current) {
         // Scrolling up - accumulate distance
         scrollUpDistance.current += lastScrollY.current - currentScrollY;
 
-        // Only show after scrolling up at least 80px
-        if (scrollUpDistance.current > 80) {
+        // Only show banner after scrolling up at least 80px (desktop only)
+        if (scrollUpDistance.current > 80 && !isMobile) {
           setBannerVisible(true);
-          setHeaderVisible(true);
         }
       }
 
@@ -185,10 +182,7 @@ const Index = () => {
   // Calculate top position for header (using top instead of transform to not break Drawer)
   const getHeaderTop = () => {
     if (isMobile) {
-      // Mobile: no banner, just header that can hide
-      if (!headerVisible) {
-        return -HEADER_SECTION_HEIGHT_MOBILE;
-      }
+      // Mobile: header+filters always visible, no banner
       return 0;
     }
     // Desktop: banner can hide
@@ -201,10 +195,7 @@ const Index = () => {
   // Calculate effective padding for main content
   const getEffectivePadding = () => {
     if (isMobile) {
-      // Mobile: no banner
-      if (!headerVisible) {
-        return FILTERS_HEIGHT_MOBILE;
-      }
+      // Mobile: header + filters always visible, no banner
       return HEADER_SECTION_HEIGHT_MOBILE + FILTERS_HEIGHT_MOBILE;
     }
     // Desktop: with banner

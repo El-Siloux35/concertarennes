@@ -39,52 +39,47 @@ const Header = () => {
 
   const displayName = profile?.pseudo || user?.user_metadata?.pseudo || user?.email?.split('@')[0] || 'Compte';
 
-  // Icon sizes based on device
-  const iconSize = isMobile ? 20 : 24;
-  const iconAreaClass = isMobile ? "w-10 h-10" : "w-12 h-12";
-  const buttonHeightClass = isMobile ? "h-10" : "h-12";
-
   return (
     <>
       <header className="flex items-center justify-between">
-        {/* Left side - Info, Settings, and Favorites */}
-        <div className="flex items-center">
+        {/* Left side - Info, Settings, and Favorites with card background */}
+        <div className="flex items-center gap-1">
           <Link
             to="/a-propos"
-            className={`text-primary ${iconAreaClass} flex items-center justify-center`}
+            className="text-primary w-11 h-11 flex items-center justify-center rounded-full bg-card"
             aria-label="À propos"
           >
-            <HelpCircle size={iconSize} strokeWidth={2} />
+            <HelpCircle size={24} strokeWidth={2} />
           </Link>
           <Link
             to="/reglages"
-            className={`text-primary ${iconAreaClass} flex items-center justify-center`}
+            className="text-primary w-11 h-11 flex items-center justify-center rounded-full bg-card"
             aria-label="Réglages"
           >
-            <SlidersHorizontal size={iconSize} strokeWidth={2} />
+            <SlidersHorizontal size={24} strokeWidth={2} />
           </Link>
           <Link
             to="/favoris"
-            className={`text-primary relative ${iconAreaClass} flex items-center justify-center`}
+            className="text-primary relative w-11 h-11 flex items-center justify-center rounded-full bg-card"
             aria-label="Mes favoris"
           >
-            <Heart size={iconSize} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
+            <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
             {favoritesCount > 0 && (
-              <span className="absolute top-0 right-0 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {favoritesCount > 9 ? "9+" : favoritesCount}
               </span>
             )}
           </Link>
         </div>
 
-        {/* Right side - Login/Account */}
+        {/* Right side - Login/Account - always 46px height */}
         <div className="flex items-center">
           {user ? (
             <Link
               to="/compte"
-              className={`bg-accent text-accent-foreground font-medium text-sm ${buttonHeightClass} flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2`}
+              className="bg-accent text-accent-foreground font-medium text-sm h-[46px] flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2"
             >
-              <Avatar className={isMobile ? "w-7 h-7 border-2 border-accent-foreground/20" : "w-9 h-9 border-2 border-accent-foreground/20"}>
+              <Avatar className="w-9 h-9 border-2 border-accent-foreground/20">
                 <AvatarImage
                   src={profile?.avatar_url || undefined}
                   alt={displayName}
@@ -105,9 +100,9 @@ const Header = () => {
                 }
                 setAuthOpen(true);
               }}
-              className={`bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 ${buttonHeightClass} flex items-center gap-2 rounded-full`}
+              className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-[46px] flex items-center gap-2 rounded-full"
             >
-              <Lock size={isMobile ? 16 : 18} strokeWidth={2} />
+              <Lock size={18} strokeWidth={2} />
               Connexion
             </button>
           )}
