@@ -149,7 +149,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
 
         {/* Style and Venue tags */}
         {(styleArray.length > 0 || concert.venueType) && (
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {styleArray.map((s) => (
               <span key={s} className="h-5 px-2 rounded-full bg-accent text-accent-foreground text-[10px] font-medium flex items-center">
                 {getStyleLabel(s)}
