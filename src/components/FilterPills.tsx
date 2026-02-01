@@ -142,22 +142,6 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
     return counts[style] || 0;
   };
 
-  const handleClearPeriod = () => {
-    setPeriodFilter("all");
-    onFilterChange("all", styleFilters, venueFilters);
-    setPeriodOpen(false);
-  };
-
-  const handleClearStyles = () => {
-    setStyleFilters([]);
-    onFilterChange(periodFilter, [], venueFilters);
-  };
-
-  const handleClearVenues = () => {
-    setVenueFilters([]);
-    onFilterChange(periodFilter, styleFilters, []);
-  };
-
   // Period filter content - forMobile param disables hover states
   const PeriodContent = ({ forMobile = false }: { forMobile?: boolean }) => (
     <div className="flex flex-col gap-1">
@@ -183,18 +167,6 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           </span>
         </button>
       ))}
-      <button
-        onClick={handleClearPeriod}
-        className={`text-left px-3 py-3 rounded-lg text-sm mt-2 border-t border-primary/10 pt-4 ${
-          periodFilter !== "all"
-            ? forMobile
-              ? "text-primary/60"
-              : "text-primary/60 hover:text-primary hover:bg-primary/5"
-            : "invisible"
-        }`}
-      >
-        Effacer le filtre
-      </button>
     </div>
   );
 
@@ -235,18 +207,6 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           </button>
         );
       })}
-      <button
-        onClick={handleClearStyles}
-        className={`text-left px-3 py-3 rounded-lg text-sm mt-2 border-t border-primary/10 pt-4 ${
-          styleFilters.length > 0
-            ? forMobile
-              ? "text-primary/60"
-              : "text-primary/60 hover:text-primary hover:bg-primary/5"
-            : "invisible"
-        }`}
-      >
-        Effacer le filtre
-      </button>
     </div>
   );
 
@@ -287,31 +247,19 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           </button>
         );
       })}
-      <button
-        onClick={handleClearVenues}
-        className={`text-left px-3 py-3 rounded-lg text-sm mt-2 border-t border-primary/10 pt-4 ${
-          venueFilters.length > 0
-            ? forMobile
-              ? "text-primary/60"
-              : "text-primary/60 hover:text-primary hover:bg-primary/5"
-            : "invisible"
-        }`}
-      >
-        Effacer le filtre
-      </button>
     </div>
   );
 
   return (
     <div className="overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative touch-pan-x">
       <div className="flex gap-2 px-4 w-max">
-        {/* Tout button */}
+        {/* Tout button - border-2 sur les deux états pour même largeur fill/stroke */}
         <button
           onClick={handleAllClick}
-          className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+          className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
             isAllActive
-              ? "bg-primary text-primary-foreground"
-              : "border-2 border-primary text-primary bg-transparent"
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-primary text-primary bg-transparent"
           }`}
         >
           Tout
@@ -325,10 +273,10 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           <Sheet open={periodOpen} onOpenChange={setPeriodOpen}>
             <SheetTrigger asChild>
               <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
                   periodFilter !== "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-primary text-primary bg-transparent"
                 }`}
               >
                 {getPeriodLabel()}
@@ -339,7 +287,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
               <SheetHeader>
                 <SheetTitle className="text-primary">Période</SheetTitle>
               </SheetHeader>
-              <div className="px-6 pb-8">
+              <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
                 <PeriodContent forMobile />
               </div>
             </SheetContent>
@@ -348,17 +296,17 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           <Popover open={periodOpen} onOpenChange={setPeriodOpen}>
             <PopoverTrigger asChild>
               <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
                   periodFilter !== "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-primary text-primary bg-transparent"
                 }`}
               >
                 {getPeriodLabel()}
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
               <PeriodContent forMobile={false} />
             </PopoverContent>
           </Popover>
@@ -369,10 +317,10 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           <Sheet open={styleOpen} onOpenChange={setStyleOpen}>
             <SheetTrigger asChild>
               <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
                   styleFilters.length > 0
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-primary text-primary bg-transparent"
                 }`}
               >
                 {getStyleLabel()}
@@ -383,7 +331,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
               <SheetHeader>
                 <SheetTitle className="text-primary">Style</SheetTitle>
               </SheetHeader>
-              <div className="px-6 pb-8">
+              <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
                 <StyleContent forMobile />
               </div>
             </SheetContent>
@@ -392,17 +340,17 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           <Popover open={styleOpen} onOpenChange={setStyleOpen}>
             <PopoverTrigger asChild>
               <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
                   styleFilters.length > 0
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-primary text-primary bg-transparent"
                 }`}
               >
                 {getStyleLabel()}
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
               <StyleContent forMobile={false} />
             </PopoverContent>
           </Popover>
@@ -413,10 +361,10 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           <Sheet open={venueOpen} onOpenChange={setVenueOpen}>
             <SheetTrigger asChild>
               <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
                   venueFilters.length > 0
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-primary text-primary bg-transparent"
                 }`}
               >
                 {getVenueLabel()}
@@ -427,7 +375,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
               <SheetHeader>
                 <SheetTitle className="text-primary">Lieux</SheetTitle>
               </SheetHeader>
-              <div className="px-6 pb-8">
+              <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
                 <VenueContent forMobile />
               </div>
             </SheetContent>
@@ -436,17 +384,17 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           <Popover open={venueOpen} onOpenChange={setVenueOpen}>
             <PopoverTrigger asChild>
               <button
-                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all border-2 ${
                   venueFilters.length > 0
-                    ? "bg-primary text-primary-foreground"
-                    : "border-2 border-primary text-primary bg-transparent"
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-primary text-primary bg-transparent"
                 }`}
               >
                 {getVenueLabel()}
                 <ChevronDown size={16} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start">
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
               <VenueContent forMobile={false} />
             </PopoverContent>
           </Popover>

@@ -183,11 +183,19 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     return (
       <div className="flex flex-col gap-4 px-6 pb-32 animate-fade-in">
         {/* Bloc violet - même layout que chargé */}
-        <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
-          <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
-          <p className="text-xs opacity-90">
-            L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
-          </p>
+        <div className="bg-primary rounded-2xl pl-3 pr-4 py-6 text-primary-foreground flex items-center gap-4">
+          <img
+            src="/splash-animation.gif"
+            alt=""
+            className="w-[100px] h-auto flex-shrink-0"
+            aria-hidden
+          />
+          <div className="min-w-0">
+            <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
+            <p className="text-xs opacity-90">
+              L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
+            </p>
+          </div>
         </div>
         {/* Skeleton cards */}
         {[1, 2, 3].map((i) => (
@@ -209,11 +217,19 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
   return (
     <div className="flex flex-col gap-4 px-6 pb-32 animate-fade-in">
       {/* Promo Card - violet - toujours en premier, quel que soit le filtre */}
-      <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
-        <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
-        <p className="text-xs opacity-90">
-          L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
-        </p>
+      <div className="bg-primary rounded-2xl pl-3 pr-4 py-6 text-primary-foreground flex items-center gap-4">
+        <img
+          src="/splash-animation.gif"
+          alt=""
+          className="w-[100px] h-auto flex-shrink-0"
+          aria-hidden
+        />
+        <div className="min-w-0">
+          <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
+          <p className="text-xs opacity-90">
+            L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
+          </p>
+        </div>
       </div>
 
       {filteredConcerts.length === 0 ? (
