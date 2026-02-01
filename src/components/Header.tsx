@@ -79,6 +79,7 @@ const Header = () => {
           {user ? (
             <Link
               to="/compte"
+              onClick={() => location.pathname === "/home" && saveScrollPosition("/home")}
               className="bg-accent text-accent-foreground font-medium text-sm h-[46px] flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2"
             >
               <Avatar className="w-9 h-9 border-2 border-accent-foreground/20">
@@ -96,6 +97,7 @@ const Header = () => {
           ) : (
             <button
               onClick={() => {
+                if (location.pathname === "/home") saveScrollPosition("/home");
                 if (isMobile) {
                   navigate("/auth", { state: { from: location.pathname } });
                   return;
