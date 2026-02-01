@@ -29,54 +29,33 @@ const Index = () => {
 
   const isMobile = useIsMobile();
 
-  // Initialize visibility based on current scroll position (no animation on return)
-  const [bannerVisible, setBannerVisible] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.scrollY <= 50;
-    }
-    return true;
-  });
-  const [headerVisible, setHeaderVisible] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.scrollY <= 50;
-    }
-    return true;
-  });
-
-  // Disable transitions on initial mount to prevent animation when returning to page
+  // Always start with header visible - simpler, no flash
+  const [bannerVisible, setBannerVisible] = useState(true);
+  const [headerVisible, setHeaderVisible] = useState(true);
   const [transitionsEnabled, setTransitionsEnabled] = useState(false);
-  const mountTimeRef = useRef(Date.now());
 
-  const lastScrollY = useRef(typeof window !== 'undefined' ? window.scrollY : 0);
+  const lastScrollY = useRef(0);
   const scrollUpDistance = useRef(0);
 
-  // Sync visibility with scroll position after mount (without animation)
+  // Enable transitions only after user starts scrolling (not on page load)
   useEffect(() => {
-    const syncVisibility = () => {
-      const scrollY = window.scrollY;
-      if (scrollY > 50) {
-        setBannerVisible(false);
-        if (isMobile) {
-          setHeaderVisible(false);
-        }
+    let hasScrolled = false;
+
+    const enableTransitions = () => {
+      if (!hasScrolled) {
+        hasScrolled = true;
+        // Small delay to ensure we're past initial scroll restoration
+        setTimeout(() => setTransitionsEnabled(true), 50);
       }
-      lastScrollY.current = scrollY;
     };
 
-    // Run immediately and after a short delay (for scroll restoration)
-    syncVisibility();
-    const timeout = setTimeout(syncVisibility, 100);
-    return () => clearTimeout(timeout);
-  }, [isMobile]);
+    window.addEventListener('scroll', enableTransitions, { once: true });
+    return () => window.removeEventListener('scroll', enableTransitions);
+  }, []);
 
   // Handle scroll to show/hide banner and header
   useEffect(() => {
     const handleScroll = () => {
-      // Don't enable transitions for 500ms after mount (allows scroll restoration without animation)
-      const timeSinceMount = Date.now() - mountTimeRef.current;
-      if (!transitionsEnabled && timeSinceMount > 500) {
-        setTransitionsEnabled(true);
-      }
 
       const currentScrollY = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -112,7 +91,7 @@ const Index = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [transitionsEnabled, isMobile]);
+  }, [isMobile]);
 
   useEffect(() => {
     const fetchEvents = async () => {
