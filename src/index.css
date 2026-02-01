@@ -129,9 +129,12 @@
 }
 
 /* Fix iOS PWA drawer touch event issues */
-/* Don't override vaul's position/top - it uses top:-Xpx to maintain scroll position */
+/* Lock scroll on html + body to prevent background moving when drawer is open */
+html[data-scroll-locked],
 body[data-scroll-locked] {
   touch-action: none !important;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
   -webkit-overflow-scrolling: auto !important;
 }
 
@@ -141,7 +144,7 @@ body[data-scroll-locked] #root {
   touch-action: none !important;
 }
 
-/* Ensure drawer overlay captures all events */
+/* Ensure drawer overlay captures all events and blocks scroll propagation */
 [data-vaul-overlay],
 [data-drawer-overlay="true"] {
   touch-action: none !important;
@@ -150,11 +153,12 @@ body[data-scroll-locked] #root {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Drawer content - force new compositing layer for correct hit-testing on iOS PWA */
+/* Drawer content - manipulation = tap only, no scroll passthrough to body */
 [data-vaul-drawer],
 [data-drawer-content="true"] {
   pointer-events: auto !important;
   touch-action: manipulation !important;
+  overscroll-behavior: contain !important;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
 }
@@ -165,7 +169,7 @@ body[data-scroll-locked] #root {
   pointer-events: auto !important;
 }
 
-/* Buttons inside drawer need explicit touch handling for iOS PWA */
+/* Buttons: manipulation = tap only, prevents scroll when pressing */
 [data-drawer-content="true"] button {
   touch-action: manipulation !important;
   -webkit-tap-highlight-color: transparent;

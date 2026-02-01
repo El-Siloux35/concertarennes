@@ -19,8 +19,9 @@ const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
 >(({ className, ...props }, ref) => {
-  // Block all touch events from reaching content behind overlay
+  // Block all touch events and prevent default (stops iOS scroll on background)
   const handleTouch = (e: React.TouchEvent) => {
+    e.preventDefault();
     e.stopPropagation();
   };
 
@@ -53,7 +54,7 @@ const DrawerContent = React.forwardRef<
           "fixed inset-x-0 bottom-0 z-[9999] mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
           className,
         )}
-        style={{ touchAction: "pan-y", WebkitTapHighlightColor: "transparent" }}
+        style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
         {...props}
       >
         <div className="mx-auto mt-4 mb-4 h-2 w-[100px] rounded-full bg-muted" />
