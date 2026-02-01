@@ -22,7 +22,13 @@ interface Event {
   created_at: string;
   is_draft: boolean;
 }
-const Compte = () => {
+
+interface CompteProps {
+  /** Called when close animation starts (for push layout sync) */
+  onCloseStart?: () => void;
+}
+
+const Compte = ({ onCloseStart }: CompteProps) => {
   const navigate = useNavigate();
   const {
     toast
@@ -241,6 +247,7 @@ const Compte = () => {
   };
   const handleClose = () => {
     setIsClosing(true);
+    onCloseStart?.();
     setTimeout(() => {
       navigate("/home");
     }, 300);

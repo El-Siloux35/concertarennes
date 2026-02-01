@@ -18,7 +18,7 @@ import { usePWADrawerFix } from "./hooks/use-pwa-drawer-fix";
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Favorites = lazy(() => import("./pages/Favorites"));
-const Compte = lazy(() => import("./pages/Compte"));
+const PushProfileLayout = lazy(() => import("./components/PushProfileLayout"));
 const CreateEvent = lazy(() => import("./pages/CreateEvent"));
 const EditEvent = lazy(() => import("./pages/EditEvent"));
 const EmailConfirmed = lazy(() => import("./pages/EmailConfirmed"));
@@ -58,7 +58,7 @@ const App = () => {
                       <Route path="/concert/:id" element={<ConcertDetail />} />
                       <Route path="/auth" element={<Auth />} />
                       <Route path="/favoris" element={<Favorites />} />
-                      <Route path="/compte" element={<Compte />} />
+                      <Route path="/compte" element={<PushProfileLayout />} />
                       <Route path="/creer-evenement" element={<CreateEvent />} />
                       <Route path="/modifier-evenement/:id" element={<EditEvent />} />
                       <Route path="/email-confirmed" element={<EmailConfirmed />} />

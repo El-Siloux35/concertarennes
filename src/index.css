@@ -185,6 +185,33 @@ body[data-scroll-locked] #root {
   animation: slide-out-right 0.3s ease-out forwards;
 }
 
+/* Push effect: background slides left when overlay opens */
+@keyframes push-back {
+  from {
+    transform: translateX(0) scale(1);
+  }
+  to {
+    transform: translateX(-20%) scale(0.95);
+  }
+}
+
+@keyframes push-back-reverse {
+  from {
+    transform: translateX(-20%) scale(0.95);
+  }
+  to {
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-push-back {
+  animation: push-back 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+.animate-push-back-reverse {
+  animation: push-back-reverse 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
 @layer utilities {
   /* Concert card styling - solid border as per Figma */
   .concert-card {
