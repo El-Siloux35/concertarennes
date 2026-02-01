@@ -1,5 +1,5 @@
 import { useLocation, Outlet } from "react-router-dom";
-import { lazy, Suspense, useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef } from "react";
 import Index from "@/pages/Index";
 import { useScroll } from "@/contexts/ScrollContext";
 
@@ -28,23 +28,15 @@ const AppShellLayout = () => {
   const isOverlayOpen = isCompte || isCreateEvent || isAuth;
 
   // Apply saved scroll to Index container when it becomes the background (overflow-y-auto)
-  useEffect(() => {
+  // useLayoutEffect = before paint, avoids flicker
+  useLayoutEffect(() => {
     if (!isOverlayOpen || !indexContainerRef.current) return;
     const pos = getScrollPosition("/home");
     if (pos === undefined || pos <= 0) return;
     const el = indexContainerRef.current;
-    const apply = () => { el.scrollTop = pos; };
-    apply();
-    const t1 = requestAnimationFrame(apply);
-    const t2 = setTimeout(apply, 0);
-    const t3 = setTimeout(apply, 50);
-    const t4 = setTimeout(apply, 100);
-    return () => {
-      cancelAnimationFrame(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
-    };
+    el.scrollTop = pos;
+    const id = requestAnimationFrame(() => { el.scrollTop = pos; });
+    return () => cancelAnimationFrame(id);
   }, [isOverlayOpen, getScrollPosition]);
 
   // Preload overlay components

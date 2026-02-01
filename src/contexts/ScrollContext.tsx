@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useEffect, ReactNode } from "react";
+import { createContext, useContext, useRef, useEffect, useLayoutEffect, ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 
 interface ScrollContextType {
@@ -46,40 +46,29 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [location.pathname]);
 
-  // Restore or reset scroll on navigation
-  useEffect(() => {
+  // Restore or reset scroll on navigation - useLayoutEffect to avoid flicker (runs before paint)
+  useLayoutEffect(() => {
     const path = location.pathname;
 
     if (PAGES_WITH_SCROLL_MEMORY.includes(path)) {
       const savedPosition = scrollPositions.current[path];
       if (savedPosition !== undefined && savedPosition > 0) {
         isRestoringRef.current = true;
-        const ids: ReturnType<typeof setTimeout>[] = [];
-        const restore = () => window.scrollTo(0, savedPosition);
-        ids.push(setTimeout(restore, 50));
-        ids.push(setTimeout(restore, 150));
-        ids.push(setTimeout(() => {
-          restore();
+        window.scrollTo(0, savedPosition);
+        // Single fallback in case layout settles late (e.g. Index switching from fixed to flow)
+        const id = requestAnimationFrame(() => {
+          window.scrollTo(0, savedPosition);
           isRestoringRef.current = false;
-        }, 250));
+        });
         return () => {
-          ids.forEach((id) => clearTimeout(id));
+          cancelAnimationFrame(id);
           isRestoringRef.current = false;
         };
       }
     }
 
-    // Overlay routes: preserve scroll - restore home position to prevent layout reset
-    if (OVERLAY_ROUTES.includes(path)) {
-      const homePosition = scrollPositions.current["/home"];
-      if (homePosition !== undefined && homePosition > 0) {
-        const id = requestAnimationFrame(() => {
-          window.scrollTo(0, homePosition);
-        });
-        return () => cancelAnimationFrame(id);
-      }
-      return;
-    }
+    // Overlay routes: preserve scroll (handled by AppShellLayout for Index container)
+    if (OVERLAY_ROUTES.includes(path)) return;
 
     // Reset scroll for other pages
     window.scrollTo(0, 0);
