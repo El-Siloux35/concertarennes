@@ -6,12 +6,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
@@ -320,10 +320,10 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           </span>
         </button>
 
-        {/* Période - Drawer on mobile, Popover on desktop */}
+        {/* Période - Sheet on mobile (Radix), Popover on desktop */}
         {isMobile ? (
-          <Drawer open={periodOpen} onOpenChange={setPeriodOpen} shouldScaleBackground={false}>
-            <DrawerTrigger asChild>
+          <Sheet open={periodOpen} onOpenChange={setPeriodOpen}>
+            <SheetTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
                   periodFilter !== "all"
@@ -334,16 +334,16 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 {getPeriodLabel()}
                 <ChevronDown size={16} className="ml-1" />
               </button>
-            </DrawerTrigger>
-            <DrawerContent className="bg-background border-t-2 border-primary">
-              <DrawerHeader>
-                <DrawerTitle className="text-primary">Période</DrawerTitle>
-              </DrawerHeader>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
+              <SheetHeader>
+                <SheetTitle className="text-primary">Période</SheetTitle>
+              </SheetHeader>
               <div className="px-6 pb-8">
                 <PeriodContent forMobile />
               </div>
-            </DrawerContent>
-          </Drawer>
+            </SheetContent>
+          </Sheet>
         ) : (
           <Popover open={periodOpen} onOpenChange={setPeriodOpen}>
             <PopoverTrigger asChild>
@@ -364,10 +364,10 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           </Popover>
         )}
 
-        {/* Style - Drawer on mobile, Popover on desktop */}
+        {/* Style - Sheet on mobile (Radix), Popover on desktop */}
         {isMobile ? (
-          <Drawer open={styleOpen} onOpenChange={setStyleOpen} shouldScaleBackground={false}>
-            <DrawerTrigger asChild>
+          <Sheet open={styleOpen} onOpenChange={setStyleOpen}>
+            <SheetTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
                   styleFilters.length > 0
@@ -378,16 +378,16 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 {getStyleLabel()}
                 <ChevronDown size={16} className="ml-1" />
               </button>
-            </DrawerTrigger>
-            <DrawerContent className="bg-background border-t-2 border-primary">
-              <DrawerHeader>
-                <DrawerTitle className="text-primary">Style</DrawerTitle>
-              </DrawerHeader>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
+              <SheetHeader>
+                <SheetTitle className="text-primary">Style</SheetTitle>
+              </SheetHeader>
               <div className="px-6 pb-8">
                 <StyleContent forMobile />
               </div>
-            </DrawerContent>
-          </Drawer>
+            </SheetContent>
+          </Sheet>
         ) : (
           <Popover open={styleOpen} onOpenChange={setStyleOpen}>
             <PopoverTrigger asChild>
@@ -408,10 +408,10 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
           </Popover>
         )}
 
-        {/* Lieux - Drawer on mobile, Popover on desktop */}
+        {/* Lieux - Sheet on mobile (Radix), Popover on desktop */}
         {isMobile ? (
-          <Drawer open={venueOpen} onOpenChange={setVenueOpen} shouldScaleBackground={false}>
-            <DrawerTrigger asChild>
+          <Sheet open={venueOpen} onOpenChange={setVenueOpen}>
+            <SheetTrigger asChild>
               <button
                 className={`flex items-center gap-1.5 pl-4 pr-3 h-[46px] rounded-full text-sm whitespace-nowrap transition-all ${
                   venueFilters.length > 0
@@ -422,16 +422,16 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 {getVenueLabel()}
                 <ChevronDown size={16} className="ml-1" />
               </button>
-            </DrawerTrigger>
-            <DrawerContent className="bg-background border-t-2 border-primary">
-              <DrawerHeader>
-                <DrawerTitle className="text-primary">Lieux</DrawerTitle>
-              </DrawerHeader>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
+              <SheetHeader>
+                <SheetTitle className="text-primary">Lieux</SheetTitle>
+              </SheetHeader>
               <div className="px-6 pb-8">
                 <VenueContent forMobile />
               </div>
-            </DrawerContent>
-          </Drawer>
+            </SheetContent>
+          </Sheet>
         ) : (
           <Popover open={venueOpen} onOpenChange={setVenueOpen}>
             <PopoverTrigger asChild>

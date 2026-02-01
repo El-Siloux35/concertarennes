@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import Splash from "./pages/Splash";
 import Index from "./pages/Index";
 import { StatusBarProvider } from "./contexts/StatusBarContext";
@@ -32,28 +32,7 @@ const PageLoader = () => (
 
 const queryClient = new QueryClient();
 
-// Sync data-scroll-locked from body to html for iOS PWA (html overflow lock)
-const useScrollLockSync = () => {
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const locked = document.body.hasAttribute("data-scroll-locked");
-      if (locked) {
-        document.documentElement.setAttribute("data-scroll-locked", "");
-      } else {
-        document.documentElement.removeAttribute("data-scroll-locked");
-      }
-    });
-    observer.observe(document.body, { attributes: true, attributeFilter: ["data-scroll-locked"] });
-    // Initial sync
-    if (document.body.hasAttribute("data-scroll-locked")) {
-      document.documentElement.setAttribute("data-scroll-locked", "");
-    }
-    return () => observer.disconnect();
-  }, []);
-};
-
 const App = () => {
-  useScrollLockSync();
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">

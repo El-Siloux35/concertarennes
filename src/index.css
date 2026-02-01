@@ -128,54 +128,6 @@
   }
 }
 
-/* Fix iOS PWA drawer touch event issues */
-/* Lock scroll on html + body to prevent background moving when drawer is open */
-html[data-scroll-locked],
-body[data-scroll-locked] {
-  touch-action: none !important;
-  overflow: hidden !important;
-  overscroll-behavior: none !important;
-  -webkit-overflow-scrolling: auto !important;
-}
-
-/* CRITICAL: Disable pointer events on #root when drawer is open */
-body[data-scroll-locked] #root {
-  pointer-events: none !important;
-  touch-action: none !important;
-}
-
-/* Ensure drawer overlay captures all events and blocks scroll propagation */
-[data-vaul-overlay],
-[data-drawer-overlay="true"] {
-  touch-action: none !important;
-  -webkit-touch-callout: none !important;
-  pointer-events: auto !important;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Drawer content - manipulation = tap only, no scroll passthrough to body */
-[data-vaul-drawer],
-[data-drawer-content="true"] {
-  pointer-events: auto !important;
-  touch-action: manipulation !important;
-  overscroll-behavior: contain !important;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-}
-
-/* All interactive elements inside drawer must receive events */
-[data-vaul-drawer] *,
-[data-drawer-content="true"] * {
-  pointer-events: auto !important;
-}
-
-/* Buttons: manipulation = tap only, prevents scroll when pressing */
-[data-drawer-content="true"] button {
-  touch-action: manipulation !important;
-  -webkit-tap-highlight-color: transparent;
-  cursor: pointer;
-}
-
 /* Slide-in from right animation */
 @keyframes slide-in-right {
   from {
