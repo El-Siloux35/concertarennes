@@ -16,40 +16,8 @@ const Splash = () => {
 
     const cleanupSplash = () => {
       document.documentElement.classList.remove('splash-active');
-
-      // S'assure que la classe dark correspond au thème choisi par l'utilisateur
-      const choice = localStorage.getItem('theme-choice') || localStorage.getItem('theme');
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const shouldBeDark = choice === 'dark' || (choice === 'system' && prefersDark);
-
-      // Synchronise pour next-themes
-      localStorage.setItem('theme', shouldBeDark ? 'dark' : 'light');
-
-      if (shouldBeDark) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-
-      // Couleur de la barre de statut selon le thème
-      const themeColor = shouldBeDark ? '#0d1117' : '#ffffff';
-
-      // Met à jour la meta tag theme-color
-      const metaTag = document.querySelector('meta[name="theme-color"]');
-      if (metaTag) {
-        metaTag.setAttribute('content', themeColor);
-      }
-
-      // Retire les styles inline et force la couleur du thème
-      document.documentElement.style.removeProperty('background-color');
-      document.body.style.removeProperty('background-color');
-
-      // Force le background avec !important pour overrider le splash
-      document.documentElement.style.setProperty('background-color', themeColor, 'important');
-      document.body.style.setProperty('background-color', themeColor, 'important');
-
-      // Marque l'app comme chargée pour éviter le splash au retour
       sessionStorage.setItem('app-loaded', 'true');
+      // StatusBarProvider + useStatusBarColor(null) mettront à jour theme-color au démontage
     };
 
     if (!isMobile) {

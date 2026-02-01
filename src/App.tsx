@@ -39,7 +39,7 @@ const App = () => {
   usePWADrawerFix();
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="theme">
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
       <SafeAreaBackground />
       <StatusBarProvider>
         <UserProvider>

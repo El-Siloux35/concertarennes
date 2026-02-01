@@ -180,28 +180,28 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
         </p>
       </div>
 
-      {/* Promo Card */}
+      {/* Promo Card - violet */}
       <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
-        <h3 className="font-semibold text-lg mb-1">L'agenda du 35</h3>
-        <p className="text-sm opacity-90">
+        <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
+        <p className="text-xs opacity-90">
           L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
         </p>
       </div>
 
-      {/* PWA Install Card */}
+      {/* PWA Install Card - orange */}
       <div className="bg-accent rounded-2xl p-6 text-accent-foreground">
-        <h3 className="font-semibold text-lg mb-1">
+        <h3 className="font-semibold text-base leading-tight mb-1">
           Ajouter l'agenda du 35 à l'écran d'accueil de mon smartphone
         </h3>
-        <p className="text-sm opacity-90 mb-4">
+        <p className="text-xs opacity-90 mb-4">
           Afficher le site comme une application mobile.
         </p>
         <Link
           to="/a-propos"
-          className="inline-flex items-center gap-2 text-sm font-medium underline underline-offset-2"
+          className="inline-flex items-center gap-2 text-xs font-medium underline underline-offset-2"
         >
           Voir le tuto
-          <ArrowRight size={16} />
+          <ArrowRight size={14} />
         </Link>
       </div>
     </div>

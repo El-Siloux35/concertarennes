@@ -7,66 +7,26 @@
     <meta name="description" content="L'agenda des musiques alternatives à Rennes et aux alentours" />
     <!-- Theme color pour la barre de statut - violet pour le splash initial -->
     <meta name="theme-color" content="#4C1CBE" />
-    <!-- Script pour appliquer le thème sauvegardé AVANT le rendu React -->
+    <!-- Script: applique le thème AVANT le rendu React (évite flash) -->
     <script>
       (function() {
-        // Lit le choix utilisateur (light, dark, system) ou le thème direct
-        var choice = localStorage.getItem('theme-choice') || localStorage.getItem('theme');
+        var choice = localStorage.getItem('theme') || 'system';
         var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        // Détermine si on doit appliquer le dark mode
         var isDark = choice === 'dark' || (choice === 'system' && prefersDark);
-
-        // Couleurs
-        var splashColor = '#4C1CBE';
         var lightColor = '#ffffff';
         var darkColor = '#0d1117';
-        var themeColor = isDark ? darkColor : lightColor;
+        var splashColor = '#4C1CBE';
 
-        // Applique la classe dark si nécessaire
-        if (isDark) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+        if (isDark) document.documentElement.classList.add('dark');
+        else document.documentElement.classList.remove('dark');
 
-        // Synchronise le thème pour next-themes (toujours light ou dark, jamais system)
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-
-        // Vérifie si c'est un chargement initial (splash) ou un retour sur l'app
+        var meta = document.querySelector('meta[name="theme-color"]');
         var isInitialLoad = !sessionStorage.getItem('app-loaded');
-
-        // Fonction pour appliquer la couleur partout
-        function applyColor(color, isImportant) {
-          document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
-          if (isImportant) {
-            document.documentElement.style.setProperty('background-color', color, 'important');
-          } else {
-            document.documentElement.style.setProperty('background-color', color);
-          }
-          // Aussi appliquer au body dès qu'il est disponible
-          if (document.body) {
-            document.body.style.backgroundColor = color;
-          } else {
-            // Si body pas encore prêt, observer le DOM
-            var observer = new MutationObserver(function(mutations, obs) {
-              if (document.body) {
-                document.body.style.backgroundColor = color;
-                obs.disconnect();
-              }
-            });
-            observer.observe(document.documentElement, { childList: true, subtree: true });
-          }
-        }
-
-        if (isInitialLoad) {
-          // Premier chargement: splash screen violet
-          applyColor(splashColor, true);
-          document.documentElement.classList.add('splash-active');
-        } else {
-          // Retour sur l'app: utiliser la couleur du thème immédiatement
-          applyColor(themeColor, false);
-        }
+        var color = isInitialLoad ? splashColor : (isDark ? darkColor : lightColor);
+        if (meta) meta.setAttribute('content', color);
+        document.documentElement.style.backgroundColor = color;
+        if (document.body) document.body.style.backgroundColor = color;
+        if (isInitialLoad) document.documentElement.classList.add('splash-active');
       })();
     </script>
 

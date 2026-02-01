@@ -6,18 +6,6 @@ import Footer from "@/components/Footer";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { useToast } from "@/hooks/use-toast";
 
-// Fonction pour mettre à jour la couleur de la barre de statut et du fond
-function updateStatusBarColor(isDark: boolean) {
-  const color = isDark ? "#0d1117" : "#ffffff";
-  // Met à jour la meta tag theme-color
-  const metaTag = document.querySelector('meta[name="theme-color"]');
-  if (metaTag) {
-    metaTag.setAttribute("content", color);
-  }
-  // Met à jour aussi le background du document pour iOS PWA
-  document.documentElement.style.backgroundColor = color;
-  document.body.style.backgroundColor = color;
-}
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -37,9 +25,8 @@ const Settings = () => {
 
   useEffect(() => {
     setMounted(true);
-    // Check saved theme choice
-    const savedChoice = localStorage.getItem("theme-choice") || "light";
-    setThemeChoice(savedChoice as "light" | "dark" | "system");
+    const saved = localStorage.getItem("theme") || "system";
+    setThemeChoice(saved as "light" | "dark" | "system");
   }, []);
 
   useEffect(() => {
@@ -54,25 +41,7 @@ const Settings = () => {
 
   const handleThemeChange = (choice: "light" | "dark" | "system") => {
     setThemeChoice(choice);
-    localStorage.setItem("theme-choice", choice);
-
-    let isDark: boolean;
-    if (choice === "system") {
-      // Apply based on system preference, but store actual theme for next-themes
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      isDark = prefersDark;
-      const actualTheme = prefersDark ? "dark" : "light";
-      setTheme(actualTheme);
-      // Store "system" separately so our init script knows to check system preference
-      localStorage.setItem("theme", "system");
-    } else {
-      isDark = choice === "dark";
-      setTheme(choice);
-      localStorage.setItem("theme", choice);
-    }
-
-    // Met à jour immédiatement la couleur de la barre de statut
-    updateStatusBarColor(isDark);
+    setTheme(choice); // next-themes gère light/dark/system, StatusBarProvider met à jour theme-color
   };
 
   const handleNotificationToggle = async () => {

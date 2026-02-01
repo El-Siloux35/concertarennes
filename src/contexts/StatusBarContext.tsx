@@ -7,53 +7,28 @@ interface StatusBarContextType {
 
 const StatusBarContext = createContext<StatusBarContextType | null>(null);
 
-// Couleur initiale violette (doit correspondre à index.html)
-const INITIAL_COLOR = "#4C1CBE";
+const THEME_COLORS = { light: "#ffffff", dark: "#0d1117" } as const;
 
-function updateMetaTags(color: string) {
-  const metaTags = document.querySelectorAll('meta[name="theme-color"]');
-  metaTags.forEach((tag) => {
-    tag.setAttribute("content", color);
-  });
+function applyThemeColor(color: string) {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute("content", color);
+  document.documentElement.style.backgroundColor = color;
+  document.body.style.backgroundColor = color;
 }
 
 export function StatusBarProvider({ children }: { children: ReactNode }) {
   const { resolvedTheme } = useTheme();
   const [customColor, setCustomColor] = useState<string | null>(null);
-  const [mounted, setMounted] = useState(false);
 
-  // Marque le composant comme monté après l'hydratation
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Couleur par défaut selon le thème choisi par l'utilisateur
-  const getDefaultColor = useCallback(() => {
-    if (typeof document !== "undefined" && typeof localStorage !== "undefined") {
-      // Utiliser le choix explicite de l'utilisateur
-      const choice = localStorage.getItem("theme-choice") || localStorage.getItem("theme");
-      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-
-      // Seulement dark si explicitement choisi ou si système ET préférence dark
-      const isDark = choice === "dark" || (choice === "system" && prefersDark);
-      return isDark ? "#0d1117" : "#ffffff";
-    }
-    // Fallback sur resolvedTheme si disponible
-    if (resolvedTheme) {
-      return resolvedTheme === "dark" ? "#0d1117" : "#ffffff";
-    }
-    return "#ffffff"; // Défaut: clair
-  }, [resolvedTheme]);
-
-  // Met à jour la meta tag quand la couleur change
+  // Une seule source de vérité: customColor (splash) ou resolvedTheme (next-themes)
   useEffect(() => {
     if (customColor) {
-      updateMetaTags(customColor);
+      applyThemeColor(customColor);
     } else {
-      // Toujours mettre à jour avec la couleur par défaut
-      updateMetaTags(getDefaultColor());
+      const color = resolvedTheme === "dark" ? THEME_COLORS.dark : THEME_COLORS.light;
+      applyThemeColor(color);
     }
-  }, [customColor, mounted, resolvedTheme, getDefaultColor]);
+  }, [customColor, resolvedTheme]);
 
   const setStatusBarColor = useCallback((color: string | null) => {
     setCustomColor(color);
