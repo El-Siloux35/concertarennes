@@ -85,13 +85,13 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
   return (
     <article
       onClick={onNavigate}
-      className={`bg-card border-2 rounded-2xl relative cursor-pointer border-muted overflow-hidden ${
+      className={`bg-card rounded-2xl relative cursor-pointer overflow-hidden ${
         isMobile ? "flex flex-col" : "flex h-[194px]"
       }`}
     >
       {/* Image thumbnail - lazy loaded with optimized size */}
       {concert.imageUrl && (
-        <div className={isMobile ? "w-full h-[168px]" : "w-[184px] flex-shrink-0 self-stretch"}>
+        <div className={isMobile ? "w-full h-[192px]" : "w-[184px] flex-shrink-0 self-stretch"}>
           <img
             src={getOptimizedImageUrl(concert.imageUrl, isMobile ? 'card' : 'thumbnail')}
             alt={concert.name}

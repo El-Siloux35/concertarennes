@@ -220,12 +220,12 @@ const Index = () => {
         >
           {/* Banner only on desktop */}
           {!isMobile && <ScrollingBanner />}
-          <div className={`bg-background ${isMobile ? 'py-[4px]' : 'py-[12px] pb-[8px]'}`}>
+          <div className={`bg-background ${isMobile ? 'pt-[16px] pb-[4px]' : 'py-[12px] pb-[8px]'}`}>
             <div className="max-w-[900px] mx-auto px-4">
               <Header />
             </div>
           </div>
-          <div className={`bg-background ${isMobile ? 'py-[4px]' : 'py-3'}`}>
+          <div className={`bg-background ${isMobile ? 'pt-[4px] pb-[16px]' : 'py-3'}`}>
             <div className="max-w-[900px] mx-auto">
               <FilterPills
                 onFilterChange={handleFilterChange}
