@@ -50,7 +50,7 @@ const AppShellLayout = () => {
   const indexContainerClass = isSecondaryPage
     ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none invisible"
     : isCompte || isCreateEvent || isAuth
-    ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none"
+    ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none invisible"
     : "min-h-screen";
 
   return (

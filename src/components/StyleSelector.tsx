@@ -54,7 +54,7 @@ const StyleSelector = ({ value, onChange, maxSelection = 3 }: StyleSelectorProps
                 : "border-2 border-primary text-primary bg-transparent"
             }`}
           >
-            {isSelected(option.key) && <Check size={16} />}
+            {isSelected(option.key) && <Check size={16} strokeWidth={1.25} />}
             {option.label}
           </button>
         ))}

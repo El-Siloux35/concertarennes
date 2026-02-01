@@ -351,7 +351,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
 
   return (
     <div className={wrapperClasses}>
-      <div className={`max-w-[900px] mx-auto px-6 ${asOverlay ? "pt-[env(safe-area-inset-top)] pb-40" : ""}`}>
+      <div className={`max-w-[900px] mx-auto px-6 ${asOverlay ? "pt-[env(safe-area-inset-top)] pb-12" : ""}`}>
         <header className="py-4 flex items-start">
           <button
             onClick={handleClose}
@@ -359,7 +359,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
             aria-label="Retour"
           >
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <ChevronLeft size={24} className="text-primary-foreground" />
+              <ChevronLeft size={24} strokeWidth={1.75} className="text-primary-foreground" />
             </div>
             <span className="font-medium">Retour</span>
           </button>
@@ -379,7 +379,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
               />
             ) : (
               <>
-                <Upload size={28} strokeWidth={1.5} className="text-primary" />
+                <Upload size={28} strokeWidth={1.75} className="text-primary" />
                 <span className="text-primary text-sm font-medium">ajouter une image</span>
               </>
             )}
@@ -423,7 +423,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
           <VenueSelector value={venueType} onChange={setVenueType} />
 
           <div className="relative">
-            <MapPin size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+            <MapPin size={20} strokeWidth={1.75} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
             <Input
               placeholder="Adresse / lieu"
               value={location}
@@ -434,7 +434,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
 
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <CircleDollarSign size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+              <CircleDollarSign size={20} strokeWidth={1.75} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
               <Input
                 placeholder="Prix"
                 value={price}
@@ -446,7 +446,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
             <Popover>
               <PopoverTrigger asChild>
                 <button className="h-14 px-6 rounded-2xl border-2 border-primary bg-transparent text-primary flex items-center gap-2 flex-[1.5]">
-                  <Calendar size={20} strokeWidth={1.5} />
+                  <Calendar size={20} strokeWidth={1.75} />
                   <span className="text-sm">
                     {date ? format(date, "dd/MM/yyyy") : "Date"}
                   </span>
@@ -465,7 +465,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
           </div>
 
           <div className="relative">
-            <Smartphone size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+            <Smartphone size={20} strokeWidth={1.75} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
             <Input
               placeholder="Contact (optionnel)"
               value={contact}
@@ -475,8 +475,8 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
           </div>
         </div>
 
-        {/* Submit buttons - floating */}
-        <div className="fixed bottom-6 left-4 right-4 max-w-[900px] mx-auto flex flex-col gap-2">
+        {/* Submit buttons - scrolls with content */}
+        <div className="mt-8 flex flex-col gap-2">
           {isDraft ? (
             <>
               <Button
@@ -484,7 +484,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
                 disabled={isSubmitting}
                 className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
               >
-                <Send size={20} strokeWidth={2} />
+                <Send size={20} strokeWidth={1.75} />
                 {isSubmitting ? "Publication..." : "Publier"}
               </Button>
               <Button
@@ -493,7 +493,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
                 variant="secondary"
                 className="w-full h-12 rounded-full font-medium flex items-center justify-center gap-2"
               >
-                <Save size={18} strokeWidth={2} />
+                <Save size={18} strokeWidth={1.75} />
                 Enregistrer le brouillon
               </Button>
             </>
@@ -503,7 +503,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
               disabled={isSubmitting}
               className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
             >
-              <Check size={20} strokeWidth={2} />
+              <Check size={20} strokeWidth={1.75} />
               {isSubmitting ? "Enregistrement..." : "Enregistrer les modifications"}
             </Button>
           )}

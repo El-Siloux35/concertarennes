@@ -26,7 +26,7 @@ const About = () => {
               className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
-              <ChevronLeft size={24} strokeWidth={2} />
+              <ChevronLeft size={24} strokeWidth={1.75} />
             </button>
           </div>
         </div>

@@ -272,7 +272,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger 
           className="inline-flex items-center gap-2 text-xs font-medium underline underline-offset-2 py-3 touch-manipulation"
         >
           Voir le tuto
-          <ArrowRight size={14} />
+          <ArrowRight size={14} strokeWidth={1.25} />
         </Link>
       </div>
     </div>

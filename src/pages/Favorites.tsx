@@ -147,7 +147,7 @@ const Favorites = () => {
               className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
-              <ChevronLeft size={24} strokeWidth={2} />
+              <ChevronLeft size={24} strokeWidth={1.75} />
             </button>
           </div>
         </div>
@@ -218,7 +218,7 @@ const Favorites = () => {
                   className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-background/80 text-primary touch-manipulation"
                   aria-label="Retirer des favoris"
                 >
-                  <Heart size={20} strokeWidth={2} fill="currentColor" />
+                  <Heart size={20} strokeWidth={1.75} fill="currentColor" strokeLinecap="round" strokeLinejoin="round" className="[paint-order:stroke_fill]" />
                 </button>
 
                 {/* Organizer badge */}
@@ -236,7 +236,7 @@ const Favorites = () => {
                   <div className="flex items-center text-primary text-sm gap-[4px]">
                     <MapPin
                       size={14}
-                      strokeWidth={1.5}
+                      strokeWidth={1.25}
                       className="flex-shrink-0"
                     />
                     <span>{event.location || "Lieu non spécifié"}</span>
@@ -246,7 +246,7 @@ const Favorites = () => {
                     <div className="flex items-center gap-[4px]">
                       <Calendar
                         size={14}
-                        strokeWidth={1.5}
+                        strokeWidth={1.25}
                         className="flex-shrink-0"
                       />
                       <span>{formatDate(event.date)}</span>
@@ -254,7 +254,7 @@ const Favorites = () => {
                     <div className="flex items-center gap-[4px]">
                       <CircleDollarSign
                         size={14}
-                        strokeWidth={1.5}
+                        strokeWidth={1.25}
                         className="flex-shrink-0"
                       />
                       <span>{event.price || "Prix non spécifié"}</span>

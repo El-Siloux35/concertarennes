@@ -193,7 +193,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                   ? "bg-primary-foreground border-primary-foreground"
                   : "border-primary"
               }`}>
-                {isSelected && <Check size={14} className="text-primary" />}
+                {isSelected && <Check size={14} strokeWidth={1.25} className="text-primary" />}
               </div>
               <span>{option.label}</span>
             </div>
@@ -233,7 +233,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                   ? "bg-primary-foreground border-primary-foreground"
                   : "border-primary"
               }`}>
-                {isSelected && <Check size={14} className="text-primary" />}
+                {isSelected && <Check size={14} strokeWidth={1.25} className="text-primary" />}
               </div>
               <span>{option.label}</span>
             </div>
@@ -252,7 +252,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
 
   return (
     <div className="overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative touch-pan-x">
-      <div className="flex gap-2 px-4 w-max">
+      <div className="flex gap-2 w-max">
         {/* Tout button - border-2 sur les deux états pour même largeur fill/stroke */}
         <button
           onClick={handleAllClick}
@@ -280,7 +280,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 }`}
               >
                 {getPeriodLabel()}
-                <ChevronDown size={16} className="ml-1" />
+                <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
@@ -303,7 +303,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 }`}
               >
                 {getPeriodLabel()}
-                <ChevronDown size={16} className="ml-1" />
+                <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
@@ -324,7 +324,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 }`}
               >
                 {getStyleLabel()}
-                <ChevronDown size={16} className="ml-1" />
+                <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
@@ -347,7 +347,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 }`}
               >
                 {getStyleLabel()}
-                <ChevronDown size={16} className="ml-1" />
+                <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
@@ -368,7 +368,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 }`}
               >
                 {getVenueLabel()}
-                <ChevronDown size={16} className="ml-1" />
+                <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
             <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton>
@@ -391,7 +391,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 }`}
               >
                 {getVenueLabel()}
-                <ChevronDown size={16} className="ml-1" />
+                <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>

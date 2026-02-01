@@ -238,7 +238,7 @@ const CreateEvent = () => {
             className="w-10 h-10 rounded-full bg-primary flex items-center justify-center"
             aria-label="Fermer"
           >
-            <X size={24} className="text-primary-foreground" />
+            <X size={24} strokeWidth={1.75} className="text-primary-foreground" />
           </button>
         </header>
 
@@ -259,7 +259,7 @@ const CreateEvent = () => {
               />
             ) : (
               <>
-                <Upload size={28} strokeWidth={1.5} className="text-primary" />
+                <Upload size={28} strokeWidth={1.75} className="text-primary" />
                 <span className="text-primary text-sm font-medium">ajouter une image</span>
               </>
             )}
@@ -303,7 +303,7 @@ const CreateEvent = () => {
           <VenueSelector value={venueType} onChange={setVenueType} />
 
           <div className="relative">
-            <MapPin size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+            <MapPin size={20} strokeWidth={1.75} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
             <Input
               placeholder="Adresse / lieu"
               value={location}
@@ -314,7 +314,7 @@ const CreateEvent = () => {
 
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <CircleDollarSign size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+              <CircleDollarSign size={20} strokeWidth={1.75} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
               <Input
                 placeholder="Prix"
                 value={price}
@@ -326,7 +326,7 @@ const CreateEvent = () => {
             <Popover>
               <PopoverTrigger asChild>
                 <button className="h-14 px-6 rounded-2xl border-2 border-primary bg-transparent text-primary flex items-center gap-2 flex-[1.5]">
-                  <Calendar size={20} strokeWidth={1.5} />
+                  <Calendar size={20} strokeWidth={1.75} />
                   <span className="text-sm">
                     {date ? format(date, "dd/MM/yyyy") : "Date"}
                   </span>
@@ -345,7 +345,7 @@ const CreateEvent = () => {
           </div>
 
           <div className="relative">
-            <Smartphone size={20} strokeWidth={1.5} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
+            <Smartphone size={20} strokeWidth={1.75} className="absolute left-4 top-1/2 -translate-y-1/2 text-primary" />
             <Input
               placeholder="Contact (optionnel)"
               value={contact}
@@ -362,7 +362,7 @@ const CreateEvent = () => {
             disabled={isSubmitting}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2"
           >
-            <Send size={20} strokeWidth={2} />
+            <Send size={20} strokeWidth={1.75} />
             {isSubmitting ? "Création..." : "Publier l'évènement"}
           </Button>
           <Button

@@ -21,7 +21,7 @@ const FloatingAddButton = () => {
         className="bg-accent text-accent-foreground rounded-full w-16 h-16 md:w-20 md:h-20 flex items-center justify-center pointer-events-auto active:scale-95 transition-transform touch-manipulation"
         aria-label="Ajouter un concert"
       >
-        <Plus size={28} strokeWidth={2.5} className="md:w-8 md:h-8" />
+        <Plus size={28} strokeWidth={1.75} className="md:w-8 md:h-8" />
       </Link>
     </div>
   );

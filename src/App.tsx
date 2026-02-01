@@ -12,6 +12,7 @@ import { ScrollProvider } from "./contexts/ScrollContext";
 import { UserProvider } from "./contexts/UserContext";
 import SeoManager from "./components/SeoManager";
 import SafeAreaBackground from "./components/SafeAreaBackground";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 // Lazy load pages for better performance
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -44,10 +45,11 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <ScrollProvider>
-                  <SeoManager />
-                  <Suspense fallback={<PageLoader />}>
-                    <Routes>
+                <ErrorBoundary>
+                  <ScrollProvider>
+                    <SeoManager />
+                    <Suspense fallback={<PageLoader />}>
+                      <Routes>
                       <Route path="/" element={<Splash />} />
                       <Route element={<AppShellLayout />}>
                         <Route path="/home" element={null} />
@@ -64,9 +66,10 @@ const App = () => {
                       <Route path="/email-confirmed" element={<EmailConfirmed />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </ScrollProvider>
+                      </Routes>
+                    </Suspense>
+                  </ScrollProvider>
+                </ErrorBoundary>
               </BrowserRouter>
             </TooltipProvider>
           </QueryClientProvider>

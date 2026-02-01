@@ -224,7 +224,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
       {/* Icon + Title */}
       <div className="flex flex-col items-center mb-6">
         <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
-          <Lock size={18} className="text-accent-foreground" />
+          <Lock size={18} strokeWidth={1.75} className="text-accent-foreground" />
         </div>
         <h2 className="text-[20px] font-bold text-primary">
           {getTitle()}
@@ -253,7 +253,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
         {/* Email input */}
         <div className="relative">
           <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-            <Mail size={18} strokeWidth={1.5} />
+            <Mail size={18} strokeWidth={1.75} />
           </div>
           <Input
             type="email"
@@ -285,7 +285,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-[50%] -translate-y-1/2 text-primary"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={18} strokeWidth={1.75} /> : <Eye size={18} strokeWidth={1.75} />}
               </button>
             </div>
             {mode === "signup" && (
@@ -395,7 +395,7 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
               className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Fermer"
             >
-              <X size={18} strokeWidth={2} />
+              <X size={18} strokeWidth={1.75} />
             </button>
           </DrawerHeader>
 

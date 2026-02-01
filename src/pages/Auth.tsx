@@ -235,7 +235,7 @@ const Auth = () => {
             className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
             aria-label="Fermer"
           >
-            <X size={24} className="text-primary-foreground" />
+            <X size={24} strokeWidth={1.75} className="text-primary-foreground" />
           </button>
         </header>
 
@@ -244,7 +244,7 @@ const Auth = () => {
         {/* Icon + Title */}
         <div className="flex flex-col items-center mb-6">
           <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center mb-3">
-            <Lock size={18} className="text-accent-foreground" />
+            <Lock size={18} strokeWidth={1.75} className="text-accent-foreground" />
           </div>
           <h1 className="text-[20px] font-bold text-primary">{getTitle()}</h1>
           {getSubtitle() && (
@@ -270,7 +270,7 @@ const Auth = () => {
           {/* Email input */}
           <div className="relative">
             <div className="absolute left-3 top-[50%] -translate-y-1/2 text-primary pointer-events-none">
-              <Mail size={18} strokeWidth={1.5} />
+              <Mail size={18} strokeWidth={1.75} />
             </div>
             <Input
               type="email"
@@ -300,7 +300,7 @@ const Auth = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-[50%] -translate-y-1/2 text-primary"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={18} strokeWidth={1.75} /> : <Eye size={18} strokeWidth={1.75} />}
                 </button>
               </div>
               {mode === "signup" && (

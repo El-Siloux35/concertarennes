@@ -1,4 +1,4 @@
-import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart, Share2, Pencil, Trash2 } from "lucide-react";
+import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart, Send, Pencil, Trash2 } from "lucide-react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -232,7 +232,7 @@ const ConcertDetail = () => {
               className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center text-primary-foreground touch-manipulation"
               aria-label="Retour"
             >
-              <ChevronLeft size={24} strokeWidth={2} />
+              <ChevronLeft size={24} strokeWidth={1.75} />
             </button>
             <div className="flex items-center gap-2">
               {canEdit && (
@@ -241,7 +241,7 @@ const ConcertDetail = () => {
                   className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-card flex items-center justify-center text-primary touch-manipulation"
                   aria-label="Modifier"
                 >
-                  <Pencil size={24} strokeWidth={2} />
+                  <Pencil size={24} strokeWidth={1.75} />
                 </button>
               )}
               <button
@@ -249,7 +249,7 @@ const ConcertDetail = () => {
                 className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-card flex items-center justify-center text-primary touch-manipulation"
                 aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
               >
-                <Heart size={24} strokeWidth={2} fill={isFavorite ? "currentColor" : "none"} />
+                <Heart size={24} strokeWidth={1.75} fill={isFavorite ? "currentColor" : "none"} strokeLinecap="round" strokeLinejoin="round" className="[paint-order:stroke_fill]" />
               </button>
             </div>
           </div>
@@ -287,7 +287,7 @@ const ConcertDetail = () => {
                 onClick={handleShare}
                 className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
               >
-                <Share2 size={20} strokeWidth={2} />
+                <Send size={20} strokeWidth={1.75} />
                 Partager l'évènement
               </Button>
 
@@ -316,20 +316,36 @@ const ConcertDetail = () => {
             </h1>
 
             {/* Venue, Date and Price - right after title */}
-            <div className="flex flex-wrap items-center gap-4 text-primary text-sm mb-6">
+            <div className="flex flex-wrap items-center gap-4 text-primary text-sm mb-3">
               <div className="flex items-center gap-2">
-                <MapPin size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <MapPin size={16} strokeWidth={1.25} className="flex-shrink-0" />
                 <span>{event.location || "Lieu non spécifié"}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <Calendar size={16} strokeWidth={1.25} className="flex-shrink-0" />
                 <span>{formatDate(event.date)}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CircleDollarSign size={16} strokeWidth={1.5} className="flex-shrink-0" />
+                <CircleDollarSign size={16} strokeWidth={1.25} className="flex-shrink-0" />
                 <span>{event.price || "Prix non spécifié"}</span>
               </div>
             </div>
+
+            {/* Style and Venue tags - under info */}
+            {(styleArray.length > 0 || event.venue) && (
+              <div className="flex flex-wrap gap-2 mb-6">
+                {styleArray.map((s) => (
+                  <span key={s} className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
+                    {getStyleLabel(s)}
+                  </span>
+                ))}
+                {event.venue && (
+                  <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
+                    {getVenueLabel(event.venue)}
+                  </span>
+                )}
+              </div>
+            )}
 
             {/* Description */}
             {event.description && (
@@ -352,31 +368,18 @@ const ConcertDetail = () => {
               </p>
             )}
 
-            {/* Style and Venue tags - same color as cards (purple, no orange) */}
-            {(styleArray.length > 0 || event.venue) && (
-              <div className="flex flex-wrap gap-2 mb-6">
-                {styleArray.map((s) => (
-                  <span key={s} className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
-                    {getStyleLabel(s)}
-                  </span>
-                ))}
-                {event.venue && (
-                  <span className="h-6 px-3 rounded-full bg-concert-purple-light text-primary text-xs font-medium flex items-center">
-                    {getVenueLabel(event.venue)}
-                  </span>
-                )}
-              </div>
-            )}
-
-            {/* Delete button if owner or admin */}
+            {/* Creator name + Delete button if owner or admin */}
             {canEdit && (
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col gap-3">
+                {event.profiles?.pseudo && (
+                  <p className="text-sm text-primary/60">Ajouté par {event.profiles.pseudo}</p>
+                )}
                 <Button
                   onClick={() => setShowDeleteModal(true)}
                   variant="destructive"
-                  className="gap-2"
+                  className="gap-2 w-fit"
                 >
-                  <Trash2 size={20} />
+                  <Trash2 size={20} strokeWidth={1.75} />
                   Supprimer
                 </Button>
               </div>
@@ -384,8 +387,8 @@ const ConcertDetail = () => {
           </div>
         </div>
 
-        {/* Creator name - at bottom before buttons */}
-        {event.profiles?.pseudo && (
+        {/* Creator name - when not owner/admin */}
+        {!canEdit && event.profiles?.pseudo && (
           <div className="px-6 mt-6 mb-4">
             <p className="text-sm text-primary/60">Ajouté par {event.profiles.pseudo}</p>
           </div>
@@ -397,8 +400,8 @@ const ConcertDetail = () => {
             onClick={handleShare}
             className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium text-[14px] gap-2"
           >
-            <Share2 size={20} strokeWidth={2} />
-            Partager l'évènement
+                <Send size={20} strokeWidth={1.75} />
+                Partager l'évènement
           </Button>
 
           {event.contact && (

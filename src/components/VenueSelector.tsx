@@ -39,7 +39,7 @@ const VenueSelector = ({ value, onChange }: VenueSelectorProps) => {
                   : "border-2 border-primary text-primary bg-transparent"
               }`}
             >
-              {isSelected && <Check size={16} />}
+              {isSelected && <Check size={16} strokeWidth={1.25} />}
               {option.label}
             </button>
           );

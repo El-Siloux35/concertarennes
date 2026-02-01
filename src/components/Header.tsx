@@ -45,27 +45,27 @@ const Header = () => {
     <>
       <header className="flex items-center justify-between">
         {/* Left side - Info, Settings, and Favorites with card background */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-[6px]">
           <Link
             to="/a-propos"
             className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="À propos"
           >
-            <HelpCircle size={24} strokeWidth={2} />
+            <HelpCircle size={24} strokeWidth={1.75} />
           </Link>
           <Link
             to="/reglages"
             className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="Réglages"
           >
-            <SlidersHorizontal size={24} strokeWidth={2} />
+            <SlidersHorizontal size={22} strokeWidth={1.75} />
           </Link>
           <Link
             to="/favoris"
             className="text-primary relative w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-card touch-manipulation"
             aria-label="Mes favoris"
           >
-            <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
+            <Heart size={24} strokeWidth={1.75} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} strokeLinecap="round" strokeLinejoin="round" className="[paint-order:stroke_fill]" />
             {favoritesCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {favoritesCount > 9 ? "9+" : favoritesCount}
@@ -106,7 +106,7 @@ const Header = () => {
               }}
               className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-[46px] flex items-center gap-2 rounded-full"
             >
-              <Lock size={18} strokeWidth={2} />
+              <Lock size={18} strokeWidth={1.75} />
               Connexion
             </button>
           )}

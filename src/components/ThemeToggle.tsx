@@ -13,7 +13,7 @@ const ThemeToggle = () => {
   if (!mounted) {
     return (
       <button className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full -m-1 touch-manipulation" aria-label="Changer le thème">
-        <Sun size={24} strokeWidth={2} />
+        <Sun size={24} strokeWidth={1.75} />
       </button>
     );
   }
@@ -26,7 +26,7 @@ const ThemeToggle = () => {
       className="text-primary w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full -m-1 touch-manipulation"
       aria-label={isDark ? "Mode clair" : "Mode sombre"}
     >
-      {isDark ? <Sun size={24} strokeWidth={2} /> : <Moon size={24} strokeWidth={2} />}
+      {isDark ? <Sun size={24} strokeWidth={1.75} /> : <Moon size={24} strokeWidth={1.75} />}
     </button>
   );
 };

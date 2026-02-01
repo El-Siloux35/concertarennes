@@ -22,7 +22,7 @@ const DrawerOverlay = React.forwardRef<
   <DrawerPrimitive.Overlay
     ref={ref}
     data-drawer-overlay="true"
-    className={cn("fixed inset-0 z-[9998] bg-black/80", className)}
+    className={cn("fixed inset-0 z-[200] bg-black/80", className)}
     style={{ touchAction: "none", WebkitTapHighlightColor: "transparent" }}
     {...props}
   />
@@ -40,13 +40,13 @@ const DrawerContent = React.forwardRef<
         ref={ref}
         data-drawer-content="true"
         className={cn(
-          "fixed inset-x-0 bottom-0 z-[9999] mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
+          "fixed inset-x-0 bottom-0 z-[201] mt-24 flex h-auto flex-col rounded-t-[24px] border bg-background",
           className,
         )}
         style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
         {...props}
       >
-        <div className="mx-auto mt-4 mb-4 h-2 w-[100px] rounded-full bg-muted" />
+        <div className="absolute left-1/2 -translate-x-1/2 top-1 w-12 h-1 rounded-full bg-muted flex-shrink-0" aria-hidden />
         {children}
       </DrawerPrimitive.Content>
     </DrawerPortal>

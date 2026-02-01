@@ -103,7 +103,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
       )}
 
       {/* Content */}
-      <div className={`flex-1 ${isMobile ? "p-4" : "pt-4 pb-6 px-4"} flex flex-col`}>
+      <div className={`flex-1 ${isMobile ? "pt-[15px] px-4 pb-4" : "pt-[15px] pb-6 px-4"} flex flex-col`}>
         {/* Favorite button - 44px touch target (Apple HIG) */}
         <button
           onClick={toggleFavorite}
@@ -112,14 +112,16 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         >
           <Heart
             size={16}
-            strokeWidth={2}
+            strokeWidth={1.75}
             fill={isFavorite ? "currentColor" : "none"}
-            className="mt-[1px]"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="mt-[1px] [paint-order:stroke_fill]"
           />
         </button>
 
-        {/* Organizer badge - square corners */}
-        <span className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-1 self-start">
+        {/* Organizer badge - square corners, height -2px */}
+        <span className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-[3px] leading-tight mb-[3px] self-start">
           {concert.organizer}
         </span>
 
@@ -131,15 +133,15 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         {/* Details */}
         <div className={isMobile ? "flex items-center gap-3 text-primary text-xs" : "flex items-center gap-4 mt-auto text-primary text-sm"}>
           <div className="flex items-center gap-[4px] min-w-0">
-            <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
+            <MapPin size={14} strokeWidth={1.25} className="flex-shrink-0" />
             <span className="truncate max-w-[140px]">{concert.venue}</span>
           </div>
           <div className="flex items-center gap-[4px] flex-shrink-0">
-            <Calendar size={14} strokeWidth={1.5} className="flex-shrink-0" />
+            <Calendar size={14} strokeWidth={1.25} className="flex-shrink-0" />
             <span>{formatDate(concert.date, isMobile)}</span>
           </div>
           <div className="flex items-center gap-[4px] flex-shrink-0">
-            <CircleDollarSign size={14} strokeWidth={1.5} className="flex-shrink-0" />
+            <CircleDollarSign size={14} strokeWidth={1.25} className="flex-shrink-0" />
             <span>{concert.price}</span>
           </div>
         </div>

@@ -79,7 +79,7 @@ const Settings = () => {
               className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
-              <ChevronLeft size={24} strokeWidth={2} />
+              <ChevronLeft size={24} strokeWidth={1.75} />
             </button>
           </div>
         </div>
@@ -106,7 +106,7 @@ const Settings = () => {
                 }`}
               >
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                  <Sun size={20} className="text-primary" />
+                  <Sun size={20} strokeWidth={1.75} className="text-primary" />
                 </div>
                 <span className="text-primary font-medium">Clair</span>
               </button>
@@ -120,7 +120,7 @@ const Settings = () => {
                 }`}
               >
                 <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                  <Moon size={20} className="text-primary" />
+                  <Moon size={20} strokeWidth={1.75} className="text-primary" />
                 </div>
                 <span className="text-primary font-medium">Sombre</span>
               </button>
@@ -171,7 +171,7 @@ const Settings = () => {
                 >
                   {isPushLoading ? (
                     <span className="absolute inset-0 flex items-center justify-center">
-                      <Loader2 size={16} className="animate-spin text-primary" />
+                      <Loader2 size={16} strokeWidth={1.25} className="animate-spin text-primary" />
                     </span>
                   ) : (
                     <span

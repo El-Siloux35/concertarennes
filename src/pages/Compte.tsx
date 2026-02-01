@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera, X } from "lucide-react";
+import { Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
@@ -263,7 +263,7 @@ const Compte = () => {
         {/* Header with close button */}
         <header className="pt-4 pl-4 pb-4">
           <button onClick={handleClose} className="w-10 h-10 rounded-full bg-primary flex items-center justify-center" aria-label="Fermer">
-            <X size={24} className="text-primary-foreground" />
+            <X size={24} strokeWidth={1.75} className="text-primary-foreground" />
           </button>
         </header>
 
@@ -283,7 +283,7 @@ const Compte = () => {
               </AvatarFallback>
             </Avatar>
             <button onClick={handleAvatarClick} className="absolute bottom-0 right-0 w-11 h-11 rounded-full bg-primary flex items-center justify-center" aria-label="Changer la photo">
-              <Camera size={20} className="text-primary-foreground" />
+              <Camera size={20} strokeWidth={1.75} className="text-primary-foreground" />
             </button>
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
           </div>
@@ -292,15 +292,15 @@ const Compte = () => {
           {isEditingPseudo ? <div className="flex items-center gap-2 mt-4">
               <Input type="text" value={newPseudo} onChange={e => setNewPseudo(e.target.value)} className="h-10 w-40 rounded-[8px] border-2 border-primary bg-transparent text-primary text-center focus-visible:ring-0 focus-visible:ring-offset-0" autoFocus />
               <button onClick={handleSavePseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center touch-manipulation">
-                <Check size={14} className="text-primary-foreground" />
+                <Check size={14} strokeWidth={1.25} className="text-primary-foreground" />
               </button>
               <button onClick={handleCancelEditPseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-muted flex items-center justify-center touch-manipulation">
-                <X size={14} className="text-primary" />
+                <X size={14} strokeWidth={1.25} className="text-primary" />
               </button>
             </div> : <div className="flex items-center gap-2 mt-4">
               <p className="text-primary font-medium text-lg">[{displayName}]</p>
-              <button onClick={handleStartEditPseudo} className="text-primary/60">
-                <Pencil size={14} />
+              <button onClick={handleStartEditPseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-muted flex items-center justify-center text-primary/60 touch-manipulation" aria-label="Modifier le pseudo">
+                <Pencil size={14} strokeWidth={1.25} />
               </button>
             </div>}
         </div>
@@ -309,7 +309,7 @@ const Compte = () => {
         {/* Create Event Button - above events */}
         <div className="mt-8 mb-6">
           <Button onClick={() => navigate("/creer-evenement", { state: { from: "compte" } })} className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2">
-            <Plus size={20} strokeWidth={2} />
+            <Plus size={20} strokeWidth={1.75} />
             Créer un évènement
           </Button>
         </div>
@@ -329,20 +329,20 @@ const Compte = () => {
             </button>
           </div>
           
-          {activeTab === "upcoming" ? upcomingEvents.length === 0 ? <EventEmptyState /> : <div className="flex flex-col gap-3">
+          {activeTab === "upcoming" ? upcomingEvents.length === 0 ? <EventEmptyState noAnimation /> : <div className="flex flex-col gap-3">
                 {upcomingEvents.map(event => <div key={event.id} className="bg-card border-2 border-primary rounded-2xl p-4">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h3 className="text-primary font-medium">{event.title}</h3>
                         <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                          <Calendar size={14} />
+                          <Calendar size={14} strokeWidth={1.25} />
                           <span>{new Date(event.date).toLocaleDateString("fr-FR")}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
                       <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
-                        <Pencil size={16} />
+                        <Pencil size={16} strokeWidth={1.25} />
                       </Button>
                       <Button onClick={() => {
                 setEventToDelete(event.id);
@@ -352,15 +352,13 @@ const Compte = () => {
                       </Button>
                     </div>
                   </div>)}
-              </div> : activeTab === "past" ? pastEvents.length === 0 ? <div className="text-center py-8 text-primary/60">
-                Aucun évènement passé
-              </div> : <div className="flex flex-col gap-3">
+              </div> : activeTab === "past" ? pastEvents.length === 0 ? <EventEmptyState variant="past" noAnimation /> : <div className="flex flex-col gap-3">
                 {pastEvents.map(event => <div key={event.id} className="bg-card border-2 border-primary/50 rounded-2xl p-4 opacity-70">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <h3 className="text-primary font-medium">{event.title}</h3>
                         <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                          <Calendar size={14} />
+                          <Calendar size={14} strokeWidth={1.25} />
                           <span>{new Date(event.date).toLocaleDateString("fr-FR")}</span>
                         </div>
                       </div>
@@ -374,9 +372,7 @@ const Compte = () => {
                       </Button>
                     </div>
                   </div>)}
-              </div> : draftEvents.length === 0 ? <div className="text-center py-8 text-primary/60">
-                Aucun brouillon
-              </div> : <div className="flex flex-col gap-3">
+              </div> : draftEvents.length === 0 ? <EventEmptyState variant="drafts" noAnimation /> : <div className="flex flex-col gap-3">
                 {draftEvents.map(event => <div key={event.id} className="bg-card border-2 border-dashed border-primary rounded-xl p-4">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
@@ -385,14 +381,14 @@ const Compte = () => {
                           <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded">Brouillon</span>
                         </div>
                         <div className="flex items-center gap-2 mt-2 text-primary/70 text-sm">
-                          <Calendar size={14} />
+                          <Calendar size={14} strokeWidth={1.25} />
                           <span>{event.date ? new Date(event.date).toLocaleDateString("fr-FR") : "Date non définie"}</span>
                         </div>
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
                       <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
-                        <Pencil size={16} />
+                        <Pencil size={16} strokeWidth={1.25} />
                       </Button>
                       <Button onClick={() => {
                 setEventToDelete(event.id);
