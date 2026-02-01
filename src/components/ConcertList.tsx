@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import catImage from "@/assets/cat.png";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -251,7 +252,8 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger 
             />
           ))}
           {/* Empty End Card */}
-          <div className="border-2 border-dashed border-primary rounded-xl p-6 text-center">
+          <div className="border-2 border-dashed border-primary rounded-xl p-6 text-center flex flex-col items-center">
+            <img src={catImage} alt="" className="h-[200px] w-auto object-contain mb-4" aria-hidden />
             <p className="text-primary text-sm font-medium">
               C'est tout pour le moment !
             </p>
