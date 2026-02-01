@@ -17,7 +17,7 @@ function applyThemeColor(color: string) {
 }
 
 export function StatusBarProvider({ children }: { children: ReactNode }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, theme } = useTheme();
   const [customColor, setCustomColor] = useState<string | null>(null);
 
   // Une seule source de vérité: customColor (splash) ou resolvedTheme (next-themes)
@@ -29,6 +29,20 @@ export function StatusBarProvider({ children }: { children: ReactNode }) {
       applyThemeColor(color);
     }
   }, [customColor, resolvedTheme]);
+
+  // Listener sur changements de préférence système en temps réel (mode "system" uniquement)
+  useEffect(() => {
+    if (theme !== "system" || customColor) return;
+
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (e: MediaQueryListEvent) => {
+      const color = e.matches ? THEME_COLORS.dark : THEME_COLORS.light;
+      applyThemeColor(color);
+    };
+
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, [theme, customColor]);
 
   const setStatusBarColor = useCallback((color: string | null) => {
     setCustomColor(color);

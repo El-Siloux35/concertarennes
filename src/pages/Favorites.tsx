@@ -207,16 +207,18 @@ const Favorites = () => {
                   activeTab === "past" ? "opacity-70" : ""
                 }`}
               >
-                {/* Remove favorite button */}
+                {/* Remove favorite button - z-10 et zone de touch étendue pour décocher correctement */}
                 <button
+                  type="button"
                   onClick={(e) => {
+                    e.preventDefault();
                     e.stopPropagation();
                     removeFavorite(event.id);
                   }}
-                  className="absolute top-4 right-4 text-primary"
+                  className="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-background/80 text-primary touch-manipulation"
                   aria-label="Retirer des favoris"
                 >
-                  <Heart size={24} strokeWidth={2} fill="currentColor" />
+                  <Heart size={20} strokeWidth={2} fill="currentColor" />
                 </button>
 
                 {/* Organizer badge */}
