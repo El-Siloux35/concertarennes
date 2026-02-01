@@ -35,8 +35,8 @@ const PageLoader = () => (
 const queryClient = new QueryClient();
 
 const App = () => {
-  // Fix iOS PWA drawer touch event issues
-  usePWADrawerFix();
+  // DISABLED: was causing touch issues when page is scrolled
+  // usePWADrawerFix();
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
