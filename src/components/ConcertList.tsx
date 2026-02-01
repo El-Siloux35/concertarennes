@@ -174,8 +174,8 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
       ))}
 
       {/* Empty End Card */}
-      <div className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center">
-        <p className="text-primary/50 text-sm">
+      <div className="border-2 border-dashed border-primary rounded-xl p-6 text-center">
+        <p className="text-primary text-sm font-medium">
           C'est tout pour le moment !
         </p>
       </div>

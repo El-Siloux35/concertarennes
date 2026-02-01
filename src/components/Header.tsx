@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUser } from "@/contexts/UserContext";
+import { useScroll } from "@/contexts/ScrollContext";
 
 // Truncate name to max 10 chars with ellipsis
 const truncateName = (name: string, maxLength: number = 10): string => {
@@ -17,6 +18,7 @@ const Header = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const { user, profile } = useUser();
+  const { saveScrollPosition } = useScroll();
 
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [authOpen, setAuthOpen] = useState(false);

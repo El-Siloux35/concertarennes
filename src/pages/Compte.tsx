@@ -377,7 +377,7 @@ const Compte = () => {
               </div> : draftEvents.length === 0 ? <div className="text-center py-8 text-primary/60">
                 Aucun brouillon
               </div> : <div className="flex flex-col gap-3">
-                {draftEvents.map(event => <div key={event.id} className="bg-card border-2 border-dashed border-primary rounded-2xl p-4">
+                {draftEvents.map(event => <div key={event.id} className="bg-card border-2 border-dashed border-primary rounded-xl p-4">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">

@@ -124,7 +124,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         </span>
 
         {/* Concert name */}
-        <h2 className="font-semibold text-xl text-primary leading-tight mb-2">
+        <h2 className="font-semibold text-lg text-primary leading-tight mb-2">
           {concert.name}
         </h2>
 

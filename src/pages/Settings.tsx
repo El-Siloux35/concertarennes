@@ -1,4 +1,4 @@
-import { ChevronLeft, Sun, Moon, Monitor, Bell, Loader2 } from "lucide-react";
+import { ChevronLeft, Sun, Moon, Monitor, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
@@ -174,8 +174,7 @@ const Settings = () => {
 
           {/* Notifications */}
           <div className="bg-card rounded-2xl p-6">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-card-foreground mb-4">
-              <Bell size={20} className="text-primary shrink-0" />
+            <h2 className="text-lg font-semibold text-card-foreground mb-4">
               Notifications
             </h2>
 

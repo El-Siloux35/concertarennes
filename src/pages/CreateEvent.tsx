@@ -248,7 +248,7 @@ const CreateEvent = () => {
         <div className="mt-4">
           <button
             onClick={handleImageClick}
-            className="w-full h-[300px] border-2 border-dashed border-primary rounded-2xl flex flex-col items-center justify-center gap-3 bg-transparent overflow-hidden"
+            className="w-full h-[300px] border-2 border-dashed border-primary rounded-xl flex flex-col items-center justify-center gap-3 bg-transparent overflow-hidden"
           >
             {imagePreview ? (
               <img
@@ -258,8 +258,8 @@ const CreateEvent = () => {
               />
             ) : (
               <>
-                <Upload size={32} strokeWidth={1.5} className="text-primary" />
-                <span className="text-primary text-sm">ajouter une image</span>
+                <Upload size={28} strokeWidth={1.5} className="text-primary" />
+                <span className="text-primary text-sm font-medium">ajouter une image</span>
               </>
             )}
           </button>

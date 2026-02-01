@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 interface ScrollContextType {
   saveScrollPosition: (key: string) => void;
   restoreScrollPosition: (key: string) => void;
+  getScrollPosition: (key: string) => number | undefined;
 }
 
 const ScrollContext = createContext<ScrollContextType | null>(null);
@@ -88,6 +89,8 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
     scrollPositions.current[key] = window.scrollY;
   };
 
+  const getScrollPosition = (key: string) => scrollPositions.current[key];
+
   const restoreScrollPosition = (key: string) => {
     const position = scrollPositions.current[key];
     if (position !== undefined) {
@@ -96,7 +99,7 @@ export function ScrollProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <ScrollContext.Provider value={{ saveScrollPosition, restoreScrollPosition }}>
+    <ScrollContext.Provider value={{ saveScrollPosition, restoreScrollPosition, getScrollPosition }}>
       {children}
     </ScrollContext.Provider>
   );
