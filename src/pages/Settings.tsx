@@ -89,7 +89,7 @@ const Settings = () => {
 
         {/* Content */}
         <div className="px-6 py-4">
-          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-8">Réglages</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-primary mb-8">Réglages</h1>
 
           {/* Theme Selection */}
           <div className="bg-card rounded-2xl p-6 mb-6">

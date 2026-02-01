@@ -9,7 +9,7 @@ interface ScrollContextType {
 
 const ScrollContext = createContext<ScrollContextType | null>(null);
 
-const PAGES_WITH_SCROLL_MEMORY = ["/home", "/favoris", "/reglages", "/a-propos"];
+const PAGES_WITH_SCROLL_MEMORY = ["/home"];
 /** Overlay routes: don't scroll to top, preserve current position */
 const OVERLAY_ROUTES = ["/compte", "/creer-evenement", "/auth"];
 const SAVE_THROTTLE_MS = 100;
