@@ -1,5 +1,5 @@
 import { MapPin, Calendar, CircleDollarSign, Heart } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface Concert {
@@ -19,7 +19,7 @@ interface ConcertCardProps {
   onNavigate?: () => void;
 }
 
-const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
+const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const isMobile = useIsMobile();
 
@@ -88,13 +88,15 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
         isMobile ? "flex flex-col" : "flex h-[194px]"
       }`}
     >
-      {/* Image thumbnail */}
+      {/* Image thumbnail - lazy loaded */}
       {concert.imageUrl && (
         <div className={isMobile ? "w-full h-[168px]" : "w-[184px] flex-shrink-0 self-stretch"}>
           <img
             src={concert.imageUrl}
             alt={concert.name}
             className="w-full h-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
       )}
@@ -161,6 +163,8 @@ const ConcertCard = ({ concert, onNavigate }: ConcertCardProps) => {
       </div>
     </article>
   );
-};
+});
+
+ConcertCard.displayName = "ConcertCard";
 
 export default ConcertCard;

@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Header from "../components/Header";
 import FilterPills from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
@@ -99,86 +99,56 @@ const Index = () => {
     fetchEvents();
   }, []);
 
+  // Optimized: single pass through events array
   const counts = useMemo(() => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    const todayTime = today.getTime();
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + 7);
+    const endOfWeekTime = endOfWeek.getTime();
 
-    // Filter only future events for counting periods
-    const futureEvents = events.filter((event) => {
-      const eventDate = new Date(event.date);
-      eventDate.setHours(0, 0, 0, 0);
-      return eventDate >= today;
-    });
-
-    const pastEvents = events.filter((event) => {
-      const eventDate = new Date(event.date);
-      eventDate.setHours(0, 0, 0, 0);
-      return eventDate < today;
-    });
-
-    const todayCount = futureEvents.filter((event) => {
-      const eventDate = new Date(event.date);
-      eventDate.setHours(0, 0, 0, 0);
-      return eventDate.getTime() === today.getTime();
-    }).length;
-
-    const weekCount = futureEvents.filter((event) => {
-      const eventDate = new Date(event.date);
-      return eventDate >= today && eventDate <= endOfWeek;
-    }).length;
-
-    const weekendCount = futureEvents.filter((event) => {
-      const eventDate = new Date(event.date);
-      const day = eventDate.getDay();
-      // Include Friday (5), Saturday (6), and Sunday (0)
-      return eventDate >= today && (day === 0 || day === 5 || day === 6);
-    }).length;
-
-    // Count by style (only future events) - case insensitive
-    const concertCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
-      return styles.includes("concert");
-    }).length;
-
-    const projectionCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
-      return styles.includes("projection");
-    }).length;
-
-    const expositionCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
-      return styles.includes("exposition");
-    }).length;
-
-    const autresStyleCount = futureEvents.filter((event) => {
-      const styles = event.style?.split(",").map(s => s.trim().toLowerCase()) || [];
-      return styles.includes("autres");
-    }).length;
-
-    // Count by venue type (only future events)
-    const barsCount = futureEvents.filter((event) => event.venue === "bars").length;
-    const ombresCount = futureEvents.filter((event) => event.venue === "ombres-electriques").length;
-    const autresVenueCount = futureEvents.filter((event) => event.venue === "autres").length;
-
-    return {
-      all: futureEvents.length,
-      today: todayCount,
-      week: weekCount,
-      weekend: weekendCount,
-      past: pastEvents.length,
-      concert: concertCount,
-      projection: projectionCount,
-      exposition: expositionCount,
-      autres: autresStyleCount,
-      bars: barsCount,
-      "ombres-electriques": ombresCount,
-      autresVenue: autresVenueCount,
+    const result = {
+      all: 0, today: 0, week: 0, weekend: 0, past: 0,
+      concert: 0, projection: 0, exposition: 0, autres: 0,
+      bars: 0, "ombres-electriques": 0, autresVenue: 0,
     };
+
+    for (const event of events) {
+      const eventDate = new Date(event.date);
+      eventDate.setHours(0, 0, 0, 0);
+      const eventTime = eventDate.getTime();
+      const isFuture = eventTime >= todayTime;
+
+      if (!isFuture) {
+        result.past++;
+        continue;
+      }
+
+      result.all++;
+      if (eventTime === todayTime) result.today++;
+      if (eventTime <= endOfWeekTime) result.week++;
+
+      const day = eventDate.getDay();
+      if (day === 0 || day === 5 || day === 6) result.weekend++;
+
+      // Count styles
+      const styles = event.style?.toLowerCase().split(",").map(s => s.trim()) || [];
+      if (styles.includes("concert")) result.concert++;
+      if (styles.includes("projection")) result.projection++;
+      if (styles.includes("exposition")) result.exposition++;
+      if (styles.includes("autres")) result.autres++;
+
+      // Count venues
+      if (event.venue === "bars") result.bars++;
+      else if (event.venue === "ombres-electriques") result["ombres-electriques"]++;
+      else if (event.venue === "autres") result.autresVenue++;
+    }
+
+    return result;
   }, [events]);
 
-  const handleFilterChange = (
+  const handleFilterChange = useCallback((
     newPeriodFilter: PeriodFilter,
     newStyleFilters: StyleFilter[],
     newVenueFilters: string[]
@@ -186,7 +156,7 @@ const Index = () => {
     setPeriodFilter(newPeriodFilter);
     setStyleFilters(newStyleFilters);
     setVenueFilters(newVenueFilters);
-  };
+  }, []);
 
   // Calculate top position for header (using top instead of transform to not break Drawer)
   const getHeaderTop = () => {
