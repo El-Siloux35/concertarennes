@@ -3,8 +3,30 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
+import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { useScroll } from "@/contexts/ScrollContext";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+// Skeleton card pour l'affichage pendant le chargement
+const ConcertCardSkeleton = ({ isMobile }: { isMobile: boolean }) => (
+  <div
+    className={`bg-card rounded-2xl overflow-hidden border-2 border-primary/20 ${
+      isMobile ? "flex flex-col" : "flex h-[194px]"
+    }`}
+  >
+    <Skeleton className={isMobile ? "w-full h-[192px]" : "w-[184px] h-full flex-shrink-0 rounded-none"} />
+    <div className={`flex-1 ${isMobile ? "p-4" : "pt-4 pb-6 px-4"} flex flex-col gap-3`}>
+      <Skeleton className="h-5 w-20 rounded-none" />
+      <Skeleton className="h-6 w-[75%] rounded-md" />
+      <div className="flex gap-4 mt-auto">
+        <Skeleton className="h-4 w-24 rounded" />
+        <Skeleton className="h-4 w-16 rounded" />
+        <Skeleton className="h-4 w-12 rounded" />
+      </div>
+    </div>
+  </div>
+);
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -96,6 +118,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
   const navigate = useNavigate();
   const location = useLocation();
   const { saveScrollPosition } = useScroll();
+  const isMobile = useIsMobile();
   const [allConcerts, setAllConcerts] = useState<Concert[]>(cachedConcerts || []);
   // Initialize with cached filtered concerts if available
   const [filteredConcerts, setFilteredConcerts] = useState<Concert[]>(() => {
@@ -158,14 +181,33 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
 
   if (loading) {
     return (
-      <div className="px-6 py-8 text-center text-primary">
-        Chargement...
+      <div className="flex flex-col gap-4 px-6 pb-32 animate-fade-in">
+        {/* Bloc violet - même layout que chargé */}
+        <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
+          <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
+          <p className="text-xs opacity-90">
+            L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
+          </p>
+        </div>
+        {/* Skeleton cards */}
+        {[1, 2, 3].map((i) => (
+          <ConcertCardSkeleton key={i} isMobile={isMobile} />
+        ))}
+        {/* Bloc orange PWA */}
+        <div className="bg-accent rounded-2xl p-6 text-accent-foreground">
+          <h3 className="font-semibold text-base leading-tight mb-1">
+            Ajouter l'agenda du 35 à l'écran d'accueil de mon smartphone
+          </h3>
+          <p className="text-xs opacity-90">
+            Afficher le site comme une application mobile.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4 px-6 pb-32">
+    <div className="flex flex-col gap-4 px-6 pb-32 animate-fade-in">
       {/* Promo Card - violet - toujours en premier, quel que soit le filtre */}
       <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
         <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
