@@ -50,7 +50,7 @@ const StyleSelector = ({ value, onChange, maxSelection = 3 }: StyleSelectorProps
             onClick={() => toggleStyle(option.key)}
             className={`h-10 px-4 rounded-full text-sm font-medium flex items-center gap-2 transition-all ${
               isSelected(option.key)
-                ? "bg-primary text-primary-foreground"
+                ? "bg-concert-purple-light text-primary border-2 border-primary"
                 : "border-2 border-primary text-primary bg-transparent"
             }`}
           >

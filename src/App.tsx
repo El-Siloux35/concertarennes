@@ -17,12 +17,12 @@ import { usePWADrawerFix } from "./hooks/use-pwa-drawer-fix";
 // Lazy load pages for better performance
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
 const Auth = lazy(() => import("./pages/Auth"));
+const AppShellLayout = lazy(() => import("./components/AppShellLayout"));
 const Favorites = lazy(() => import("./pages/Favorites"));
-const HomeShellLayout = lazy(() => import("./components/HomeShellLayout"));
-const EditEvent = lazy(() => import("./pages/EditEvent"));
-const EmailConfirmed = lazy(() => import("./pages/EmailConfirmed"));
 const About = lazy(() => import("./pages/About"));
 const Settings = lazy(() => import("./pages/Settings"));
+const EditEvent = lazy(() => import("./pages/EditEvent"));
+const EmailConfirmed = lazy(() => import("./pages/EmailConfirmed"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Loading fallback
@@ -53,16 +53,18 @@ const App = () => {
                   <Suspense fallback={<PageLoader />}>
                     <Routes>
                       <Route path="/" element={<Splash />} />
-                      <Route path="/home" element={<HomeShellLayout />} />
-                      <Route path="/compte" element={<HomeShellLayout />} />
-                      <Route path="/creer-evenement" element={<HomeShellLayout />} />
+                      <Route element={<AppShellLayout />}>
+                        <Route path="/home" element={null} />
+                        <Route path="/compte" element={null} />
+                        <Route path="/creer-evenement" element={null} />
+                        <Route path="/favoris" element={<Favorites />} />
+                        <Route path="/a-propos" element={<About />} />
+                        <Route path="/reglages" element={<Settings />} />
+                      </Route>
                       <Route path="/concert/:id" element={<ConcertDetail />} />
                       <Route path="/auth" element={<Auth />} />
-                      <Route path="/favoris" element={<Favorites />} />
                       <Route path="/modifier-evenement/:id" element={<EditEvent />} />
                       <Route path="/email-confirmed" element={<EmailConfirmed />} />
-                      <Route path="/a-propos" element={<About />} />
-                      <Route path="/reglages" element={<Settings />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Routes>

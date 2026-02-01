@@ -107,16 +107,13 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         {/* Favorite button */}
         <button
           onClick={toggleFavorite}
-          className={`absolute top-2 right-2 w-[32px] h-[32px] flex items-center justify-center rounded-full ${
-            isFavorite ? "bg-primary text-primary-foreground" : "bg-background text-primary"
-          }`}
+          className="absolute top-2 right-2 w-[32px] h-[32px] flex items-center justify-center rounded-full bg-background text-primary"
           aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
         >
           <Heart
             size={16}
-            strokeWidth={isFavorite ? 0 : 2}
+            strokeWidth={2}
             fill={isFavorite ? "currentColor" : "none"}
-            stroke={isFavorite ? "none" : "currentColor"}
             className="mt-[1px]"
           />
         </button>
@@ -151,7 +148,7 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         {(styleArray.length > 0 || concert.venueType) && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {styleArray.map((s) => (
-              <span key={s} className="h-5 px-2 rounded-full bg-accent text-accent-foreground text-[10px] font-medium flex items-center">
+              <span key={s} className="h-5 px-2 rounded-full bg-concert-purple-light text-primary text-[10px] font-medium flex items-center">
                 {getStyleLabel(s)}
               </span>
             ))}

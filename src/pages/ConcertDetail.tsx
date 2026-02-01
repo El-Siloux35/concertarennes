@@ -270,7 +270,7 @@ const ConcertDetail = () => {
                 <img
                   src={getOptimizedImageUrl(event.image_url, 'detail')}
                   alt={event.title}
-                  className="w-full h-auto object-cover"
+                  className="w-full h-auto object-contain"
                   loading="lazy"
                   decoding="async"
                 />

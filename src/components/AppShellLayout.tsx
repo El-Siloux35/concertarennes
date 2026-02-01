@@ -1,0 +1,87 @@
+import { useLocation, Outlet } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import Index from "@/pages/Index";
+
+const Compte = lazy(() => import("@/pages/Compte"));
+const CreateEvent = lazy(() => import("@/pages/CreateEvent"));
+const Favorites = lazy(() => import("@/pages/Favorites"));
+const About = lazy(() => import("@/pages/About"));
+const Settings = lazy(() => import("@/pages/Settings"));
+
+/**
+ * Layout that keeps Index mounted when navigating between home, profile, create event,
+ * favorites, settings, and about. Prevents image reload/jump when returning to home.
+ */
+const AppShellLayout = () => {
+  const location = useLocation();
+  const path = location.pathname;
+  const isCompte = path === "/compte";
+  const isCreateEvent = path === "/creer-evenement";
+  const fromCompte = (location.state as { from?: string })?.from === "compte";
+  const isHomeFlow = ["/home", "/compte", "/creer-evenement"].includes(path);
+  const isSecondaryPage = ["/favoris", "/reglages", "/a-propos"].includes(path);
+
+  // Preload overlay components
+  useEffect(() => {
+    import("@/pages/Compte");
+    import("@/pages/CreateEvent");
+  }, []);
+
+  const showCompteOverlay = isCompte || (isCreateEvent && fromCompte);
+
+  // Index: hidden when on secondary pages (favoris, reglages, a-propos) but stays mounted
+  // to keep images in DOM and prevent reload on return
+  const indexContainerClass = isSecondaryPage
+    ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none invisible"
+    : isCompte || isCreateEvent
+    ? "fixed inset-0 z-0 overflow-y-auto bg-background pointer-events-none"
+    : "min-h-screen";
+
+  return (
+    <>
+      {/* Index stays mounted - never unmounts, images stay loaded */}
+      <div
+        className={indexContainerClass}
+        aria-hidden={isCompte || isCreateEvent || isSecondaryPage ? "true" : undefined}
+      >
+        <Index />
+      </div>
+
+      {/* Home flow overlays: Compte, CreateEvent */}
+      {showCompteOverlay && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-background z-40 flex items-center justify-center">
+              <span className="text-primary">Chargement...</span>
+            </div>
+          }
+        >
+          <Compte />
+        </Suspense>
+      )}
+
+      {isCreateEvent && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 bg-background z-50 flex items-center justify-center">
+              <span className="text-primary">Chargement...</span>
+            </div>
+          }
+        >
+          <CreateEvent />
+        </Suspense>
+      )}
+
+      {/* Secondary pages: Favorites, Settings, About - on top of hidden Index */}
+      {isSecondaryPage && (
+        <div className="relative z-10 min-h-screen">
+          <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center"><span className="text-primary">Chargement...</span></div>}>
+            <Outlet />
+          </Suspense>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default AppShellLayout;
