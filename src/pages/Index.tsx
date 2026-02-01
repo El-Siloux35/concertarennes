@@ -10,12 +10,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // Header section height (desktop)
 const HEADER_SECTION_HEIGHT = 68;
-// Header section height mobile (4px + 52px + 4px)
-const HEADER_SECTION_HEIGHT_MOBILE = 60;
+// Header section height mobile (16px + 46px + 6px)
+const HEADER_SECTION_HEIGHT_MOBILE = 68;
 // Filters section height
 const FILTERS_HEIGHT = 70;
-// Filters section height mobile (4px + 46px + 4px)
-const FILTERS_HEIGHT_MOBILE = 54;
+// Filters section height mobile (6px + 46px + 12px)
+const FILTERS_HEIGHT_MOBILE = 64;
 
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
@@ -220,12 +220,12 @@ const Index = () => {
         >
           {/* Banner only on desktop */}
           {!isMobile && <ScrollingBanner />}
-          <div className={`bg-background ${isMobile ? 'pt-[16px] pb-[4px]' : 'py-[12px] pb-[8px]'}`}>
+          <div className={`bg-background ${isMobile ? 'pt-[16px] pb-[6px]' : 'py-[12px] pb-[8px]'}`}>
             <div className="max-w-[900px] mx-auto px-4">
               <Header />
             </div>
           </div>
-          <div className={`bg-background ${isMobile ? 'pt-[4px] pb-[16px]' : 'py-3'}`}>
+          <div className={`bg-background ${isMobile ? 'pt-[6px] pb-[12px]' : 'py-3'}`}>
             <div className="max-w-[900px] mx-auto">
               <FilterPills
                 onFilterChange={handleFilterChange}

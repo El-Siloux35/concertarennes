@@ -121,17 +121,17 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         </button>
 
         {/* Organizer badge - square corners */}
-        <span className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3 self-start">
+        <span className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-1 self-start">
           {concert.organizer}
         </span>
 
         {/* Concert name */}
-        <h2 className="font-semibold text-lg text-primary leading-tight mb-4">
+        <h2 className="font-semibold text-xl text-primary leading-tight mb-4">
           {concert.name}
         </h2>
 
         {/* Details */}
-        <div className={isMobile ? "flex items-center gap-3 text-primary text-sm" : "flex items-center gap-4 mt-auto text-primary text-sm"}>
+        <div className={isMobile ? "flex items-center gap-3 text-primary text-xs" : "flex items-center gap-4 mt-auto text-primary text-sm"}>
           <div className="flex items-center gap-[4px] min-w-0">
             <MapPin size={14} strokeWidth={1.5} className="flex-shrink-0" />
             <span className="truncate max-w-[140px]">{concert.venue}</span>
