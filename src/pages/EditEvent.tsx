@@ -14,6 +14,7 @@ import { resizeImage } from "@/lib/imageUtils";
 import { notifyNewEvent } from "@/lib/pushNotifications";
 import StyleSelector from "@/components/StyleSelector";
 import VenueSelector from "@/components/VenueSelector";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type StyleOption = "concert" | "projection" | "exposition" | "autres";
 type VenueOption = "bars" | "ombres-electriques" | "autres";
@@ -30,13 +31,20 @@ const MAX_LENGTHS = {
 
 const validatePhone = (phone: string) => /^[0-9\s\+\-\(\)]*$/.test(phone);
 
-const EditEvent = () => {
+interface EditEventProps {
+  asOverlay?: boolean;
+  eventId?: string; // Fourni quand asOverlay (RR v6 : layout n'a pas accès aux params enfant)
+}
+
+const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id: idFromParams } = useParams();
+  const id = asOverlay ? eventIdProp : idFromParams;
   const [searchParams] = useSearchParams();
   const fromPage = searchParams.get("from");
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
 
   const [organizer, setOrganizer] = useState("");
   const [name, setName] = useState("");
@@ -82,7 +90,7 @@ const EditEvent = () => {
           description: "Impossible de charger l'évènement",
           variant: "destructive",
         });
-        navigate(-1);
+        navigate(asOverlay ? "/compte" : -1, { replace: true });
         return;
       }
 
@@ -276,7 +284,7 @@ const EditEvent = () => {
           title: "Succès",
           description: "Brouillon enregistré",
         });
-        navigate("/compte");
+        navigate("/compte", { replace: true });
       } else if (publish) {
         // Send push notifications when publishing a draft
         if (id) {
@@ -296,8 +304,8 @@ const EditEvent = () => {
           description: "Évènement modifié avec succès",
         });
         // Navigate based on origin
-        if (fromPage === "profile") {
-          navigate("/compte");
+        if (asOverlay || fromPage === "profile") {
+          navigate("/compte", { replace: true });
         } else {
           navigate(-1);
         }
@@ -316,17 +324,24 @@ const EditEvent = () => {
   };
 
   const handleClose = () => {
-    // Navigate based on origin
+    if (asOverlay) {
+      navigate("/compte", { replace: true });
+      return;
+    }
     if (fromPage === "profile") {
-      navigate("/compte");
+      navigate("/compte", { replace: true });
     } else {
       navigate(-1);
     }
   };
 
+  const wrapperClasses = asOverlay
+    ? `fixed inset-0 z-[60] bg-background flex flex-col overflow-y-auto ${isMobile ? "animate-slide-in-right" : ""}`
+    : "min-h-screen bg-background pb-40";
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className={asOverlay ? `${wrapperClasses} items-center justify-center` : "min-h-screen bg-background flex items-center justify-center"}>
         <div className="text-primary">Chargement...</div>
       </div>
     );
@@ -335,8 +350,8 @@ const EditEvent = () => {
   const displayImage = imagePreview || existingImageUrl;
 
   return (
-    <div className="min-h-screen bg-background pb-40">
-      <div className="max-w-[900px] mx-auto px-6">
+    <div className={wrapperClasses}>
+      <div className={`max-w-[900px] mx-auto px-6 ${asOverlay ? "pt-[env(safe-area-inset-top)] pb-40" : ""}`}>
         <header className="py-4 flex items-start">
           <button
             onClick={handleClose}

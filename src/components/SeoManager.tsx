@@ -31,7 +31,7 @@ function getSeo(pathname: string) {
     };
   }
 
-  if (pathname.startsWith("/modifier-evenement/")) {
+  if (pathname.startsWith("/modifier-evenement/") || pathname.startsWith("/compte/edit/")) {
     return {
       title: "Modifier événement | L'agenda du 35",
       description: "Modifiez les informations de votre événement rapidement.",

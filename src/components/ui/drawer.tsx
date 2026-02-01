@@ -18,26 +18,15 @@ const DrawerClose = DrawerPrimitive.Close;
 const DrawerOverlay = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Overlay>
->(({ className, ...props }, ref) => {
-  // Block all touch events and prevent default (stops iOS scroll on background)
-  const handleTouch = (e: React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  return (
-    <DrawerPrimitive.Overlay
-      ref={ref}
-      data-drawer-overlay="true"
-      className={cn("fixed inset-0 z-[9998] bg-black/80", className)}
-      style={{ touchAction: "none", WebkitTapHighlightColor: "transparent" }}
-      onTouchStart={handleTouch}
-      onTouchMove={handleTouch}
-      onTouchEnd={handleTouch}
-      {...props}
-    />
-  );
-});
+>(({ className, ...props }, ref) => (
+  <DrawerPrimitive.Overlay
+    ref={ref}
+    data-drawer-overlay="true"
+    className={cn("fixed inset-0 z-[9998] bg-black/80", className)}
+    style={{ touchAction: "none", WebkitTapHighlightColor: "transparent" }}
+    {...props}
+  />
+));
 DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
 const DrawerContent = React.forwardRef<

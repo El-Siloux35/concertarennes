@@ -35,6 +35,7 @@ interface ConcertListProps {
   periodFilter: PeriodFilter;
   styleFilters: StyleFilter[];
   venueFilters: string[];
+  refreshTrigger?: number;
 }
 
 // Cache concerts to prevent flash on return
@@ -114,7 +115,7 @@ const filterConcerts = (
   return filtered;
 };
 
-const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListProps) => {
+const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger = 0 }: ConcertListProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { saveScrollPosition } = useScroll();
@@ -142,6 +143,12 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
 
   useEffect(() => {
     const fetchConcerts = async () => {
+      if (refreshTrigger > 0) {
+        cachedConcerts = null;
+        cachedFilteredConcerts = null;
+        setLoading(true);
+      }
+
       const { data, error } = await supabase
         .from("events")
         .select("*")
@@ -171,7 +178,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     };
 
     fetchConcerts();
-  }, []);
+  }, [refreshTrigger]);
 
   useEffect(() => {
     const filtered = filterConcerts(allConcerts, periodFilter, styleFilters, venueFilters);
@@ -181,7 +188,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-4 px-6 pb-32 animate-fade-in">
+      <div className="flex flex-col gap-4 pb-32 animate-fade-in">
         {/* Bloc violet - même layout que chargé */}
         <div className="bg-primary rounded-2xl pl-3 pr-4 py-6 text-primary-foreground flex items-center gap-4">
           <img
@@ -215,7 +222,7 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
   }
 
   return (
-    <div className="flex flex-col gap-4 px-6 pb-32 animate-fade-in">
+    <div className="flex flex-col gap-4 pb-32 animate-fade-in">
       {/* Promo Card - violet - toujours en premier, quel que soit le filtre */}
       <div className="bg-primary rounded-2xl pl-3 pr-4 py-6 text-primary-foreground flex items-center gap-4">
         <img

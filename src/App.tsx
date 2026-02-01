@@ -52,6 +52,7 @@ const App = () => {
                       <Route element={<AppShellLayout />}>
                         <Route path="/home" element={null} />
                         <Route path="/compte" element={null} />
+                        <Route path="/compte/edit/:id" element={null} />
                         <Route path="/creer-evenement" element={null} />
                         <Route path="/auth" element={null} />
                         <Route path="/favoris" element={<Favorites />} />

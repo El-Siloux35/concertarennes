@@ -92,6 +92,17 @@
 
   html {
     background-color: hsl(var(--background)) !important;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /* Prevent Chrome from forcing colors */
+  :root {
+    forced-color-adjust: none;
+    -webkit-text-size-adjust: 100%;
   }
 
   /* Extended background for iOS overscroll bounce */

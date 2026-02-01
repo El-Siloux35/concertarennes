@@ -318,13 +318,13 @@ const Compte = () => {
         <div>
           {/* Tabs */}
           <div className="flex justify-center gap-2 mb-4 flex-wrap">
-            <button onClick={() => setActiveTab("upcoming")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "upcoming" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+            <button onClick={() => setActiveTab("upcoming")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all border-2 ${activeTab === "upcoming" ? "border-primary bg-primary text-primary-foreground" : "border-primary text-primary bg-transparent"}`}>
               À venir ({upcomingEvents.length})
             </button>
-            <button onClick={() => setActiveTab("past")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "past" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+            <button onClick={() => setActiveTab("past")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all border-2 ${activeTab === "past" ? "border-primary bg-primary text-primary-foreground" : "border-primary text-primary bg-transparent"}`}>
               Passés ({pastEvents.length})
             </button>
-            <button onClick={() => setActiveTab("drafts")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${activeTab === "drafts" ? "bg-primary text-primary-foreground" : "border-2 border-primary text-primary bg-transparent"}`}>
+            <button onClick={() => setActiveTab("drafts")} className={`px-6 py-2 rounded-full text-sm font-medium transition-all border-2 ${activeTab === "drafts" ? "border-primary bg-primary text-primary-foreground" : "border-primary text-primary bg-transparent"}`}>
               Brouillons ({draftEvents.length})
             </button>
           </div>
@@ -341,7 +341,7 @@ const Compte = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
-                      <Button onClick={() => navigate(`/modifier-evenement/${event.id}?from=profile`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
+                      <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
                         <Pencil size={16} />
                       </Button>
                       <Button onClick={() => {
@@ -391,7 +391,7 @@ const Compte = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
-                      <Button onClick={() => navigate(`/modifier-evenement/${event.id}?from=profile`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
+                      <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
                         <Pencil size={16} />
                       </Button>
                       <Button onClick={() => {

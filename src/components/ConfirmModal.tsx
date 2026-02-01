@@ -73,7 +73,11 @@ const ConfirmModal = ({
   // Desktop: Centered dialog
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] p-6 pt-12">
+      <DialogContent
+        className="sm:max-w-[400px] p-6 pt-12"
+        onPointerDownOutside={() => onOpenChange(false)}
+        onInteractOutside={() => onOpenChange(false)}
+      >
         <DialogHeader className="text-center">
           <DialogTitle className="text-primary text-xl font-semibold text-center">
             {title}

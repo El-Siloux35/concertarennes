@@ -3,6 +3,7 @@ import { lazy, Suspense, useLayoutEffect, useRef } from "react";
 import Index from "@/pages/Index";
 import Compte from "@/pages/Compte";
 import CreateEvent from "@/pages/CreateEvent";
+import EditEvent from "@/pages/EditEvent";
 import { useScroll } from "@/contexts/ScrollContext";
 
 const Auth = lazy(() => import("@/pages/Auth"));
@@ -17,7 +18,7 @@ const Settings = lazy(() => import("@/pages/Settings"));
 const AppShellLayout = () => {
   const location = useLocation();
   const path = location.pathname;
-  const isCompte = path === "/compte";
+  const isCompte = path === "/compte" || path.startsWith("/compte/edit/");
   const isCreateEvent = path === "/creer-evenement";
   const isAuth = path === "/auth";
   const fromCompte = (location.state as { from?: string })?.from === "compte";
@@ -40,6 +41,9 @@ const AppShellLayout = () => {
   }, [isOverlayOpen, getScrollPosition]);
 
   const showCompteOverlay = isCompte || (isCreateEvent && fromCompte);
+  const editEventId = path.startsWith("/compte/edit/")
+    ? path.match(/^\/compte\/edit\/([^/]+)$/)?.[1]
+    : undefined;
 
   // Index: hidden when on secondary pages (favoris, reglages, a-propos) but stays mounted
   // to keep images in DOM and prevent reload on return
@@ -60,8 +64,9 @@ const AppShellLayout = () => {
         <Index />
       </div>
 
-      {/* Home flow overlays: Compte, CreateEvent - eager loaded to avoid first-click flash */}
+      {/* Home flow overlays: Compte, CreateEvent, EditEvent (from profile) - eager loaded */}
       {showCompteOverlay && <Compte />}
+      {editEventId && <EditEvent asOverlay eventId={editEventId} />}
       {isCreateEvent && <CreateEvent />}
 
       {/* Auth overlay - slides from right like profile */}

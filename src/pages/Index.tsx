@@ -7,6 +7,7 @@ import Footer from "../components/Footer";
 import ScrollingBanner, { BANNER_HEIGHT } from "../components/ScrollingBanner";
 import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { usePullToRefresh } from "@/hooks/use-pull-to-refresh";
 
 // Header section height (desktop)
 const HEADER_SECTION_HEIGHT = 68;
@@ -35,6 +36,7 @@ const loadFilters = () => {
 
 const Index = () => {
   const savedFilters = loadFilters();
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>(savedFilters.period);
   const [styleFilters, setStyleFilters] = useState<StyleFilter[]>(savedFilters.styles);
   const [venueFilters, setVenueFilters] = useState<string[]>(savedFilters.venues);
@@ -103,16 +105,22 @@ const Index = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isMobile]);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      const { data } = await supabase
-        .from("events")
-        .select("id, date, style, venue")
-        .eq("is_draft", false);
-      setEvents(data || []);
-    };
-    fetchEvents();
+  const fetchEvents = useCallback(async () => {
+    const { data } = await supabase
+      .from("events")
+      .select("id, date, style, venue")
+      .eq("is_draft", false);
+    setEvents(data || []);
   }, []);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents, refreshTrigger]);
+
+  usePullToRefresh(async () => {
+    setRefreshTrigger((t) => t + 1);
+    await fetchEvents();
+  });
 
   // Optimized: single pass through events array
   const counts = useMemo(() => {
@@ -223,7 +231,7 @@ const Index = () => {
           {/* Banner only on desktop */}
           {!isMobile && <ScrollingBanner />}
           <div className={`bg-background ${isMobile ? 'pt-[16px] pb-[6px]' : 'py-[12px] pb-[8px]'}`}>
-            <div className="max-w-[900px] mx-auto px-4">
+            <div className="max-w-[900px] mx-auto px-8">
               <Header />
             </div>
           </div>
@@ -240,11 +248,12 @@ const Index = () => {
           </div>
         </div>
 
-        <main className="flex flex-col gap-4 pt-4">
+        <main className="flex flex-col gap-4 pt-4 px-8">
           <ConcertList
             periodFilter={periodFilter}
             styleFilters={styleFilters}
             venueFilters={venueFilters}
+            refreshTrigger={refreshTrigger}
           />
         </main>
 
