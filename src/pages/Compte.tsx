@@ -39,6 +39,7 @@ const Compte = () => {
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
   const [isEditingPseudo, setIsEditingPseudo] = useState(false);
   const [newPseudo, setNewPseudo] = useState("");
+  const [isClosing, setIsClosing] = useState(false);
   const today = new Date().toISOString().split('T')[0];
   const publishedEvents = events.filter(e => !e.is_draft);
   const upcomingEvents = publishedEvents.filter(e => e.date >= today);
@@ -239,7 +240,10 @@ const Compte = () => {
     });
   };
   const handleClose = () => {
-    navigate("/home");
+    setIsClosing(true);
+    setTimeout(() => {
+      navigate("/home");
+    }, 300);
   };
   const displayName = profile?.pseudo || user?.user_metadata?.pseudo || user?.email?.split("@")[0] || "Utilisateur";
   if (loading) {
@@ -247,7 +251,7 @@ const Compte = () => {
         <div className="text-primary">Chargement...</div>
       </div>;
   }
-  return <div className="fixed inset-0 bg-background flex flex-col animate-slide-up-full z-50 overflow-y-auto">
+  return <div className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${isClosing ? 'animate-slide-out-right' : 'animate-slide-in-right'}`}>
       <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)]">
         {/* Header with close button */}
         <header className="pt-4 pl-4 pb-4">
@@ -256,7 +260,7 @@ const Compte = () => {
           </button>
         </header>
 
-        <div className="px-6">
+        <div className="px-4">
 
         {/* Avatar */}
         <div className="flex flex-col items-center mt-6">
