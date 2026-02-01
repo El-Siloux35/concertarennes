@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ChevronLeft, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check, Save } from "lucide-react";
+import { Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Check, Save } from "lucide-react";
+import { RetourIcon } from "@/components/icons/RetourIcon";
 import { SentIcon } from "@/components/icons/SentIcon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -360,7 +361,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
             aria-label="Retour"
           >
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <ChevronLeft size={24} strokeWidth={1.75} className="text-primary-foreground" />
+              <RetourIcon size={24} className="text-primary-foreground" />
             </div>
             <span className="font-medium">Retour</span>
           </button>

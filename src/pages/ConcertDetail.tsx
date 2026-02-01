@@ -1,4 +1,5 @@
-import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Pencil, Trash2 } from "lucide-react";
+import { MapPin, Calendar, CircleDollarSign, Pencil, Trash2 } from "lucide-react";
+import { RetourIcon } from "@/components/icons/RetourIcon";
 import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
 import { SentIcon } from "@/components/icons/SentIcon";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -234,7 +235,7 @@ const ConcertDetail = () => {
               className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center text-primary-foreground touch-manipulation"
               aria-label="Retour"
             >
-              <ChevronLeft size={24} strokeWidth={1.75} />
+              <RetourIcon size={24} />
             </button>
             <div className="flex items-center gap-2">
               {canEdit && (

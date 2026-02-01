@@ -69,7 +69,7 @@ const Header = () => {
           >
             <FavoriteIcon size={24} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
             {favoritesCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+              <span className="absolute -top-[6px] -right-[4px] bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
                 {favoritesCount > 9 ? "9+" : favoritesCount}
               </span>
             )}

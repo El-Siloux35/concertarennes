@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import { RetourIcon } from "@/components/icons/RetourIcon";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Footer from "@/components/Footer";
@@ -26,7 +26,7 @@ const About = () => {
               className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
-              <ChevronLeft size={24} strokeWidth={1.75} />
+              <RetourIcon size={24} />
             </button>
           </div>
         </div>
