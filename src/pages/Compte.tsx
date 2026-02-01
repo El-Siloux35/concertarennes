@@ -23,12 +23,7 @@ interface Event {
   is_draft: boolean;
 }
 
-interface CompteProps {
-  /** Called when close animation starts (for push layout sync) */
-  onCloseStart?: () => void;
-}
-
-const Compte = ({ onCloseStart }: CompteProps) => {
+const Compte = () => {
   const navigate = useNavigate();
   const {
     toast
@@ -247,7 +242,6 @@ const Compte = ({ onCloseStart }: CompteProps) => {
   };
   const handleClose = () => {
     setIsClosing(true);
-    onCloseStart?.();
     setTimeout(() => {
       navigate("/home");
     }, 300);
@@ -308,7 +302,7 @@ const Compte = ({ onCloseStart }: CompteProps) => {
 
         {/* Create Event Button - above events */}
         <div className="mt-8 mb-6">
-          <Button onClick={() => navigate("/creer-evenement")} className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2">
+          <Button onClick={() => navigate("/creer-evenement", { state: { from: "compte" } })} className="w-full h-14 rounded-full bg-accent text-accent-foreground font-medium flex items-center justify-center gap-2">
             <Plus size={20} strokeWidth={2} />
             Créer un évènement
           </Button>

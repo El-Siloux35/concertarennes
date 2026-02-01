@@ -143,7 +143,7 @@ const Favorites = () => {
           <div className="max-w-[900px] mx-auto p-4 flex justify-between items-center">
             <button
               onClick={() => navigate("/home")}
-              className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
+              className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
               <ChevronLeft size={24} strokeWidth={2} />

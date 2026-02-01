@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { X, Upload, MapPin, CircleDollarSign, Calendar, Smartphone, Send, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,8 +32,10 @@ const validatePhone = (phone: string) => /^[0-9\s\+\-\(\)]*$/.test(phone);
 
 const CreateEvent = () => {
   const navigate = useNavigate();
+  const routerLocation = useLocation();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isClosing, setIsClosing] = useState(false);
 
   const [organizer, setOrganizer] = useState("");
   const [name, setName] = useState("");
@@ -193,7 +195,8 @@ const CreateEvent = () => {
         description: isDraft ? "Brouillon enregistré" : "Évènement créé avec succès",
       });
 
-      navigate("/compte");
+      const fromCompte = (history.state as { from?: string })?.from === "compte";
+      navigate(fromCompte ? "/compte" : "/home");
     } catch (error: any) {
       console.error("Error creating event:", error);
       const errorMessage = error?.message || error?.error_description || "Impossible de créer l'évènement";
@@ -207,21 +210,33 @@ const CreateEvent = () => {
     }
   };
 
+  const fromCompte = (routerLocation.state as { from?: string })?.from === "compte";
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      navigate(fromCompte ? "/compte" : "/home");
+    }, 300);
+  };
+
   return (
-    <div className="min-h-screen bg-background pb-40">
-      <div className="max-w-[900px] mx-auto px-6">
-        {/* Header */}
-        <header className="py-4 flex items-center justify-between">
+    <div
+      className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${
+        isClosing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
+      }`}
+    >
+      <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)] pb-40">
+        {/* Header - same button as profile: w-10 h-10, X, pt-4 pl-4 */}
+        <header className="pt-4 pl-4 pb-4">
           <button
-            onClick={() => navigate(-1)}
-            className="w-12 h-12 rounded-full bg-primary flex items-center justify-center"
+            onClick={handleClose}
+            className="w-10 h-10 rounded-full bg-primary flex items-center justify-center"
             aria-label="Fermer"
           >
             <X size={24} className="text-primary-foreground" />
           </button>
-          <h1 className="text-primary font-semibold text-xl">Ajouter un évènement</h1>
-          <div className="w-12" /> {/* Spacer for centering */}
         </header>
+
+      <div className="max-w-[900px] mx-auto px-6 flex-1">
 
         {/* Image upload */}
         <div className="mt-4">
@@ -353,6 +368,7 @@ const CreateEvent = () => {
             Enregistrer en brouillon
           </Button>
         </div>
+      </div>
       </div>
     </div>
   );
