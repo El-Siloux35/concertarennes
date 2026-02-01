@@ -43,7 +43,7 @@ const Header = () => {
     <>
       <header className="flex items-center justify-between">
         {/* Left side - Info, Settings, and Favorites with card background */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-[2px]">
           <Link
             to="/a-propos"
             className="text-primary w-11 h-11 flex items-center justify-center rounded-full bg-card"
@@ -77,7 +77,7 @@ const Header = () => {
           {user ? (
             <Link
               to="/compte"
-              className="bg-accent text-accent-foreground font-medium text-sm h-[46px] flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2"
+              className="bg-accent text-accent-foreground font-medium text-sm h-[52px] flex items-center rounded-full py-1.5 pl-1.5 pr-4 gap-2"
             >
               <Avatar className="w-9 h-9 border-2 border-accent-foreground/20">
                 <AvatarImage
@@ -100,7 +100,7 @@ const Header = () => {
                 }
                 setAuthOpen(true);
               }}
-              className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-[46px] flex items-center gap-2 rounded-full"
+              className="bg-accent text-accent-foreground font-medium text-sm pl-3 pr-4 h-[52px] flex items-center gap-2 rounded-full"
             >
               <Lock size={18} strokeWidth={2} />
               Connexion
