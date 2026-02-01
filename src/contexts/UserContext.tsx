@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User as SupabaseUser } from "@supabase/supabase-js";
 
@@ -71,8 +71,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('profileUpdated', handleProfileUpdate);
   }, [user?.id, fetchProfile]);
 
+  const value = useMemo(
+    () => ({ user, profile, loading, refreshProfile }),
+    [user, profile, loading, refreshProfile]
+  );
+
   return (
-    <UserContext.Provider value={{ user, profile, loading, refreshProfile }}>
+    <UserContext.Provider value={value}>
       {children}
     </UserContext.Provider>
   );

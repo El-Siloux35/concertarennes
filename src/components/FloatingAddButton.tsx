@@ -1,30 +1,15 @@
 import { Plus } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useUser } from "@/contexts/UserContext";
 import { useScroll } from "@/contexts/ScrollContext";
 
 const FloatingAddButton = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useUser();
   const location = useLocation();
   const { saveScrollPosition } = useScroll();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsLoggedIn(!!session?.user);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsLoggedIn(!!session?.user);
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
-
   // Hide button if not logged in
-  if (!isLoggedIn) {
+  if (!user) {
     return null;
   }
 
