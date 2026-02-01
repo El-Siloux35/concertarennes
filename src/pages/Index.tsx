@@ -16,10 +16,24 @@ const FILTERS_HEIGHT = 70;
 type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
 type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
 
+// Persist filters to localStorage
+const FILTERS_STORAGE_KEY = "concertFilters";
+
+const loadFilters = () => {
+  try {
+    const saved = localStorage.getItem(FILTERS_STORAGE_KEY);
+    if (saved) {
+      return JSON.parse(saved);
+    }
+  } catch {}
+  return { period: "all", styles: [], venues: [] };
+};
+
 const Index = () => {
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
-  const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
-  const [venueFilters, setVenueFilters] = useState<string[]>([]);
+  const savedFilters = loadFilters();
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>(savedFilters.period);
+  const [styleFilters, setStyleFilters] = useState<StyleFilter[]>(savedFilters.styles);
+  const [venueFilters, setVenueFilters] = useState<string[]>(savedFilters.venues);
   const [events, setEvents] = useState<{
     id: string;
     date: string;
@@ -156,6 +170,12 @@ const Index = () => {
     setPeriodFilter(newPeriodFilter);
     setStyleFilters(newStyleFilters);
     setVenueFilters(newVenueFilters);
+    // Persist filters to localStorage
+    localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify({
+      period: newPeriodFilter,
+      styles: newStyleFilters,
+      venues: newVenueFilters,
+    }));
   }, []);
 
   // Calculate top position for header (using top instead of transform to not break Drawer)
@@ -204,6 +224,9 @@ const Index = () => {
               <FilterPills
                 onFilterChange={handleFilterChange}
                 counts={counts}
+                initialPeriod={periodFilter}
+                initialStyles={styleFilters}
+                initialVenues={venueFilters as any}
               />
             </div>
           </div>

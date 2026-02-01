@@ -6,8 +6,8 @@ import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useUser } from "@/contexts/UserContext";
 
-// Truncate name to max 12 chars with ellipsis
-const truncateName = (name: string, maxLength: number = 12): string => {
+// Truncate name to max 10 chars with ellipsis
+const truncateName = (name: string, maxLength: number = 10): string => {
   if (name.length <= maxLength) return name;
   return name.slice(0, maxLength) + "…";
 };
@@ -42,7 +42,7 @@ const Header = () => {
   return (
     <>
       <header className="gap-0 md:gap-1 pt-2 pr-0 flex items-center justify-between py-0">
-        {/* Left side - Info and Settings */}
+        {/* Left side - Info, Settings, and Favorites */}
         <div className="flex items-center">
           <Link
             to="/a-propos"
@@ -58,9 +58,21 @@ const Header = () => {
           >
             <SlidersHorizontal size={24} strokeWidth={2} />
           </Link>
+          <Link
+            to="/favoris"
+            className="text-primary relative w-12 h-12 flex items-center justify-center"
+            aria-label="Mes favoris"
+          >
+            <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
+            {favoritesCount > 0 && (
+              <span className="absolute top-1 right-1 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
+                {favoritesCount > 9 ? "9+" : favoritesCount}
+              </span>
+            )}
+          </Link>
         </div>
 
-        {/* Right side - Login/Account and Favorites */}
+        {/* Right side - Login/Account */}
         <div className="flex items-center">
           {user ? (
             <Link
@@ -94,18 +106,6 @@ const Header = () => {
               Connexion
             </button>
           )}
-          <Link
-            to="/favoris"
-            className="text-primary relative w-12 h-12 flex items-center justify-center ml-2"
-            aria-label="Mes favoris"
-          >
-            <Heart size={24} strokeWidth={2} fill={favoritesCount > 0 ? "hsl(var(--primary))" : "none"} />
-            {favoritesCount > 0 && (
-              <span className="absolute top-1 right-0 bg-accent text-accent-foreground text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                {favoritesCount > 9 ? "9+" : favoritesCount}
-              </span>
-            )}
-          </Link>
         </div>
       </header>
       {!isMobile && <AuthDrawer open={authOpen} onOpenChange={setAuthOpen} />}

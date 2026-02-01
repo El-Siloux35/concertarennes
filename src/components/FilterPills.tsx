@@ -34,12 +34,15 @@ interface FilterPillsProps {
     "ombres-electriques": number;
     autresVenue: number;
   };
+  initialPeriod?: PeriodFilter;
+  initialStyles?: StyleFilter[];
+  initialVenues?: VenueFilter[];
 }
 
-const FilterPills = ({ onFilterChange, counts }: FilterPillsProps) => {
-  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>("all");
-  const [styleFilters, setStyleFilters] = useState<StyleFilter[]>([]);
-  const [venueFilters, setVenueFilters] = useState<VenueFilter[]>([]);
+const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialStyles = [], initialVenues = [] }: FilterPillsProps) => {
+  const [periodFilter, setPeriodFilter] = useState<PeriodFilter>(initialPeriod);
+  const [styleFilters, setStyleFilters] = useState<StyleFilter[]>(initialStyles);
+  const [venueFilters, setVenueFilters] = useState<VenueFilter[]>(initialVenues);
   const [periodOpen, setPeriodOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
   const [venueOpen, setVenueOpen] = useState(false);
