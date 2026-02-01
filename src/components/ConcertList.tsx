@@ -164,34 +164,35 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters }: ConcertListPr
     );
   }
 
-  if (filteredConcerts.length === 0) {
-    return <EmptyState />;
-  }
-
   return (
     <div className="flex flex-col gap-4 px-6 pb-32">
-      {filteredConcerts.map((concert) => (
-        <ConcertCard
-          key={concert.id}
-          concert={concert}
-          onNavigate={() => handleNavigateToConcert(concert.id)}
-        />
-      ))}
-
-      {/* Empty End Card */}
-      <div className="border-2 border-dashed border-primary rounded-xl p-6 text-center">
-        <p className="text-primary text-sm font-medium">
-          C'est tout pour le moment !
-        </p>
-      </div>
-
-      {/* Promo Card - violet */}
+      {/* Promo Card - violet - toujours en premier, quel que soit le filtre */}
       <div className="bg-primary rounded-2xl p-6 text-primary-foreground">
         <h3 className="font-semibold text-base leading-tight mb-1">L'agenda du 35</h3>
         <p className="text-xs opacity-90">
           L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
         </p>
       </div>
+
+      {filteredConcerts.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <>
+          {filteredConcerts.map((concert) => (
+            <ConcertCard
+              key={concert.id}
+              concert={concert}
+              onNavigate={() => handleNavigateToConcert(concert.id)}
+            />
+          ))}
+          {/* Empty End Card */}
+          <div className="border-2 border-dashed border-primary rounded-xl p-6 text-center">
+            <p className="text-primary text-sm font-medium">
+              C'est tout pour le moment !
+            </p>
+          </div>
+        </>
+      )}
 
       {/* PWA Install Card - orange */}
       <div className="bg-accent rounded-2xl p-6 text-accent-foreground">
