@@ -2,36 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* iOS-like page transitions using View Transitions API */
-@keyframes slide-out-to-right {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(30%); opacity: 0; }
-}
-
-@keyframes slide-in-from-left {
-  from { transform: translateX(-30%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slide-out-to-left {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(-30%); opacity: 0; }
-}
-
-@keyframes slide-in-from-right {
-  from { transform: translateX(30%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* View Transition animations */
-::view-transition-old(root) {
-  animation: slide-out-to-right 0.25s ease-out forwards;
-}
-
-::view-transition-new(root) {
-  animation: slide-in-from-left 0.25s ease-out forwards;
-}
-
 @import url('https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;500;600;700&display=swap');
 
 @layer base {

@@ -1,0 +1,411 @@
+---
+description: 
+alwaysApply: true
+---
+
+# L'Agenda du 35 - Configuration Développement
+
+## 🎯 Contexte du Projet
+Plateforme d'agenda culturel pour Rennes et l'Ille-et-Vilaine (35)
+- **URL** : https://concertarennes.vercel.app
+- **Public** : Utilisateurs cherchant concerts et événements culturels
+- **Objectif** : PWA moderne, performante, offline-first
+
+## 🛠️ Stack Technique
+
+### Core
+- **Build Tool** : Vite 5.x
+- **Framework** : React 18 + TypeScript (strict mode)
+- **Styling** : Tailwind CSS 3.x
+- **UI Components** : shadcn/ui (Radix UI primitives)
+- **Routing** : React Router v6
+- **Backend** : Supabase (PostgreSQL + Auth + Storage + Realtime)
+- **State Management** : React Query (TanStack Query)
+- **PWA** : vite-plugin-pwa + Workbox
+
+### Outils
+- **Déploiement** : Vercel
+- **Package Manager** : npm/bun/pnpm (selon préférence)
+- **Linting** : ESLint + TypeScript ESLint
+
+## 📁 Architecture des Dossiers
+
+```
+src/
+├── main.tsx              # Point d'entrée React
+├── App.tsx               # Composant racine avec Router
+├── index.css             # Styles globaux Tailwind
+├── sw.ts                 # Service Worker (PWA)
+├── assets/               # Images, SVG, GIF
+├── components/           # Composants réutilisables
+│   ├── ui/              # shadcn/ui components (NE PAS MODIFIER)
+│   ├── AuthDrawer.tsx
+│   ├── ConcertCard.tsx
+│   ├── ConcertList.tsx
+│   ├── Header.tsx
+│   └── [autres composants]
+├── pages/                # Pages/Routes principales
+├── hooks/                # Custom React Hooks
+├── contexts/             # React Contexts
+├── lib/                  # Utilitaires
+│   ├── supabase.ts
+│   ├── utils.ts
+│   └── constants.ts
+├── integrations/         # Intégrations tierces
+└── types/                # Types TypeScript
+```
+
+## 🎨 Design & UI
+
+### shadcn/ui
+- Installer via : `npx shadcn@latest add [component]`
+- NE JAMAIS modifier les composants `ui/` directement
+- Composer de nouveaux composants en important depuis `ui/`
+
+### Tailwind CSS
+- Mobile-first : `sm:` `md:` `lg:` `xl:`
+- Dark mode : `dark:` prefix systématiquement
+- Pas de CSS inline sauf exception
+
+### Composants React
+```typescript
+// ✅ BON
+interface ConcertCardProps {
+  concert: Concert
+  onFavorite?: (id: string) => void
+}
+
+export const ConcertCard: React.FC<ConcertCardProps> = ({ concert }) => {
+  return <Card>...</Card>
+}
+
+// ❌ MAUVAIS
+export const ConcertCard = (props: any) => { ... }
+```
+
+### Accessibilité (WCAG 2.1 AA)
+- ARIA : `aria-label`, `aria-describedby`
+- Navigation clavier : `tabIndex`, focus management
+- Contraste minimum : 4.5:1
+- `alt` pour toutes les images
+
+## 🔐 Supabase
+
+### Configuration
+```typescript
+// lib/supabase.ts
+import { createClient } from '@supabase/supabase-js'
+import type { Database } from '@/types/supabase'
+
+export const supabase = createClient<Database>(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+)
+```
+
+### React Query Integration
+```typescript
+export const useEvents = () => {
+  return useQuery({
+    queryKey: ['events'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('events')
+        .select('*, venue(*)')
+        .order('date', { ascending: true })
+      
+      if (error) throw error
+      return data
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  })
+}
+```
+
+### Authentification
+```typescript
+export const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => setUser(session?.user ?? null)
+    )
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  return { user, signOut: () => supabase.auth.signOut() }
+}
+```
+
+## 📱 PWA
+
+### vite-plugin-pwa config
+```typescript
+// vite.config.ts
+import { VitePWA } from 'vite-plugin-pwa'
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: "L'agenda du 35",
+        short_name: 'Agenda 35',
+        theme_color: '#6366f1'
+      },
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'supabase-cache',
+              expiration: { maxAgeSeconds: 3600 }
+            }
+          }
+        ]
+      }
+    })
+  ]
+})
+```
+
+### Offline Support
+- Utiliser `navigator.onLine`
+- Workbox Background Sync pour actions offline
+- Page fallback offline
+
+## 🎯 Types TypeScript
+
+```typescript
+// types/index.ts
+export interface Event {
+  id: string
+  title: string
+  artist: string
+  venue_id: string
+  venue?: Venue
+  date: string // ISO 8601
+  time: string
+  price: number
+  is_free: boolean
+  genre: MusicGenre[]
+  description: string
+  image_url?: string
+  ticket_url?: string
+  is_sold_out: boolean
+  created_at: string
+  user_id: string
+}
+
+export interface Venue {
+  id: string
+  name: string
+  address: string
+  city: string
+  postal_code: string
+  latitude?: number
+  longitude?: number
+}
+
+export type MusicGenre = 
+  | 'Rock' | 'Pop' | 'Électro' | 'Hip-Hop'
+  | 'Jazz' | 'Classique' | 'Metal' | 'Folk'
+  | 'Indie' | 'Techno' | 'Reggae' | 'Autre'
+```
+
+### Règles TypeScript
+- Mode strict activé
+- Pas de `any` (utiliser `unknown` si nécessaire)
+- Types explicites pour props, fonctions publiques
+- Type guards pour validations runtime
+
+## 🚀 Performance
+
+### Optimisations React
+- Lazy loading : `React.lazy()` pour routes
+- Mémoïsation : `useMemo`, `useCallback` (pas systématique)
+- Code splitting par route
+- Virtualisation pour longues listes
+
+### Images
+- Formats modernes : WebP avec fallback
+- `loading="lazy"` sur images
+- Responsive : `srcset` et `sizes`
+- Compression optimale
+
+### Bundle
+```typescript
+// ✅ BON : Import spécifique
+import { Button } from '@/components/ui/button'
+import debounce from 'lodash/debounce'
+
+// ❌ MAUVAIS : Import tout
+import * from '@/components/ui'
+import _ from 'lodash'
+```
+
+### Targets Lighthouse
+- Performance : > 90
+- Accessibilité : > 90
+- Best Practices : > 90
+- SEO : > 90
+
+## 🔧 Conventions
+
+### Nommage
+- Composants : `PascalCase.tsx`
+- Utilitaires : `camelCase.ts`
+- Hooks : `use*.ts`
+- Types : `PascalCase`
+- Constantes : `UPPER_SNAKE_CASE`
+
+### Structure de fichier
+```typescript
+// 1. Imports externes
+import React from 'react'
+
+// 2. Imports internes
+import { Card } from '@/components/ui/card'
+import { useAuth } from '@/hooks/useAuth'
+
+// 3. Types
+interface Props { }
+
+// 4. Composant
+export const Component: React.FC<Props> = () => {
+  // Hooks
+  // State
+  // Handlers
+  // Render
+  return <div>...</div>
+}
+```
+
+### Commentaires
+- JSDoc pour fonctions publiques complexes
+- Inline : expliquer le POURQUOI, pas le QUOI
+- TODO : `// TODO: [Description]`
+
+## 🔐 Sécurité
+
+### Variables d'environnement
+```env
+# .env.local (JAMAIS commit)
+VITE_SUPABASE_URL=https://xxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...
+```
+
+- Préfixe `VITE_` obligatoire
+- Jamais de secrets côté client
+- `.gitignore` : `.env.local`, `.env.*.local`
+
+### XSS Prevention
+- React protège automatiquement
+- Valider inputs utilisateur
+- Éviter `dangerouslySetInnerHTML`
+
+## 📦 Scripts
+
+```json
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx",
+    "type-check": "tsc --noEmit"
+  }
+}
+```
+
+## 🚨 Gestion d'Erreurs
+
+### Error Boundaries
+```typescript
+export class ErrorBoundary extends Component<Props, State> {
+  state = { hasError: false }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ErrorState />
+    }
+    return this.props.children
+  }
+}
+```
+
+### React Query
+```typescript
+const { data, error } = useQuery({
+  queryKey: ['events'],
+  queryFn: fetchEvents,
+  retry: 2,
+  onError: (error) => toast.error('Erreur')
+})
+
+if (error) return <ErrorState error={error} />
+```
+
+## 🎨 Dark Mode
+
+```typescript
+// hooks/useTheme.ts
+export const useTheme = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+
+  useEffect(() => {
+    const root = document.documentElement
+    root.classList.remove('light', 'dark')
+    root.classList.add(theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  return { theme, setTheme }
+}
+```
+
+## ✅ Checklist avant Commit
+
+- [ ] `npm run build` sans erreurs
+- [ ] `npm run type-check` OK
+- [ ] Pas de console.log
+- [ ] Composants accessibles
+- [ ] Mobile responsive
+- [ ] Dark mode OK
+- [ ] Images optimisées
+- [ ] Pas de secrets commitées
+
+## 🎯 Priorités
+
+### Court terme
+- CRUD événements
+- Authentification
+- Filtres et recherche
+- PWA offline
+
+### Moyen terme
+- Notifications push
+- Favoris
+- Partage social
+- Géolocalisation
+
+### Long terme
+- Recommandations IA
+- Billetterie
+- App mobile native
+
+---
+
+**Note** : Ce `.cursorrules` est un guide vivant. Adaptez selon l'évolution du projet.

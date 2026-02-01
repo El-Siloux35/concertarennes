@@ -1,5 +1,5 @@
 import { ChevronLeft, MapPin, Calendar, CircleDollarSign, Heart, Share2, Pencil, Trash2 } from "lucide-react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Footer from "@/components/Footer";
-import { useNavigation } from "@/hooks/use-navigation";
 
 interface Event {
   id: string;
@@ -29,7 +28,7 @@ interface Event {
 const eventCache: Record<string, Event> = {};
 
 const ConcertDetail = () => {
-  const { goBack, navigate } = useNavigation();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const fromPage = searchParams.get("from");
@@ -228,7 +227,7 @@ const ConcertDetail = () => {
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
           <div className="max-w-[1000px] mx-auto p-4 flex justify-between items-center">
             <button
-              onClick={goBack}
+              onClick={() => navigate(-1)}
               className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
               aria-label="Retour"
             >
