@@ -283,11 +283,11 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton onSwipeDown={() => setPeriodOpen(false)}>
-              <SheetHeader>
+            <SheetContent side="bottom" className="bg-background border-0" hideCloseButton onSwipeDown={() => setPeriodOpen(false)}>
+              <SheetHeader className="text-center pt-0 -mt-3">
                 <SheetTitle className="text-primary">Période</SheetTitle>
               </SheetHeader>
-              <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+              <div className="px-6 pt-4 pb-[max(0.5rem,calc(env(safe-area-inset-bottom,0px)-16px))]">
                 <PeriodContent forMobile />
               </div>
             </SheetContent>
@@ -327,11 +327,11 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton onSwipeDown={() => setStyleOpen(false)}>
-              <SheetHeader>
+            <SheetContent side="bottom" className="bg-background border-0" hideCloseButton onSwipeDown={() => setStyleOpen(false)}>
+              <SheetHeader className="text-center pt-0 -mt-3">
                 <SheetTitle className="text-primary">Style</SheetTitle>
               </SheetHeader>
-              <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+              <div className="px-6 pt-4 pb-[max(0.5rem,calc(env(safe-area-inset-bottom,0px)-16px))]">
                 <StyleContent forMobile />
               </div>
             </SheetContent>
@@ -371,11 +371,11 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </SheetTrigger>
-            <SheetContent side="bottom" className="bg-background border-t-2 border-primary" hideCloseButton onSwipeDown={() => setVenueOpen(false)}>
-              <SheetHeader>
+            <SheetContent side="bottom" className="bg-background border-0" hideCloseButton onSwipeDown={() => setVenueOpen(false)}>
+              <SheetHeader className="text-center pt-0 -mt-3">
                 <SheetTitle className="text-primary">Lieux</SheetTitle>
               </SheetHeader>
-              <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+              <div className="px-6 pt-4 pb-[max(0.5rem,calc(env(safe-area-inset-bottom,0px)-16px))]">
                 <VenueContent forMobile />
               </div>
             </SheetContent>

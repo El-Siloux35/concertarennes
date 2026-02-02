@@ -25,20 +25,22 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create a client with the user's token to verify identity
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-    // User client to get the authenticated user
-    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
-      global: {
-        headers: { Authorization: authHeader },
-      },
-    });
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey) {
+      console.error("Missing Supabase env vars");
+      return new Response(
+        JSON.stringify({ error: "Server configuration error" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    // Get the authenticated user
-    const { data: { user }, error: userError } = await userClient.auth.getUser();
+    const jwt = authHeader.replace(/^Bearer\s+/i, "");
+    const userClient = createClient(supabaseUrl, supabaseAnonKey);
+
+    const { data: { user }, error: userError } = await userClient.auth.getUser(jwt);
     
     if (userError || !user) {
       console.error("Error getting user:", userError);
@@ -61,12 +63,10 @@ Deno.serve(async (req) => {
 
     if (deleteError) {
       console.error("Error deleting user:", deleteError);
+      const msg = deleteError.message || "Failed to delete account";
       return new Response(
-        JSON.stringify({ error: "Failed to delete account" }),
-        { 
-          status: 500, 
-          headers: { ...corsHeaders, "Content-Type": "application/json" } 
-        }
+        JSON.stringify({ error: msg }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 

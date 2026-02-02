@@ -25,7 +25,11 @@
         var color = isInitialLoad ? splashColor : (isDark ? darkColor : lightColor);
         if (meta) meta.setAttribute('content', color);
         document.documentElement.style.backgroundColor = color;
+        document.documentElement.style.colorScheme = isInitialLoad ? 'dark' : (isDark ? 'dark' : 'light');
         if (document.body) document.body.style.backgroundColor = color;
+        var csMeta = document.querySelector('meta[name="color-scheme"]');
+        if (csMeta) csMeta.setAttribute('content', isDark ? 'dark light' : 'light dark');
+        else { var m = document.createElement('meta'); m.name = 'color-scheme'; m.content = isDark ? 'dark light' : 'light dark'; document.head.appendChild(m); }
         if (isInitialLoad) document.documentElement.classList.add('splash-active');
       })();
     </script>

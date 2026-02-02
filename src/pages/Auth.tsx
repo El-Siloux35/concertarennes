@@ -1,13 +1,14 @@
-import { X, Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { X, Lock, Mail, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState, useEffect } from "react";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { useState, useEffect, useCallback } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
-type AuthMode = "login" | "signup" | "forgot-password";
+type AuthMode = "login" | "signup" | "forgot-password" | "verify-email";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -24,36 +25,24 @@ const Auth = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [otpValue, setOtpValue] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
-  // Gérer la confirmation d'email et la connexion automatique
+  // Gérer la confirmation d'email (lien legacy) et la connexion automatique
   useEffect(() => {
-    // Vérifier si on arrive via un lien de confirmation d'email
     const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const isEmailConfirmation = hashParams.get('type') === 'signup' || hashParams.get('type') === 'email';
+    const isEmailConfirmation = hashParams.get("type") === "signup" || hashParams.get("type") === "email";
 
-    // Écouter les changements d'état d'authentification
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        // Si c'est une confirmation d'email
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
         if (isEmailConfirmation) {
           toast({
             title: "✅ Email confirmé !",
             description: "Redirection en cours...",
             duration: 2000,
           });
-
-          // Attendre un peu puis rediriger
-          setTimeout(() => {
-            navigate("/home");
-
-            // Essayer de fermer l'onglet si c'est un nouvel onglet
-            // (fonctionne seulement si l'onglet a été ouvert par window.open)
-            setTimeout(() => {
-              window.close();
-            }, 500);
-          }, 1500);
-        } else {
-          // Connexion normale (login)
+          setTimeout(() => navigate("/home"), 1500);
+        } else if (mode !== "verify-email") {
           toast({
             title: "Connexion réussie",
             description: "Bienvenue !",
@@ -64,10 +53,44 @@ const Auth = () => {
       }
     });
 
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [navigate, from, toast]);
+    return () => authListener.subscription.unsubscribe();
+  }, [navigate, from, toast, mode]);
+
+  const OTP_LENGTH = 8;
+
+  const verifyOtpCode = useCallback(async () => {
+    if (!email || otpValue.length !== OTP_LENGTH || isVerifying) return;
+    setIsVerifying(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: otpValue,
+        type: "email",
+      });
+      if (error) throw error;
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue !",
+        duration: 2500,
+      });
+      navigate(from ?? "/home");
+    } catch (err: unknown) {
+      toast({
+        title: "Code invalide",
+        description: (err as Error)?.message || "Vérifiez le code et réessayez.",
+        variant: "destructive",
+      });
+      setOtpValue("");
+    } finally {
+      setIsVerifying(false);
+    }
+  }, [email, otpValue, isVerifying, navigate, from, toast, OTP_LENGTH]);
+
+  useEffect(() => {
+    if (otpValue.length === OTP_LENGTH && mode === "verify-email") {
+      verifyOtpCode();
+    }
+  }, [otpValue, mode, verifyOtpCode, OTP_LENGTH]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,32 +163,24 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/email-confirmed`,
             data: { pseudo },
           },
         });
 
         if (error) throw error;
 
-        // Si l'email doit être confirmé, afficher le message approprié
         if (data?.user && !data.session) {
-          toast({
-            title: "Compte créé !",
-            description: "Vérifiez votre email pour confirmer votre compte. Vous serez automatiquement connecté après confirmation.",
-            duration: 8000,
-          });
+          setMode("verify-email");
         } else {
-          // Si la confirmation email est désactivée, connexion directe
           toast({
             title: "Compte créé",
             description: "Vous êtes maintenant connecté !",
           });
           navigate(from ?? "/home");
+          setEmail("");
+          setPassword("");
+          setPseudo("");
         }
-
-        setEmail("");
-        setPassword("");
-        setPseudo("");
       }
     } catch (error: any) {
       let message = error.message;
@@ -196,6 +211,8 @@ const Auth = () => {
         return "Créer un compte";
       case "forgot-password":
         return "Mot de passe oublié";
+      case "verify-email":
+        return "Vérifier votre compte";
     }
   };
 
@@ -216,6 +233,8 @@ const Auth = () => {
         return "Connexion à mon espace orga";
       case "forgot-password":
         return "Entrez votre email pour recevoir un lien de réinitialisation";
+      case "verify-email":
+        return `Nous vous avons envoyé un mail à : ${email} avec un code.`;
       default:
         return null;
     }
@@ -254,7 +273,55 @@ const Auth = () => {
           )}
         </div>
 
-        {/* Form */}
+        {/* Verify email - OTP (4-4 traits en bas) */}
+        {mode === "verify-email" ? (
+          <div className="flex flex-col items-center gap-6 w-full">
+            <InputOTP
+              maxLength={OTP_LENGTH}
+              value={otpValue}
+              onChange={setOtpValue}
+              disabled={isVerifying}
+              containerClassName="justify-center gap-1"
+            >
+              <InputOTPGroup className="gap-1">
+                {[0, 1, 2, 3].map((i) => (
+                  <InputOTPSlot
+                    key={i}
+                    index={i}
+                    className="h-10 w-7 border-0 border-b-2 border-primary rounded-none bg-transparent text-center text-lg font-medium"
+                  />
+                ))}
+              </InputOTPGroup>
+              <span className="text-primary font-medium mx-0.5">–</span>
+              <InputOTPGroup className="gap-1">
+                {[4, 5, 6, 7].map((i) => (
+                  <InputOTPSlot
+                    key={i}
+                    index={i}
+                    className="h-10 w-7 border-0 border-b-2 border-primary rounded-none bg-transparent text-center text-lg font-medium"
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+            {isVerifying && (
+              <div className="flex items-center gap-2 text-primary/70 text-sm">
+                <Loader2 size={16} className="animate-spin" />
+                <span>Vérification...</span>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setMode("signup");
+                setOtpValue("");
+              }}
+              className="text-primary/70 text-sm underline"
+            >
+              Modifier l'email
+            </button>
+          </div>
+        ) : (
+        /* Form */
         <form onSubmit={handleSubmit} className="flex flex-col">
           {/* Pseudo input - only for signup */}
           {mode === "signup" && (
@@ -388,6 +455,7 @@ const Auth = () => {
             )}
           </div>
         </form>
+        )}
       </main>
       </div>
     </div>

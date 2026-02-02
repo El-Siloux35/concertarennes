@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,10 @@ interface ConfirmModalProps {
   description: string;
   confirmText?: string;
   cancelText?: string;
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
   variant?: "default" | "destructive";
+  /** Affiche un spinner sur le bouton de confirmation (ex: suppression en cours) */
+  confirmLoading?: boolean;
 }
 
 const ConfirmModal = ({
@@ -23,23 +26,38 @@ const ConfirmModal = ({
   cancelText = "Annuler",
   onConfirm,
   variant = "default",
+  confirmLoading = false,
 }: ConfirmModalProps) => {
   const isMobile = useIsMobile();
+
+  const handleConfirm = async () => {
+    try {
+      await onConfirm();
+      onOpenChange(false);
+    } catch {
+      // Ne pas fermer en cas d'erreur (ex: suppression échouée)
+    }
+  };
 
   const buttons = (
     <div className={`flex flex-col gap-3 ${isMobile ? "mt-8" : "mt-6"}`}>
       <Button
-        onClick={() => {
-          onConfirm();
-          onOpenChange(false);
-        }}
+        onClick={handleConfirm}
+        disabled={confirmLoading}
         className={`w-full rounded-full h-14 font-medium ${
           variant === "destructive"
             ? "bg-destructive text-destructive-foreground"
             : "bg-primary text-primary-foreground"
         }`}
       >
-        {confirmText}
+        {confirmLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Suppression...
+          </>
+        ) : (
+          confirmText
+        )}
       </Button>
       <Button
         onClick={() => onOpenChange(false)}
@@ -55,7 +73,7 @@ const ConfirmModal = ({
   if (isMobile) {
     return (
       <Drawer open={open} onOpenChange={onOpenChange} dismissible>
-        <DrawerContent className="pt-8 px-6 pb-12">
+        <DrawerContent className="pt-8 px-6 pb-12 border-0">
           <DrawerHeader className="text-center p-0 mt-8">
             <DrawerTitle className="text-primary text-xl font-semibold text-center">
               {title}

@@ -73,6 +73,7 @@ Si vous avez accès au projet pfghllfusjlodgxumbir avec le même compte:
 3. Déployez:
    npx supabase db push
    npx supabase functions deploy send-push-notification
+   npx supabase functions deploy delete-account
    npx supabase secrets set VAPID_PUBLIC_KEY="BBcV5YEtirz-h1Qydz-y7MuZzAnxSfQtORlSrRdNrkBybFDCutqFLYwmTFgMYN_5cyUhiRAu3rej9vtdmz1b5fc"
    npx supabase secrets set VAPID_PRIVATE_KEY="[votre clé privée]"
    npx supabase secrets set VAPID_SUBJECT="mailto:contact@agenda35.fr"

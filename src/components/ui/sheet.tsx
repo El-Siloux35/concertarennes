@@ -38,7 +38,7 @@ const sheetVariants = cva(
       side: {
         top: "inset-x-0 top-0 border-b rounded-b-2xl data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
         bottom:
-          "inset-x-0 bottom-0 border-t rounded-t-[24px] pt-8 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
+          "inset-x-0 bottom-0 border-t rounded-t-[24px] pt-14 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
         left: "inset-y-0 left-0 h-full w-3/4 border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-sm",
         right:
           "inset-y-0 right-0 h-full w-3/4  border-l data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right sm:max-w-sm",
@@ -104,7 +104,7 @@ const SheetContent = React.forwardRef<React.ElementRef<typeof SheetPrimitive.Con
           {...props}
         >
           {side === "bottom" && (
-            <div className="absolute left-1/2 -translate-x-1/2 top-1 w-12 h-1 rounded-full bg-muted flex-shrink-0" aria-hidden />
+            <div className="absolute left-1/2 -translate-x-1/2 top-[10px] w-12 h-1 rounded-full bg-muted flex-shrink-0" aria-hidden />
           )}
           {children}
           {!hideCloseButton && (

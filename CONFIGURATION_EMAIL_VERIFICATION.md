@@ -1,12 +1,11 @@
 # Configuration de la vérification d'email Supabase
 
-## 🎯 Fonctionnalités ajoutées
+## 🎯 Fonctionnalités
 
-✅ Vérification d'email obligatoire à l'inscription
-✅ Connexion automatique après clic sur le lien de confirmation
-✅ Redirection vers `/home` après confirmation
-✅ Messages clairs pour l'utilisateur
-✅ Gestion des cas avec/sans confirmation d'email
+✅ Vérification d'email obligatoire à l'inscription par **code à 8 chiffres**
+✅ L'utilisateur reçoit un email avec un code, le colle ou le saisit dans l'app
+✅ Vérification automatique dès que 8 chiffres sont saisis (pas de bouton Valider)
+✅ Connexion automatique + redirection vers `/home` avec toast "Connexion réussie"
 
 ## ⚙️ Configuration Supabase (OBLIGATOIRE)
 
@@ -17,41 +16,53 @@
 3. **Activez "Confirm email"** (toggle à ON)
 4. **Cliquez sur "Save"**
 
-### Étape 2 : Vérifier l'URL de redirection
+### Étape 2 : Vérifier l'URL de redirection (optionnel pour OTP)
 
-1. **Allez sur** : https://supabase.com/dashboard/project/pfvfssqlcfodwbsbiciu/auth/url-configuration
-2. **Dans "Redirect URLs"**, ajoutez vos URLs autorisées :
-   ```
-   http://localhost:8081/email-confirmed
-   http://localhost:5173/email-confirmed
-   https://votre-domaine-vercel.vercel.app/email-confirmed
-   https://votre-domaine-production.com/email-confirmed
-   ```
-3. **Cliquez sur "Save"**
+Avec le flux OTP (code à 6 chiffres), la redirection n'est plus utilisée. Vous pouvez conserver les URLs au cas où.
 
-### Étape 3 : Personnaliser l'email de confirmation (optionnel)
+### Étape 3 : Template email avec CODE À 6 CHIFFRES (OBLIGATOIRE)
+
+L'app utilise un code OTP à 8 chiffres (longueur par défaut Supabase), pas un lien. Le template doit inclure `{{ .Token }}`.
 
 1. **Allez sur** : https://supabase.com/dashboard/project/pfvfssqlcfodwbsbiciu/auth/templates
 2. **Cliquez sur "Confirm signup"**
-3. **Personnalisez le template** :
+3. **Remplacez le template par** (avec `{{ .Token }}` pour le code) :
 
 ```html
-<h2>Confirmez votre compte Concert Rennes</h2>
+<h2>Vérifiez votre compte - L'agenda du 35</h2>
 
 <p>Bonjour {{ .Data.pseudo }} !</p>
 
-<p>Merci de vous être inscrit sur Concert Rennes. Cliquez sur le lien ci-dessous pour confirmer votre email et accéder à votre compte :</p>
+<p>Votre code de vérification (8 chiffres) :</p>
+<p style="font-size: 24px; font-weight: bold; letter-spacing: 4px;">{{ .Token }}</p>
 
-<p><a href="{{ .ConfirmationURL }}">Confirmer mon email</a></p>
-
-<p>Vous serez automatiquement connecté après avoir cliqué sur ce lien.</p>
+<p>Copiez ce code dans l'application pour confirmer votre inscription.</p>
 
 <p>Si vous n'avez pas créé de compte, vous pouvez ignorer cet email.</p>
 
-<p>À bientôt sur Concert Rennes ! 🎵</p>
+<p>À bientôt ! 🎵</p>
 ```
 
 4. **Cliquez sur "Save"**
+
+> **Important** : `{{ .Token }}` envoie un code (8 chiffres par défaut). Ne pas utiliser `{{ .ConfirmationURL }}`.
+
+### Variables disponibles pour personnaliser le template
+
+| Variable | Description |
+|----------|-------------|
+| `{{ .Token }}` | Code OTP à 8 chiffres (pour vérification) |
+| `{{ .ConfirmationURL }}` | Lien de confirmation (magic link) |
+| `{{ .Email }}` | Email du destinataire |
+| `{{ .SiteURL }}` | URL du site (configurée dans Supabase) |
+| `{{ .Data.pseudo }}` | Pseudo (metadata passée à `signUp`) |
+| `{{ .Data.xxx }}` | Tout champ dans `options.data` au signUp |
+
+**Exemple avec pseudo :**
+```html
+<p>Bonjour {{ .Data.pseudo }} !</p>
+<p>Votre code : {{ .Token }}</p>
+```
 
 ## 🔧 Modifications du code (DÉJÀ FAIT)
 

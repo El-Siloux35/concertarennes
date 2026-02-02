@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera, X } from "lucide-react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
@@ -38,6 +39,7 @@ const Compte = () => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "drafts">("upcoming");
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
   const [isEditingPseudo, setIsEditingPseudo] = useState(false);
@@ -201,26 +203,39 @@ const Compte = () => {
   };
   const handleDeleteAccount = async () => {
     if (!user) return;
-    
-    // Call the edge function to properly delete the auth user
-    // This cascades to profiles, user_roles, and events
-    const { error } = await supabase.functions.invoke("delete-account");
-    
-    if (error) {
+    setIsDeletingAccount(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("delete-account");
+      if (error) {
+        if (error instanceof FunctionsHttpError && error.context) {
+          try {
+            const body = await (error.context as Response).json();
+            throw new Error((body as { error?: string })?.error || error.message);
+          } catch {
+            throw error;
+          }
+        }
+        throw error;
+      }
+      const body = data as { error?: string } | null;
+      if (body?.error) throw new Error(body.error);
+
+      await supabase.auth.signOut();
+      navigate("/home");
+      toast({
+        title: "Compte supprimé",
+        description: "Votre compte a été supprimé avec succès",
+      });
+    } catch (err) {
       toast({
         title: "Erreur",
-        description: "Impossible de supprimer le compte",
-        variant: "destructive"
+        description: (err as Error)?.message || "Impossible de supprimer le compte.",
+        variant: "destructive",
       });
-      return;
+      throw err;
+    } finally {
+      setIsDeletingAccount(false);
     }
-    
-    await supabase.auth.signOut();
-    navigate("/home");
-    toast({
-      title: "Compte supprimé",
-      description: "Votre compte a été supprimé avec succès"
-    });
   };
   const handleDeleteEvent = async () => {
     if (!eventToDelete) return;
@@ -288,21 +303,27 @@ const Compte = () => {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarChange} className="hidden" />
           </div>
           
-          {/* Pseudo with edit */}
-          {isEditingPseudo ? <div className="flex items-center gap-2 mt-4">
-              <Input type="text" value={newPseudo} onChange={e => setNewPseudo(e.target.value)} className="h-10 w-40 rounded-[8px] border-2 border-primary bg-transparent text-primary text-center focus-visible:ring-0 focus-visible:ring-offset-0" autoFocus />
-              <button onClick={handleSavePseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center touch-manipulation">
-                <Check size={14} strokeWidth={1.25} className="text-primary-foreground" />
-              </button>
-              <button onClick={handleCancelEditPseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-muted flex items-center justify-center touch-manipulation">
-                <X size={14} strokeWidth={1.25} className="text-primary" />
-              </button>
-            </div> : <div className="flex items-center gap-2 mt-4">
-              <p className="text-primary font-medium text-lg">[{displayName}]</p>
+          {/* Pseudo with edit - centré, max 230px, bouton en dessous */}
+          {isEditingPseudo ? (
+            <div className="flex flex-col items-center gap-2 mt-4 w-full max-w-[260px] md:max-w-[600px] mx-auto">
+              <Input type="text" value={newPseudo} onChange={e => setNewPseudo(e.target.value)} className="h-10 w-full max-w-[260px] md:max-w-[600px] rounded-[8px] border-2 border-primary bg-transparent text-primary text-center focus-visible:ring-0 focus-visible:ring-offset-0" autoFocus />
+              <div className="flex items-center gap-2">
+                <button onClick={handleSavePseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center touch-manipulation">
+                  <Check size={14} strokeWidth={1.25} className="text-primary-foreground" />
+                </button>
+                <button onClick={handleCancelEditPseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-muted flex items-center justify-center touch-manipulation">
+                  <X size={14} strokeWidth={1.25} className="text-primary" />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-2 mt-4 w-full max-w-[260px] md:max-w-[600px] mx-auto">
+              <p className="text-primary font-medium text-lg text-center break-words w-full">{displayName}</p>
               <button onClick={handleStartEditPseudo} className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full bg-muted flex items-center justify-center text-primary/60 touch-manipulation" aria-label="Modifier le pseudo">
                 <Pencil size={14} strokeWidth={1.25} />
               </button>
-            </div>}
+            </div>
+          )}
         </div>
 
 
@@ -423,7 +444,7 @@ const Compte = () => {
       {/* Modals */}
       <ConfirmModal open={showLogoutModal} onOpenChange={setShowLogoutModal} title="Se déconnecter" description="Est-tu sûre de vouloir quitter ce monde de fou ?" confirmText="Se déconnecter" cancelText="Annuler" onConfirm={handleLogout} />
 
-      <ConfirmModal open={showDeleteAccountModal} onOpenChange={setShowDeleteAccountModal} title="Supprimer le compte" description="Cette action est irréversible. Toutes vos données seront supprimées définitivement." confirmText="Supprimer mon compte" cancelText="Annuler" onConfirm={handleDeleteAccount} variant="destructive" />
+      <ConfirmModal open={showDeleteAccountModal} onOpenChange={setShowDeleteAccountModal} title="Supprimer le compte" description="Cette action est irréversible. Toutes vos données seront supprimées définitivement." confirmText="Supprimer mon compte" cancelText="Annuler" onConfirm={handleDeleteAccount} variant="destructive" confirmLoading={isDeletingAccount} />
 
       <ConfirmModal open={showDeleteEventModal} onOpenChange={setShowDeleteEventModal} title="Supprimer l'évènement" description="Êtes-vous sûr de vouloir supprimer cet évènement ?" confirmText="Supprimer" cancelText="Annuler" onConfirm={handleDeleteEvent} variant="destructive" />
     </div>;

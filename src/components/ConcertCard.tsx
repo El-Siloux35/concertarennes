@@ -103,8 +103,8 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         </div>
       )}
 
-      {/* Content */}
-      <div className={`flex-1 ${isMobile ? "pt-[15px] px-4 pb-4" : "pt-[15px] pb-6 px-4"} flex flex-col`}>
+      {/* Content - min-w-0 pour que truncate fonctionne dans le flex */}
+      <div className={`flex-1 min-w-0 ${isMobile ? "pt-[15px] px-4 pb-4" : "pt-[15px] pb-6 px-4"} flex flex-col`}>
         {/* Favorite button - 44px touch target (Apple HIG) */}
         <button
           onClick={toggleFavorite}
@@ -114,8 +114,8 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
           <FavoriteIcon size={16} fill={isFavorite ? "currentColor" : "none"} className="mt-[1px]" />
         </button>
 
-        {/* Organizer badge - square corners, height -2px */}
-        <span className="inline-block bg-primary text-primary-foreground text-xs font-medium px-2 py-[3px] leading-tight mb-[3px] self-start">
+        {/* Organizer badge - 1 ligne + ellipsis */}
+        <span className="block min-w-0 max-w-full truncate bg-primary text-primary-foreground text-xs font-medium px-2 py-[3px] leading-tight mb-[3px] self-start">
           {concert.organizer}
         </span>
 
