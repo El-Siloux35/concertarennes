@@ -168,7 +168,6 @@ const CreateEvent = () => {
         .single();
 
       if (error) {
-        console.error('Erreur lors de la création:', error);
         // Erreur de permission RLS
         if (error.code === '42501' || error.message?.includes('permission denied') || error.message?.includes('policy')) {
           throw new Error("Vous n'avez pas la permission de créer un évènement. Vérifiez que vous êtes bien connecté.");
@@ -200,9 +199,8 @@ const CreateEvent = () => {
 
       const fromCompte = (history.state as { from?: string })?.from === "compte";
       navigate(fromCompte ? "/compte" : "/home");
-    } catch (error: any) {
-      console.error("Error creating event:", error);
-      const errorMessage = error?.message || error?.error_description || "Impossible de créer l'évènement";
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Impossible de créer l'évènement";
       toast({
         title: "Erreur",
         description: errorMessage,

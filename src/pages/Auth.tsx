@@ -16,7 +16,7 @@ const Auth = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
 
-  const from = (location.state as any)?.from as string | undefined;
+  const from = (location.state as { from?: string } | null)?.from;
 
   const [mode, setMode] = useState<AuthMode>("login");
   const [isClosing, setIsClosing] = useState(false);
@@ -119,10 +119,11 @@ const Auth = () => {
         });
         setMode("login");
         setEmail("");
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Impossible d'envoyer l'email de réinitialisation.";
         toast({
           title: "Erreur",
-          description: error.message || "Impossible d'envoyer l'email de réinitialisation.",
+          description: message,
           variant: "destructive",
         });
       } finally {
@@ -182,14 +183,15 @@ const Auth = () => {
           setPseudo("");
         }
       }
-    } catch (error: any) {
-      let message = error.message;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Une erreur est survenue.";
+      let message = errorMessage;
 
-      if (error.message?.includes("Invalid login credentials")) {
+      if (errorMessage.includes("Invalid login credentials")) {
         message = "Email ou mot de passe incorrect.";
-      } else if (error.message?.includes("User already registered")) {
+      } else if (errorMessage.includes("User already registered")) {
         message = "Un compte existe déjà avec cet email. Essayez de vous connecter.";
-      } else if (error.message?.includes("Password should be at least")) {
+      } else if (errorMessage.includes("Password should be at least")) {
         message = "Le mot de passe doit contenir au moins 6 caractères.";
       }
 
@@ -273,7 +275,7 @@ const Auth = () => {
           )}
         </div>
 
-        {/* Verify email - OTP (4-4 traits en bas) */}
+        {/* Verify email - OTP : 8 traits en pilule (comme la ref) */}
         {mode === "verify-email" ? (
           <div className="flex flex-col items-center gap-6 w-full">
             <InputOTP
@@ -281,25 +283,11 @@ const Auth = () => {
               value={otpValue}
               onChange={setOtpValue}
               disabled={isVerifying}
-              containerClassName="justify-center gap-1"
+              containerClassName="justify-center gap-3"
             >
-              <InputOTPGroup className="gap-1">
-                {[0, 1, 2, 3].map((i) => (
-                  <InputOTPSlot
-                    key={i}
-                    index={i}
-                    className="h-10 w-7 border-0 border-b-2 border-primary rounded-none bg-transparent text-center text-lg font-medium"
-                  />
-                ))}
-              </InputOTPGroup>
-              <span className="text-primary font-medium mx-0.5">–</span>
-              <InputOTPGroup className="gap-1">
-                {[4, 5, 6, 7].map((i) => (
-                  <InputOTPSlot
-                    key={i}
-                    index={i}
-                    className="h-10 w-7 border-0 border-b-2 border-primary rounded-none bg-transparent text-center text-lg font-medium"
-                  />
+              <InputOTPGroup className="gap-3">
+                {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                  <InputOTPSlot key={i} index={i} variant="pill" />
                 ))}
               </InputOTPGroup>
             </InputOTP>

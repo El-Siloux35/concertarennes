@@ -2,9 +2,10 @@
 import { cleanupOutdatedCaches, precacheAndRoute } from 'workbox-precaching';
 import { clientsClaim } from 'workbox-core';
 import { registerRoute } from 'workbox-routing';
-import { NetworkFirst, CacheFirst } from 'workbox-strategies';
+import { NetworkFirst, CacheFirst, NetworkOnly } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { CacheableResponsePlugin } from 'workbox-cacheable-response';
+import { BackgroundSyncPlugin } from 'workbox-background-sync';
 
 declare let self: ServiceWorkerGlobalScope;
 
@@ -18,33 +19,58 @@ precacheAndRoute(self.__WB_MANIFEST);
 self.skipWaiting();
 clientsClaim();
 
-// Navigation requests - Network First
+// Background sync: queue failed mutations for retry when back online
+const bgSyncPlugin = new BackgroundSyncPlugin('supabase-sync', { maxRetentionTime: 24 * 60 });
+
+// Navigation requests - Network First + offline fallback
 registerRoute(
   ({ request }) => request.mode === 'navigate',
-  new NetworkFirst({
-    cacheName: 'pages-cache',
-    networkTimeoutSeconds: 3,
-    plugins: [
-      new ExpirationPlugin({
-        maxEntries: 50,
-        maxAgeSeconds: 60 * 60 * 24, // 24 hours
-      }),
-    ],
-  })
+  async ({ request, event }) => {
+    const networkFirst = new NetworkFirst({
+      cacheName: 'pages-cache',
+      networkTimeoutSeconds: 3,
+      plugins: [
+        new ExpirationPlugin({
+          maxEntries: 50,
+          maxAgeSeconds: 60 * 60 * 24,
+        }),
+      ],
+    });
+    const response = await networkFirst.handle({ request, event });
+    if (response) return response;
+    const offlineResponse = await caches.match('/offline.html');
+    return offlineResponse ?? new Response(
+      '<h1>Hors ligne</h1><p>Connexion interrompue. Réessayez plus tard.</p>',
+      { status: 503, headers: { 'Content-Type': 'text/html' } }
+    );
+  }
 );
 
-// Supabase API - Network First
+// Supabase API - GET: Network First (cache fallback), mutations: NetworkOnly + Background Sync
 registerRoute(
-  /^https:\/\/.*\.supabase\.co\/.*/i,
+  ({ request, url }) => {
+    if (!/^https:\/\/.*\.supabase\.co\/.*/i.test(url.href)) return false;
+    return request.method === 'GET';
+  },
   new NetworkFirst({
     cacheName: 'supabase-api-cache',
     networkTimeoutSeconds: 5,
     plugins: [
       new ExpirationPlugin({
         maxEntries: 50,
-        maxAgeSeconds: 60 * 5, // 5 minutes
+        maxAgeSeconds: 60 * 5,
       }),
     ],
+  })
+);
+
+registerRoute(
+  ({ request, url }) => {
+    if (!/^https:\/\/.*\.supabase\.co\/.*/i.test(url.href)) return false;
+    return ['POST', 'PATCH', 'PUT', 'DELETE'].includes(request.method);
+  },
+  new NetworkOnly({
+    plugins: [bgSyncPlugin],
   })
 );
 
@@ -109,7 +135,6 @@ interface PushData {
 
 self.addEventListener('push', (event: PushEvent) => {
   if (!event.data) {
-    console.log('Push event but no data');
     return;
   }
 

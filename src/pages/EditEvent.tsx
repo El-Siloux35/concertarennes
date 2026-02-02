@@ -99,7 +99,6 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
       // Note: On ne bloque pas ici si l'utilisateur n'est pas le propriétaire
       // On laisse RLS gérer les permissions lors de la modification
       // Cela permet aux admins de modifier les événements même s'ils ne sont pas propriétaires
-      console.log('Event loaded - user_id:', data.user_id, 'current_user_id:', user.id);
 
       setOrganizer(data.organizer || "");
       setName(data.title || "");
@@ -207,7 +206,6 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
       const { data: { user }, error: authError } = await supabase.auth.getUser();
       
       if (authError || !user) {
-        console.error('Erreur d\'authentification:', authError);
         toast({
           title: "Erreur",
           description: "Vous devez être connecté pour modifier un évènement",
@@ -220,7 +218,6 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
       // Vérifier que la session est valide
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        console.error('Aucune session active');
         toast({
           title: "Erreur",
           description: "Votre session a expiré. Veuillez vous reconnecter.",
@@ -230,8 +227,6 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
         return;
       }
 
-      console.log('✅ Utilisateur authentifié:', user.id);
-      console.log('✅ Session active:', !!session);
 
       let imageUrl = existingImageUrl;
 
@@ -273,7 +268,6 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
         .single();
 
       if (error) {
-        console.error('Erreur lors de la mise à jour:', error);
         throw new Error(error.message || "Impossible de modifier l'évènement");
       }
 
@@ -312,9 +306,8 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
           navigate(-1);
         }
       }
-    } catch (error: any) {
-      console.error("Error updating event:", error);
-      const errorMessage = error?.message || error?.error_description || "Impossible de modifier l'évènement";
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Impossible de modifier l'évènement";
       toast({
         title: "Erreur",
         description: errorMessage,

@@ -1,5 +1,6 @@
 /**
- * Resize an image file to a maximum width/height while maintaining aspect ratio
+ * Resize an image file to a maximum width/height while maintaining aspect ratio.
+ * Output: JPEG for smaller uploads and consistent serving.
  * @param file - The original image file
  * @param maxWidth - Maximum width (default 1200px)
  * @param maxHeight - Maximum height (default 1200px)

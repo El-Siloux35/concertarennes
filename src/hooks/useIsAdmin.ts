@@ -24,7 +24,6 @@ export const useIsAdmin = () => {
       if (cancelled) return;
 
       if (error) {
-        console.error("Error checking admin role:", error);
         setIsAdmin(false);
       } else {
         setIsAdmin(data === true);

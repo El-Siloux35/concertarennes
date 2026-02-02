@@ -23,10 +23,39 @@ InputOTPGroup.displayName = "InputOTPGroup";
 
 const InputOTPSlot = React.forwardRef<
   React.ElementRef<"div">,
-  React.ComponentPropsWithoutRef<"div"> & { index: number }
->(({ index, className, ...props }, ref) => {
+  React.ComponentPropsWithoutRef<"div"> & { index: number; variant?: "box" | "pill" }
+>(({ index, className, variant = "box", ...props }, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext);
   const { char, hasFakeCaret, isActive } = inputOTPContext.slots[index];
+
+  if (variant === "pill") {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          "relative flex flex-col items-center justify-center gap-1 min-w-[28px] ring-0 ring-offset-0",
+          className,
+        )}
+        {...props}
+      >
+        <span className="text-xl font-medium text-primary tabular-nums min-h-[28px] flex items-center justify-center">
+          {char}
+        </span>
+        <div
+          className={cn(
+            "h-1 w-6 rounded-full transition-colors",
+            char ? "bg-primary" : "bg-primary/30",
+          )}
+          aria-hidden
+        />
+        {hasFakeCaret && (
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center top-0">
+            <div className="animate-caret-blink h-5 w-px bg-primary duration-1000" />
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div

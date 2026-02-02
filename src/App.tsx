@@ -13,6 +13,7 @@ import { UserProvider } from "./contexts/UserContext";
 import SeoManager from "./components/SeoManager";
 import SafeAreaBackground from "./components/SafeAreaBackground";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { useLocation } from "react-router-dom";
 // Lazy load pages for better performance
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -33,8 +34,37 @@ const PageLoader = () => (
 
 const queryClient = new QueryClient();
 
-const App = () => {
+const AppContent = () => {
+  const location = useLocation();
+  return (
+    <ErrorBoundary resetKeys={[location.pathname]}>
+      <ScrollProvider>
+        <SeoManager />
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={<Splash />} />
+            <Route element={<AppShellLayout />}>
+              <Route path="/home" element={null} />
+              <Route path="/compte" element={null} />
+              <Route path="/compte/edit/:id" element={null} />
+              <Route path="/creer-evenement" element={null} />
+              <Route path="/auth" element={null} />
+              <Route path="/favoris" element={<Favorites />} />
+              <Route path="/a-propos" element={<About />} />
+              <Route path="/reglages" element={<Settings />} />
+            </Route>
+            <Route path="/concert/:id" element={<ConcertDetail />} />
+            <Route path="/modifier-evenement/:id" element={<EditEvent />} />
+            <Route path="/email-confirmed" element={<EmailConfirmed />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
+      </ScrollProvider>
+    </ErrorBoundary>
+  );
+};
 
+const App = () => {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem storageKey="theme">
       <SafeAreaBackground />
@@ -45,31 +75,7 @@ const App = () => {
               <Toaster />
               <Sonner />
               <BrowserRouter>
-                <ErrorBoundary>
-                  <ScrollProvider>
-                    <SeoManager />
-                    <Suspense fallback={<PageLoader />}>
-                      <Routes>
-                      <Route path="/" element={<Splash />} />
-                      <Route element={<AppShellLayout />}>
-                        <Route path="/home" element={null} />
-                        <Route path="/compte" element={null} />
-                        <Route path="/compte/edit/:id" element={null} />
-                        <Route path="/creer-evenement" element={null} />
-                        <Route path="/auth" element={null} />
-                        <Route path="/favoris" element={<Favorites />} />
-                        <Route path="/a-propos" element={<About />} />
-                        <Route path="/reglages" element={<Settings />} />
-                      </Route>
-                      <Route path="/concert/:id" element={<ConcertDetail />} />
-                      <Route path="/modifier-evenement/:id" element={<EditEvent />} />
-                      <Route path="/email-confirmed" element={<EmailConfirmed />} />
-                      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                      <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </Suspense>
-                  </ScrollProvider>
-                </ErrorBoundary>
+                <AppContent />
               </BrowserRouter>
             </TooltipProvider>
           </QueryClientProvider>

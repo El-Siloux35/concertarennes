@@ -55,9 +55,8 @@ export function usePushNotifications() {
           const subscription = await registration.pushManager.getSubscription();
           setIsSubscribed(!!subscription);
         }
-      } catch (err) {
+      } catch {
         // Service worker not ready (common in dev mode)
-        console.log('Service worker not ready:', err);
       }
 
       setIsLoading(false);
@@ -74,7 +73,6 @@ export function usePushNotifications() {
 
     if (!VAPID_PUBLIC_KEY) {
       setError('VAPID key not configured');
-      console.error('VITE_VAPID_PUBLIC_KEY environment variable not set');
       return false;
     }
 
@@ -107,10 +105,6 @@ export function usePushNotifications() {
 
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('Current user:', user?.id || 'anonymous');
-      console.log('Subscription endpoint:', endpoint);
-      console.log('p256dh:', p256dh);
-      console.log('auth:', auth);
 
       // First try to delete existing subscription with same endpoint
       await supabase
@@ -119,7 +113,7 @@ export function usePushNotifications() {
         .eq('endpoint', endpoint);
 
       // Then insert new subscription
-      const { error: dbError, data: insertedData } = await supabase
+      const { error: dbError } = await supabase
         .from('push_subscriptions')
         .insert({
           user_id: user?.id || null,
@@ -143,7 +137,6 @@ export function usePushNotifications() {
       setIsLoading(false);
       return true;
     } catch (err) {
-      console.error('Error subscribing:', err);
       setError(err instanceof Error ? err.message : 'Failed to subscribe');
       setIsLoading(false);
       return false;
@@ -151,7 +144,6 @@ export function usePushNotifications() {
   }, [isSupported]);
 
   const unsubscribe = useCallback(async (): Promise<boolean> => {
-    console.log('Unsubscribe called');
     setIsLoading(true);
     setError(null);
 
@@ -163,17 +155,14 @@ export function usePushNotifications() {
       );
 
       const registration = await Promise.race([registrationPromise, timeoutPromise]);
-      console.log('Service worker registration:', registration);
 
       if (!registration) {
-        console.log('No service worker registration');
         setIsSubscribed(false);
         setIsLoading(false);
         return true;
       }
 
       const subscription = await registration.pushManager.getSubscription();
-      console.log('Current subscription:', subscription);
 
       if (subscription) {
         // Remove from Supabase
@@ -183,23 +172,17 @@ export function usePushNotifications() {
           .eq('endpoint', subscription.endpoint);
 
         if (dbError) {
-          console.error('Error removing subscription from DB:', dbError);
-        } else {
-          console.log('Subscription removed from DB');
+          // DB delete failed, continue with unsubscribe
         }
 
         // Unsubscribe from push manager
         await subscription.unsubscribe();
-        console.log('Unsubscribed from push manager');
-      } else {
-        console.log('No subscription to unsubscribe');
       }
 
       setIsSubscribed(false);
       setIsLoading(false);
       return true;
     } catch (err) {
-      console.error('Error unsubscribing:', err);
       setError(err instanceof Error ? err.message : 'Failed to unsubscribe');
       setIsLoading(false);
       return false;

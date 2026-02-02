@@ -116,10 +116,11 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
         });
         setMode("login");
         setEmail("");
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "Impossible d'envoyer l'email de réinitialisation.";
         toast({
           title: "Erreur",
-          description: error.message || "Impossible d'envoyer l'email de réinitialisation.",
+          description: message,
           variant: "destructive",
         });
       } finally {
@@ -176,14 +177,15 @@ const AuthDrawer = ({ open, onOpenChange }: AuthDrawerProps) => {
         setMode("login");
         setPassword("");
       }
-    } catch (error: any) {
-      let message = error.message;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Une erreur est survenue.";
+      let message = errorMessage;
 
-      if (error.message?.includes("Invalid login credentials")) {
+      if (errorMessage.includes("Invalid login credentials")) {
         message = "Email ou mot de passe incorrect.";
-      } else if (error.message?.includes("User already registered")) {
+      } else if (errorMessage.includes("User already registered")) {
         message = "Un compte existe déjà avec cet email. Essayez de vous connecter.";
-      } else if (error.message?.includes("Password should be at least")) {
+      } else if (errorMessage.includes("Password should be at least")) {
         message = "Le mot de passe doit contenir au moins 6 caractères.";
       }
 

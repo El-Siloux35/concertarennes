@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#4C1CBE" />
+    <title>Hors ligne | L'agenda du 35</title>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #EFEDFF;
+        color: #4C1CBE;
+      }
+      .icon {
+        width: 4rem;
+        height: 4rem;
+        margin-bottom: 1.5rem;
+        border-radius: 50%;
+        background: rgba(76, 28, 190, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .icon svg {
+        width: 2rem;
+        height: 2rem;
+        stroke: #4C1CBE;
+      }
+      h1 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; text-align: center; }
+      p { font-size: 0.875rem; opacity: 0.8; text-align: center; max-width: 20rem; }
+      .dark body { background: #0d1117; }
+      .dark h1, .dark p { color: #f0f6fc; }
+      .dark .icon { background: rgba(240, 246, 252, 0.1); }
+      .dark .icon svg { stroke: #f0f6fc; }
+      @media (prefers-color-scheme: dark) {
+        body { background: #0d1117; }
+        h1, p { color: #f0f6fc; }
+        .icon { background: rgba(240, 246, 252, 0.1); }
+        .icon svg { stroke: #f0f6fc; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="icon" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l8.735 8.735m0 0a.375.375 0 11.53.472l-.736-.736a.375.375 0 01.53-.472zM3 21h18M3 9.765V3m0 6.735a.375.375 0 01-.53-.472l.736-.736a.375.375 0 01.472.53l-.678.678zM21 3l-8.735 8.735m0 0a.375.375 0 10.53.472l.736-.736a.375.375 0 00-.472-.53l-.794.794zM21 21v-5.647m0 5.647a.375.375 0 01-.53.472l-.736-.736a.375.375 0 01.472-.53l.794.794z" />
+      </svg>
+    </div>
+    <h1>Vous êtes hors ligne</h1>
+    <p>La connexion est interrompue. Consultez les pages déjà visitées ou réessayez lorsque le réseau sera disponible.</p>
+    <script>
+      window.addEventListener('online', function() { window.location.reload(); });
+    </script>
+  </body>
+</html>

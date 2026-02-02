@@ -2,7 +2,7 @@ import { MapPin, Calendar, CircleDollarSign } from "lucide-react";
 import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
 import { useState, useEffect, memo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/image-utils";
 
 export interface Concert {
   id: string;
@@ -95,6 +95,8 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
         <div className={isMobile ? "w-full h-[192px]" : "w-[184px] flex-shrink-0 self-stretch"}>
           <img
             src={getOptimizedImageUrl(concert.imageUrl, isMobile ? 'card' : 'thumbnail')}
+            srcSet={getImageSrcSet(concert.imageUrl)}
+            sizes={isMobile ? "(max-width: 640px) 100vw, 400px" : "184px"}
             alt={concert.name}
             className="w-full h-full object-cover"
             loading="lazy"

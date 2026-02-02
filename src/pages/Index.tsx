@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import Header from "../components/Header";
-import FilterPills from "../components/FilterPills";
+import FilterPills, { type PeriodFilter, type StyleFilter, type VenueFilter } from "../components/FilterPills";
 import ConcertList from "../components/ConcertList";
 import FloatingAddButton from "../components/FloatingAddButton";
 import Footer from "../components/Footer";
@@ -18,8 +18,7 @@ const FILTERS_HEIGHT = 70;
 // Filters section height mobile (6px + 46px + 12px)
 const FILTERS_HEIGHT_MOBILE = 64;
 
-type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
-type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
+// Types importés de FilterPills
 
 // Persist filters to localStorage
 const FILTERS_STORAGE_KEY = "concertFilters";
@@ -39,7 +38,7 @@ const Index = () => {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [periodFilter, setPeriodFilter] = useState<PeriodFilter>(savedFilters.period);
   const [styleFilters, setStyleFilters] = useState<StyleFilter[]>(savedFilters.styles);
-  const [venueFilters, setVenueFilters] = useState<string[]>(savedFilters.venues);
+  const [venueFilters, setVenueFilters] = useState<VenueFilter[]>(savedFilters.venues);
   const [events, setEvents] = useState<{
     id: string;
     date: string;
@@ -242,7 +241,7 @@ const Index = () => {
                 counts={counts}
                 initialPeriod={periodFilter}
                 initialStyles={styleFilters}
-                initialVenues={venueFilters as any}
+                initialVenues={venueFilters}
               />
             </div>
           </div>

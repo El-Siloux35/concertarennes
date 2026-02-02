@@ -72,12 +72,10 @@ export function usePWADrawerFix() {
     document.addEventListener('touchstart', handleTouchStart, { capture: true, passive: false });
     document.addEventListener('touchmove', handleTouchMove, { capture: true, passive: false });
 
-    console.log('[PWA Fix] Touch event listeners attached');
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart, { capture: true });
       document.removeEventListener('touchmove', handleTouchMove, { capture: true });
-      console.log('[PWA Fix] Touch event listeners removed');
     };
   }, []);
 }

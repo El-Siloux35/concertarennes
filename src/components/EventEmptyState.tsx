@@ -1,4 +1,5 @@
-import catImage from "@/assets/cat.png";
+import catPng from "@/assets/cat.png";
+import catWebp from "@/assets/cat.webp?url";
 
 interface EventEmptyStateProps {
   variant?: "upcoming" | "past" | "drafts";
@@ -28,7 +29,10 @@ const EventEmptyState = ({ variant = "upcoming", noAnimation = false }: EventEmp
 
   return (
     <div className={`border-2 border-dashed border-primary rounded-xl p-6 flex flex-col items-center justify-center text-center ${noAnimation ? "" : "animate-fade-in"}`}>
-      <img src={catImage} alt="" className="h-[200px] w-auto object-contain mb-4" aria-hidden />
+      <picture className="flex justify-center mb-4">
+        <source srcSet={catWebp} type="image/webp" />
+        <img src={catPng} alt="" className="h-[200px] w-auto object-contain mx-auto" aria-hidden />
+      </picture>
       <p className="text-primary text-sm font-medium">{text}</p>
     </div>
   );

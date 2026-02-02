@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import ConfirmModal from "@/components/ConfirmModal";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Footer from "@/components/Footer";
-import { getOptimizedImageUrl } from "@/lib/image-utils";
+import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/image-utils";
 
 interface Event {
   id: string;
@@ -62,7 +62,6 @@ const ConcertDetail = () => {
         .single();
 
       if (error || !data) {
-        console.error("Error fetching event:", error);
         setLoading(false);
         return;
       }
@@ -163,7 +162,6 @@ const ConcertDetail = () => {
         });
       }
     } catch (error) {
-      console.error("Error sharing:", error);
     }
   };
 
@@ -272,6 +270,8 @@ const ConcertDetail = () => {
               {event.image_url ? (
                 <img
                   src={getOptimizedImageUrl(event.image_url, 'detail', { resize: 'contain' })}
+                  srcSet={getImageSrcSet(event.image_url)}
+                  sizes="(max-width: 768px) 100vw, 376px"
                   alt={event.title}
                   className="w-full h-auto object-contain"
                   loading="lazy"

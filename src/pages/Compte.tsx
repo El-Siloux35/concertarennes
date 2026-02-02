@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Pencil, Calendar, Trash2, Check, LogOut, Plus, Camera, X } from "lucide-react";
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { resizeImage } from "@/lib/imageUtils";
 import { User } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -88,7 +89,7 @@ const Compte = () => {
       error
     } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
     if (error) {
-      console.error("Error fetching profile:", error);
+      // Profile fetch failed, use defaults
     }
     setProfile(data);
     setLoading(false);
@@ -102,7 +103,6 @@ const Compte = () => {
       ascending: false
     });
     if (error) {
-      console.error("Error fetching events:", error);
       return;
     }
     setEvents(data || []);
@@ -113,11 +113,11 @@ const Compte = () => {
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !user) return;
-    const fileExt = file.name.split(".").pop();
-    const filePath = `${user.id}/${Date.now()}.${fileExt}`;
+    const resized = await resizeImage(file, 400, 400, 0.85);
+    const filePath = `${user.id}/${Date.now()}.jpg`;
     const {
       error: uploadError
-    } = await supabase.storage.from("avatars").upload(filePath, file);
+    } = await supabase.storage.from("avatars").upload(filePath, resized);
     if (uploadError) {
       toast({
         title: "Erreur",

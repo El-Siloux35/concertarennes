@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import catImage from "@/assets/cat.png";
+import catPng from "@/assets/cat.png";
+import catWebp from "@/assets/cat.webp?url";
 import ConcertCard, { Concert } from "./ConcertCard";
 import EmptyState from "./EmptyState";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -156,12 +157,11 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger 
         .eq("is_draft", false);
 
       if (error) {
-        console.error("Error fetching events:", error);
         setLoading(false);
         return;
       }
 
-      const mappedConcerts: Concert[] = (data || []).map((event: any) => ({
+      const mappedConcerts: Concert[] = (data || []).map((event) => ({
         id: event.id,
         organizer: event.organizer || "Organisateur",
         name: event.title,
@@ -267,7 +267,10 @@ const ConcertList = ({ periodFilter, styleFilters, venueFilters, refreshTrigger 
           ))}
           {/* Empty End Card */}
           <div className="border-2 border-dashed border-primary rounded-xl p-6 text-center flex flex-col items-center">
-            <img src={catImage} alt="" className="h-[200px] w-auto object-contain mb-4" aria-hidden />
+            <picture className="flex justify-center mb-4">
+              <source srcSet={catWebp} type="image/webp" />
+              <img src={catPng} alt="" className="h-[200px] w-auto object-contain mx-auto" aria-hidden />
+            </picture>
             <p className="text-primary text-sm font-medium">
               C'est tout pour le moment !
             </p>

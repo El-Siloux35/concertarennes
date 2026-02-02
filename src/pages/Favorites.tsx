@@ -101,7 +101,6 @@ const Favorites = () => {
         .in("id", favoriteIds);
 
       if (error) {
-        console.error("Error fetching favorite events:", error);
         toast({
           title: "Erreur",
           description: "Impossible de charger vos favoris",
@@ -223,8 +222,8 @@ const Favorites = () => {
                   <FavoriteIcon size={20} fill="currentColor" />
                 </button>
 
-                {/* Organizer badge - 1 ligne + ellipsis */}
-                <div className="block min-w-0 max-w-full truncate bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
+                {/* Organizer badge - hug content */}
+                <div className="w-fit bg-primary text-primary-foreground text-xs font-medium px-2 py-1 mb-3">
                   {event.organizer || "Organisateur"}
                 </div>
 

@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => ({
       srcDir: "src",
       filename: "sw.ts",
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg"],
+      includeAssets: ["favicon.ico", "apple-touch-icon.png", "mask-icon.svg", "offline.html"],
       devOptions: {
         enabled: true,
         type: "module",
@@ -61,5 +61,22 @@ export default defineConfig(({ mode }) => ({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "supabase": ["@supabase/supabase-js"],
+          "ui-vendor": [
+            "@radix-ui/react-dialog",
+            "@radix-ui/react-dropdown-menu",
+            "@radix-ui/react-slot",
+            "vaul",
+          ],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
   },
 }));

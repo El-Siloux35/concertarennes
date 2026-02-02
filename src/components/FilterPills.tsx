@@ -14,9 +14,9 @@ import {
 } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
-type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
-type VenueFilter = "bars" | "ombres-electriques" | "autres";
+export type PeriodFilter = "all" | "today" | "week" | "weekend" | "past";
+export type StyleFilter = "all" | "concert" | "projection" | "exposition" | "autres";
+export type VenueFilter = "bars" | "ombres-electriques" | "autres";
 
 interface FilterPillsProps {
   onFilterChange: (periodFilter: PeriodFilter, styleFilters: StyleFilter[], venueFilters: string[]) => void;
