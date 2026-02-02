@@ -362,13 +362,13 @@ const Compte = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
-                      <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
+                      <Button type="button" onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full border-2 border-primary text-primary bg-transparent p-0 touch-manipulation" aria-label="Modifier">
                         <Pencil size={16} strokeWidth={1.5} />
                       </Button>
-                      <Button onClick={() => {
+                      <Button type="button" onClick={() => {
                 setEventToDelete(event.id);
                 setShowDeleteEventModal(true);
-              }} variant="outline" className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0" aria-label="Supprimer">
+              }} variant="outline" className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full border-2 border-destructive text-destructive bg-transparent p-0 touch-manipulation" aria-label="Supprimer">
                         <Trash2 size={16} strokeWidth={1.5} />
                       </Button>
                     </div>
@@ -408,13 +408,13 @@ const Compte = () => {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-3 justify-end">
-                      <Button onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 rounded-full border-2 border-primary text-primary bg-transparent p-0" aria-label="Modifier">
+                      <Button type="button" onClick={() => navigate(`/compte/edit/${event.id}`)} variant="outline" className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full border-2 border-primary text-primary bg-transparent p-0 touch-manipulation" aria-label="Modifier">
                         <Pencil size={16} strokeWidth={1.5} />
                       </Button>
-                      <Button onClick={() => {
+                      <Button type="button" onClick={() => {
                 setEventToDelete(event.id);
                 setShowDeleteEventModal(true);
-              }} variant="outline" className="w-10 h-10 rounded-full border-2 border-destructive text-destructive bg-transparent p-0" aria-label="Supprimer">
+              }} variant="outline" className="w-10 h-10 min-w-[44px] min-h-[44px] rounded-full border-2 border-destructive text-destructive bg-transparent p-0 touch-manipulation" aria-label="Supprimer">
                         <Trash2 size={16} strokeWidth={1.5} />
                       </Button>
                     </div>

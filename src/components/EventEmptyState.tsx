@@ -1,4 +1,4 @@
-import sadIcon from "@/assets/sad.svg";
+import catImage from "@/assets/cat.png";
 
 interface EventEmptyStateProps {
   variant?: "upcoming" | "past" | "drafts";
@@ -28,7 +28,7 @@ const EventEmptyState = ({ variant = "upcoming", noAnimation = false }: EventEmp
 
   return (
     <div className={`border-2 border-dashed border-primary rounded-xl p-6 flex flex-col items-center justify-center text-center ${noAnimation ? "" : "animate-fade-in"}`}>
-      <img src={sadIcon} alt="" className="w-6 h-6 mb-3" aria-hidden />
+      <img src={catImage} alt="" className="h-[200px] w-auto object-contain mb-4" aria-hidden />
       <p className="text-primary text-sm font-medium">{text}</p>
     </div>
   );
