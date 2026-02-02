@@ -251,7 +251,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
   );
 
   return (
-    <div className="overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative touch-pan-x">
+    <div className="overflow-x-auto overflow-y-hidden overscroll-x-contain overscroll-y-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] relative touch-pan-x -mx-4 px-4">
       <div className="flex gap-2 w-max">
         {/* Tout button - border-2 sur les deux états pour même largeur fill/stroke */}
         <button
