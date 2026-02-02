@@ -275,7 +275,6 @@ const Compte = () => {
   }
   return <div className={`fixed inset-0 bg-background flex flex-col z-50 overflow-y-auto ${isMobile ? (isClosing ? 'animate-slide-out-right' : 'animate-slide-in-right') : ''}`}>
       <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full pt-[env(safe-area-inset-top)]">
-        {/* Header with close button */}
         <header className="pt-4 pl-4 pb-4">
           <button onClick={handleClose} className="w-10 h-10 rounded-full bg-primary flex items-center justify-center" aria-label="Fermer">
             <X size={24} strokeWidth={1.75} className="text-primary-foreground" />
@@ -443,9 +442,7 @@ const Compte = () => {
 
       {/* Modals */}
       <ConfirmModal open={showLogoutModal} onOpenChange={setShowLogoutModal} title="Se déconnecter" description="Est-tu sûre de vouloir quitter ce monde de fou ?" confirmText="Se déconnecter" cancelText="Annuler" onConfirm={handleLogout} />
-
       <ConfirmModal open={showDeleteAccountModal} onOpenChange={setShowDeleteAccountModal} title="Supprimer le compte" description="Cette action est irréversible. Toutes vos données seront supprimées définitivement." confirmText="Supprimer mon compte" cancelText="Annuler" onConfirm={handleDeleteAccount} variant="destructive" confirmLoading={isDeletingAccount} />
-
       <ConfirmModal open={showDeleteEventModal} onOpenChange={setShowDeleteEventModal} title="Supprimer l'évènement" description="Êtes-vous sûr de vouloir supprimer cet évènement ?" confirmText="Supprimer" cancelText="Annuler" onConfirm={handleDeleteEvent} variant="destructive" />
     </div>;
 };

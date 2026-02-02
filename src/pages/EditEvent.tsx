@@ -347,16 +347,13 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
   return (
     <div className={wrapperClasses}>
       <div className={`max-w-[900px] mx-auto px-6 ${asOverlay ? "pt-[env(safe-area-inset-top)] pb-12" : ""}`}>
-        <header className="py-4 flex items-start">
+        <header className="pt-4 pb-4">
           <button
             onClick={handleClose}
-            className="flex items-center gap-2 text-primary"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-full bg-primary flex items-center justify-center text-primary-foreground touch-manipulation"
             aria-label="Retour"
           >
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
-              <RetourIcon size={24} className="text-primary-foreground" />
-            </div>
-            <span className="font-medium">Retour</span>
+            <RetourIcon size={24} />
           </button>
         </header>
 
