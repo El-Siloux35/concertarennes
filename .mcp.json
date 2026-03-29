@@ -1,8 +1,12 @@
-{
+cma{
   "mcpServers": {
     "puppeteer": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-puppeteer"]
+    },
+    "html-to-design": {
+      "type": "sse",
+      "url": "https://h2d-mcp.divriots.com/ae3640ac-8132-4f56-ae53-0a7e34b763d7/mcp"
     }
   }
 }

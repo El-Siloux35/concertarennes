@@ -306,7 +306,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary" align="start" sideOffset={8}>
               <PeriodContent forMobile={false} />
             </PopoverContent>
           </Popover>
@@ -350,7 +350,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary" align="start" sideOffset={8}>
               <StyleContent forMobile={false} />
             </PopoverContent>
           </Popover>
@@ -394,7 +394,7 @@ const FilterPills = ({ onFilterChange, counts, initialPeriod = "all", initialSty
                 <ChevronDown size={16} strokeWidth={1.25} className="ml-1" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary z-50" align="start" sideOffset={8}>
+            <PopoverContent className="w-56 p-2 bg-background border-2 border-primary" align="start" sideOffset={8}>
               <VenueContent forMobile={false} />
             </PopoverContent>
           </Popover>
