@@ -30,11 +30,11 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="max-w-[1000px] mx-auto flex-1 flex flex-col w-full">
+      <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background pt-[env(safe-area-inset-top)]">
           <DesktopPageBanner />
-          <div className="max-w-[1000px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
+          <div className="max-w-[900px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
               className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground"
