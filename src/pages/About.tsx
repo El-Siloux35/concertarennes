@@ -4,6 +4,19 @@ import { useState } from "react";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { format, parseISO } from "date-fns";
+import { fr } from "date-fns/locale";
+
+// Date d'ajout de chaque bloc de la page, au format ISO "AAAA-MM-JJ".
+// Quand on ajoute un nouveau bloc : mettre la date réelle du jour de l'ajout.
+const ADDED_AT = {
+  intro: "2026-09-16",
+  pwa: "2026-09-16",
+  contact: "2026-09-16",
+} as const;
+
+const formatAddedAt = (isoDate: string) =>
+  `Ajouté le ${format(parseISO(isoDate), "d MMMM yyyy", { locale: fr })}`;
 
 const About = () => {
   const navigate = useNavigate();
@@ -40,6 +53,7 @@ const About = () => {
 
           {/* Purple block from homepage - at top */}
           <div className="bg-primary rounded-2xl p-6 text-primary-foreground mb-6">
+            <p className="text-xs opacity-75 mb-2">{formatAddedAt(ADDED_AT.intro)}</p>
             <h2 className="font-semibold text-lg mb-1">L'agenda du 35</h2>
             <p className="text-sm opacity-90">
               L'agenda des évènements qui étaient avant sur whatsapp, avant sur signal, avant par texto…
@@ -48,6 +62,7 @@ const About = () => {
 
           {/* PWA Installation Instructions - orange like home */}
           <div className="bg-accent rounded-2xl p-6 text-accent-foreground mb-6">
+            <p className="text-xs opacity-75 mb-2">{formatAddedAt(ADDED_AT.pwa)}</p>
             <h2 className="font-semibold text-lg mb-4">
               Ajouter l'agenda du 35 à l'écran d'accueil de mon smartphone
             </h2>
@@ -77,6 +92,7 @@ const About = () => {
 
           {/* Email contact form */}
           <div className="bg-card rounded-2xl p-6 mb-6">
+            <p className="text-xs text-primary/70 mb-2">{formatAddedAt(ADDED_AT.contact)}</p>
             <h2 className="text-base font-medium text-primary mb-4">Envoyer un message</h2>
             <Textarea
               placeholder="Votre message..."
