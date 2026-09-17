@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
 import Footer from "@/components/Footer";
+import DesktopPageBanner, { DesktopPageBannerSpacer } from "@/components/DesktopPageBanner";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { useToast } from "@/hooks/use-toast";
 
@@ -74,6 +75,7 @@ const Settings = () => {
       <div className="max-w-[1000px] mx-auto flex-1 flex flex-col w-full">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background pt-[env(safe-area-inset-top)]">
+          <DesktopPageBanner />
           <div className="max-w-[1000px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
@@ -87,6 +89,7 @@ const Settings = () => {
 
         {/* Spacer for fixed header */}
         <div className="h-[calc(4rem+env(safe-area-inset-top,0px))]"></div>
+        <DesktopPageBannerSpacer />
 
         {/* Content */}
         <div className="px-6 py-4">

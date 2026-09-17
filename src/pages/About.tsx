@@ -2,6 +2,7 @@ import { RetourIcon } from "@/components/icons/RetourIcon";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Footer from "@/components/Footer";
+import DesktopPageBanner, { DesktopPageBannerSpacer } from "@/components/DesktopPageBanner";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { format, parseISO } from "date-fns";
@@ -12,7 +13,6 @@ import { fr } from "date-fns/locale";
 const ADDED_AT = {
   intro: "2026-09-16",
   pwa: "2026-09-16",
-  contact: "2026-09-16",
 } as const;
 
 const formatAddedAt = (isoDate: string) =>
@@ -33,6 +33,7 @@ const About = () => {
       <div className="max-w-[1000px] mx-auto flex-1 flex flex-col w-full">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background pt-[env(safe-area-inset-top)]">
+          <DesktopPageBanner />
           <div className="max-w-[1000px] mx-auto pt-4 pl-4 pb-4 pr-4 flex justify-between items-center">
             <button
               onClick={() => navigate(-1)}
@@ -46,6 +47,7 @@ const About = () => {
 
         {/* Spacer for fixed header */}
         <div className="h-[calc(4rem+env(safe-area-inset-top,0px))]"></div>
+        <DesktopPageBannerSpacer />
 
         {/* Content */}
         <div className="px-6 py-4">
@@ -92,7 +94,6 @@ const About = () => {
 
           {/* Email contact form */}
           <div className="bg-card rounded-2xl p-6 mb-6">
-            <p className="text-xs text-primary/70 mb-2">{formatAddedAt(ADDED_AT.contact)}</p>
             <h2 className="text-base font-medium text-primary mb-4">Envoyer un message</h2>
             <Textarea
               placeholder="Votre message..."

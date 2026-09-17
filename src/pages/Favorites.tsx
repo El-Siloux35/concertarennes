@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import DesktopPageBanner, { DesktopPageBannerSpacer } from "@/components/DesktopPageBanner";
 import EmptyState from "@/components/EmptyState";
 
 interface Event {
@@ -142,6 +143,7 @@ const Favorites = () => {
       <div className="max-w-[900px] mx-auto flex-1 flex flex-col w-full">
         {/* Fixed Header */}
         <div className="fixed top-0 left-0 right-0 z-50 bg-background">
+          <DesktopPageBanner />
           <div className="max-w-[900px] mx-auto p-4 flex justify-between items-center">
             <button
               onClick={() => navigate("/home")}
@@ -155,6 +157,7 @@ const Favorites = () => {
 
         {/* Spacer for fixed header */}
         <div className="h-20"></div>
+        <DesktopPageBannerSpacer />
 
         {/* Page Title */}
         <h1 className="text-2xl md:text-3xl font-bold text-primary text-center mt-8 mb-8">Mes favoris</h1>
