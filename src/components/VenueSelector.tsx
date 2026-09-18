@@ -39,14 +39,7 @@ const VenueSelector = ({ value, onChange }: VenueSelectorProps) => {
                   : "border-2 border-primary text-primary bg-transparent"
               }`}
             >
-              {/* Toujours rendu : réserve la place de l'icône pour que la
-                  largeur de la pastille ne change pas à la sélection */}
-              <Check
-                size={16}
-                strokeWidth={1.25}
-                className={isSelected ? "" : "invisible"}
-                aria-hidden
-              />
+              {isSelected && <Check size={16} strokeWidth={1.25} />}
               {option.label}
             </button>
           );
