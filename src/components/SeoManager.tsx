@@ -74,6 +74,16 @@ function getSeo(pathname: string) {
         title: "Réglages | L'agenda du 35",
         description: "Personnalisez l'apparence et les notifications de l'application.",
       };
+    case "/a-propos":
+      return {
+        title: "Infos | L'agenda du 35",
+        description: "À propos de l'agenda du 35, installation sur mobile et contact.",
+      };
+    case "/email-confirmed":
+      return {
+        title: "Email confirmé | L'agenda du 35",
+        description: "Votre adresse email est confirmée, vous pouvez vous connecter.",
+      };
     default:
       return {
         title: "Page introuvable | L'agenda du 35",
