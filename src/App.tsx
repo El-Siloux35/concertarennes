@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Splash from "./pages/Splash";
 import Index from "./pages/Index";
 import { StatusBarProvider } from "./contexts/StatusBarContext";
@@ -13,6 +13,7 @@ import { UserProvider } from "./contexts/UserContext";
 import SeoManager from "./components/SeoManager";
 import SafeAreaBackground from "./components/SafeAreaBackground";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { pruneDeletedFavorites } from "./lib/favorites";
 import { useLocation } from "react-router-dom";
 // Lazy load pages for better performance
 const ConcertDetail = lazy(() => import("./pages/ConcertDetail"));
@@ -36,6 +37,13 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   const location = useLocation();
+
+  // Au démarrage : purge les favoris dont l'évènement a été supprimé, pour que
+  // le compteur du header n'annonce pas des favoris qui n'existent plus.
+  useEffect(() => {
+    pruneDeletedFavorites();
+  }, []);
+
   return (
     <ErrorBoundary resetKeys={[location.pathname]}>
       <ScrollProvider>

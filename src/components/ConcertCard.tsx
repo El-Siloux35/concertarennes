@@ -2,6 +2,7 @@ import { MapPin, Calendar, CircleDollarSign } from "lucide-react";
 import { FavoriteIcon } from "@/components/icons/FavoriteIcon";
 import { useState, useEffect, memo } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { isFavorite as isFavoriteEvent, toggleFavorite as toggleFavoriteEvent } from "@/lib/favorites";
 import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/image-utils";
 
 export interface Concert {
@@ -26,24 +27,13 @@ const ConcertCard = memo(({ concert, onNavigate }: ConcertCardProps) => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setIsFavorite(favorites.includes(concert.id));
+    setIsFavorite(isFavoriteEvent(concert.id));
   }, [concert.id]);
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    let newFavorites: string[];
-    if (isFavorite) {
-      newFavorites = favorites.filter((id: string) => id !== concert.id);
-    } else {
-      newFavorites = [...favorites, concert.id];
-    }
-    localStorage.setItem("favorites", JSON.stringify(newFavorites));
-    setIsFavorite(!isFavorite);
-
-    // Dispatch event to update header counter immediately
-    window.dispatchEvent(new Event("favoritesUpdated"));
+    // toggleFavorite prévient le compteur du header
+    setIsFavorite(toggleFavoriteEvent(concert.id));
   };
 
   const formatDate = (dateString: string, short: boolean = false) => {

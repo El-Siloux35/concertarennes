@@ -8,6 +8,12 @@ import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import DesktopPageBanner, { DesktopPageBannerSpacer } from "@/components/DesktopPageBanner";
 import EmptyState from "@/components/EmptyState";
+import {
+  isUuid,
+  readFavoritesDetailed,
+  writeFavorites,
+  FAVORITES_UPDATED_EVENT,
+} from "@/lib/favorites";
 
 interface Event {
   id: string;
@@ -23,25 +29,6 @@ interface Event {
 
 type FilterTab = "upcoming" | "past";
 
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-const isUuid = (value: string) => UUID_RE.test(value);
-
-const readFavoritesFromStorage = (): { ids: string[]; hadInvalid: boolean } => {
-  try {
-    const raw = JSON.parse(localStorage.getItem("favorites") || "[]");
-    if (!Array.isArray(raw)) return { ids: [], hadInvalid: false };
-
-    const asStrings = raw.map((v) => String(v));
-    const ids = asStrings.filter(isUuid);
-    const hadInvalid = asStrings.length !== ids.length;
-    return { ids, hadInvalid };
-  } catch {
-    return { ids: [], hadInvalid: false };
-  }
-};
-
 const Favorites = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -56,10 +43,10 @@ const Favorites = () => {
 
   useEffect(() => {
     const syncFavorites = () => {
-      const { ids, hadInvalid } = readFavoritesFromStorage();
+      const { ids, hadInvalid } = readFavoritesDetailed();
 
       if (hadInvalid) {
-        localStorage.setItem("favorites", JSON.stringify(ids));
+        writeFavorites(ids);
 
         if (!warnedInvalidRef.current) {
           warnedInvalidRef.current = true;
@@ -75,11 +62,11 @@ const Favorites = () => {
     };
 
     syncFavorites();
-    window.addEventListener("favoritesUpdated", syncFavorites);
+    window.addEventListener(FAVORITES_UPDATED_EVENT, syncFavorites);
     window.addEventListener("storage", syncFavorites);
 
     return () => {
-      window.removeEventListener("favoritesUpdated", syncFavorites);
+      window.removeEventListener(FAVORITES_UPDATED_EVENT, syncFavorites);
       window.removeEventListener("storage", syncFavorites);
     };
   }, [toast]);
@@ -111,7 +98,18 @@ const Favorites = () => {
         return;
       }
 
-      setEvents(data || []);
+      const found = data || [];
+
+      // Évènements supprimés depuis leur mise en favori : on retire les ids
+      // orphelins du stockage, sinon le compteur du header continue de les
+      // compter alors que plus rien ne peut s'afficher ici.
+      const foundIds = new Set(found.map((event) => event.id));
+      const stillExisting = favoriteIds.filter((id) => foundIds.has(id));
+      if (stillExisting.length !== favoriteIds.length) {
+        writeFavorites(stillExisting);
+      }
+
+      setEvents(found);
       setLoading(false);
     };
 
@@ -120,9 +118,8 @@ const Favorites = () => {
 
   const removeFavorite = (id: string) => {
     const newFavorites = favorites.filter((favId) => favId !== id);
-    localStorage.setItem("favorites", JSON.stringify(newFavorites));
     setFavorites(newFavorites);
-    window.dispatchEvent(new Event("favoritesUpdated"));
+    writeFavorites(newFavorites);
   };
 
   const formatDate = (dateString: string) => {

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import AuthDrawer from "./AuthDrawer";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { readFavorites } from "@/lib/favorites";
 import { useUser } from "@/contexts/UserContext";
 import { useScroll } from "@/contexts/ScrollContext";
 
@@ -27,8 +28,7 @@ const Header = () => {
 
   useEffect(() => {
     const updateFavoritesCount = () => {
-      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-      setFavoritesCount(favorites.length);
+      setFavoritesCount(readFavorites().length);
     };
     updateFavoritesCount();
 

@@ -11,6 +11,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import Footer from "@/components/Footer";
 import { getOptimizedImageUrl, getImageSrcSet } from "@/lib/image-utils";
+import { isFavorite as isFavoriteEvent, toggleFavorite as toggleFavoriteEvent } from "@/lib/favorites";
 
 interface Event {
   id: string;
@@ -96,22 +97,13 @@ const ConcertDetail = () => {
   }, [id]);
 
   useEffect(() => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    setIsFavorite(favorites.includes(id));
+    setIsFavorite(id ? isFavoriteEvent(id) : false);
   }, [id]);
 
 
   const toggleFavorite = () => {
-    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-    let newFavorites: string[];
-    if (isFavorite) {
-      newFavorites = favorites.filter((favId: string) => favId !== id);
-    } else {
-      newFavorites = [...favorites, id];
-    }
-    localStorage.setItem("favorites", JSON.stringify(newFavorites));
-    setIsFavorite(!isFavorite);
-    window.dispatchEvent(new Event('favoritesUpdated'));
+    if (!id) return;
+    setIsFavorite(toggleFavoriteEvent(id));
   };
 
   const formatDate = (dateString: string) => {
