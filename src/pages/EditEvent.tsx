@@ -346,7 +346,7 @@ const EditEvent = ({ asOverlay = false, eventId: eventIdProp }: EditEventProps) 
 
   return (
     <div className={wrapperClasses}>
-      <div className={`max-w-[900px] mx-auto px-6 ${asOverlay ? "pt-[env(safe-area-inset-top)] pb-12" : ""}`}>
+      <div className={`w-full max-w-[900px] mx-auto px-6 ${asOverlay ? "pt-[env(safe-area-inset-top)] pb-12" : ""}`}>
         <header className="pt-4 pb-4">
           <button
             onClick={handleClose}

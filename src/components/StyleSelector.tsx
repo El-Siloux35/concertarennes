@@ -54,7 +54,14 @@ const StyleSelector = ({ value, onChange, maxSelection = 3 }: StyleSelectorProps
                 : "border-2 border-primary text-primary bg-transparent"
             }`}
           >
-            {isSelected(option.key) && <Check size={16} strokeWidth={1.25} />}
+            {/* Toujours rendu : réserve la place de l'icône pour que la largeur
+                de la pastille ne change pas à la sélection */}
+            <Check
+              size={16}
+              strokeWidth={1.25}
+              className={isSelected(option.key) ? "" : "invisible"}
+              aria-hidden
+            />
             {option.label}
           </button>
         ))}
